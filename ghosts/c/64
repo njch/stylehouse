@@ -243,6 +243,7 @@ gothat: |
     for my $sn (qw'pwin tie h w airlock') {
         $G->{$sn} = G.I->{$sn} || die "No $sn from G I";
     }
+    $SIG{__DIE__} = G.I.sigstackend || die "NO sigstackend";
     
     G&init;
     
@@ -255,9 +256,22 @@ Ngwe: |
     n init=>'',<<''
         G.T = G&T,'w',G.T||{};
         G.way = G&T,'w/way',{nonyam=>1};
+        
+        
+    n sigstackend =>''=><<'','%args:1'
+        local $@;
+        eval { G::confess( '' ) };
+        my @stack = split m/\n/, $@;
+        shift @stack for 1..2;
+        my @stackend;
+        push @stackend, shift @stack until $stack[0] =~ /ggggggg/ || !@stack;
+        s/\t//g for @stackend;
+        # write on the train thats about to derail
+        saybl "Stakc: ".wdump 3, \@stackend;
+    
     
     # make ar @Me, always in order, ref $k = +ar mixin
-    n 'w'=>'',<<''
+    n 'w'=>'',<<'','%subis'
         my $pin = $s;
         my ($t,@k);
         my @Eat = @Me;
@@ -282,7 +296,6 @@ Ngwe: |
             }
         }
         unshift @k, @got if @got;
-        sayyl "Got www $pin   with ".wdump [[@k],[@got]];
         (my $fi = $pin) =~ s/\W/-/g;
         my $way = G.way->{$fi} || die "No way: $fi";
         my $dige = G.way.o.dige->{$fi}
@@ -306,7 +319,6 @@ Ngwe: |
     n won=>'',join("\n",map{G.way->{$_} || die "no $_"}qw'cono ersl');
     
     n airlock=>''=><<'','%args:1'
-        sayre "Airlocked: ".$_[0];
         eval shift
     
     # etc

@@ -8,7 +8,6 @@ our $A = {};
 
 $A->{I}->{airlock} = sub {
 
-    sayre "Airlocked: ".$_[0];
     eval shift
 };
 $A->{I}->{init} = sub {
@@ -17,6 +16,18 @@ $A->{I}->{init} = sub {
     my $I = $A->{I};
     $G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T}||{});
     $G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way',{nonyam=>1});
+};
+$A->{I}->{sigstackend} = sub {
+
+    local $@;
+    eval { G::confess( '' ) };
+    my @stack = split m/\n/, $@;
+    shift @stack for 1..2;
+    my @stackend;
+    push @stackend, shift @stack until $stack[0] =~ /ggggggg/ || !@stack;
+    s/\t//g for @stackend;
+    # write on the train thats about to derail
+    saybl "Stakc: ".wdump 3, \@stackend;
 };
 $A->{I}->{w} = sub {
     my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -46,10 +57,8 @@ $A->{I}->{w} = sub {
         }
     }
     unshift @k, @got if @got;
-    sayyl "Got www $pin   with ".wdump [[@k],[@got]];
     (my $fi = $pin) =~ s/\W/-/g;
     my $way = $G->{way}->{$fi} || die "No way: $fi";
-    say ":WAY: $way";
     my $dige = $G->{way}->{o}->{dige}->{$fi}
         || die "Not Gway not diges $fi: wayo: ".ki $G->{way}->{o};
     my $ark = join' ',@k;
@@ -60,7 +69,6 @@ $A->{I}->{w} = sub {
         $C->{sc} = {code=>1,noAI=>1,args=>join',',ar=>@k};
         my $code = $G->{h}->($A,$C,$G,$T,"won");
         $@ && die ":BEFORE $pin www $@";
-        saybl "Ark: $C->{sc}->{args} \n\n $code";
         my $sub = $G->{airlock}->($code);
         $@ && die "www to $pin:\n$@";
         !$sub && die "www to $pin: no sub returned";
@@ -206,7 +214,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 07010c0626e9
+        dige: 3c1977f3f48b
         eg: Ngwe
       t: airlock
       "y": 
@@ -224,17 +232,17 @@ I:
       t: init
       "y": 
         cv: '0.1'
-    w: 
+    sigstackend: 
       c: 
         from: Ngwe
       sc: 
         acgt: s
-        args: A,C,G,T,s
+        args: 1
         bab: ~
         code: I
-        dige: 5b24b61f43ba
+        dige: b49bff33ffa5
         eg: Ngwe
-      t: w
+      t: sigstackend
       "y": 
         cv: '0.1'
     won: 
