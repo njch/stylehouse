@@ -86,6 +86,7 @@ my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
     !$sub && die "way nicht sub returned: $pin (no error tho)";
     $sub;
 };
+say "Way $A->{talk} $pin";
 if ($D && !$D->{sc}->{subpeel}) {
     return $sub;
 }
@@ -266,7 +267,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 86c208d1f0eb
+        dige: 29f099fbf4ed
         eg: Ngwe
       t: w
       "y": 

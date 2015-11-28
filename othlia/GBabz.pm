@@ -72,10 +72,10 @@ for my $l (split "\n", $s) {
     $s =~ s/($p->{mwall})(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
     $s =~ s/($p->{mwall})(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
     $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
-    $s =~ s/($p->{mwall})(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
+    $s =~ s/($p->{mwall})(\w*M)(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
 
     # close side ourselves, likely to gobble suro if, etc.
-    $s =~ s/($p->{mwall})(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
+    $s =~ s/($p->{mwall})(u|n) (.+?);?$/${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'');/smg;
     #$s =~ s/($p->{mwall})(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
 
     $s =~ s/I\.d\&($p->{oint})/G\&$1/sgm;
@@ -181,7 +181,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 20e476d3df10
+        dige: 9932e9bef73c
         eg: GBabz
       t: parse_babbl
       "y": 

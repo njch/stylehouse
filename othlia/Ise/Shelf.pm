@@ -13,20 +13,20 @@ my $I = $A->{I};
 $A->{G} = $G; # for wiring from A (G/T/Hypo)
 $A->{up} = $up;
 $A->{mo} = $A;
-($C,my$S) = ({},$C);
-$C->{c}->{J} = shift @$S;
-$C->{c}->{M} = $S->[1] if 2 == grep{ref$_ eq 'ARRAY'}@{$S}[0,1];
-$C->{c}->{N} = $C->{c}->{M} ? $S->[0] : $S;
+$A->{am} = $s || die "unsame?";
+$A->{talk} = ($A->{J}->{le}&&"($A->{J}->{le}->{name})").$A->{J}->{name};
+
+$A->{C} = $C = {};
+($C->{c}->{J}, $C->{c}->{N}, $C->{c}->{M}) = (@Me);
+ref $C->{c}->{N} eq 'ARRAY' || die "Not array CcN";
+ref $C->{c}->{M} || delete $C->{c}->{M};
 $A->{N} = [@{$C->{c}->{N}}];
 $A->{M} = [];
 $A->{J} = $C->{c}->{J} if $C->{c}->{J};
 $A->{J} || die "NOJ";
 
-$A->{C} = $C;
 $T = $A->{T} = {};
 $A->{fl} = $C->{c}->{fl} || {};
-$A->{am} = $s || die "unsame?";
-$A->{talk} = ($A->{J}->{le}&&"($A->{J}->{le}->{name})").$A->{J}->{name};
 sayyl "For A  $A->{talk}: ".wdump 4,[\@Me, $C];
 {
 my $I = $A->{I} = {};
@@ -90,9 +90,9 @@ $A
 sub Sev {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-$C = [Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}];
-$C = [$s, $C];
-($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Sev');
+$Me[0] ||= [[Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}]];
+$Me[1] ||= [];
+($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Sev',$s,@Me);
 $A->{I}->{scIfs} || die "NO scIfs: $A->{J}->{name}";
 $G->{h}->($A,$C,$G,$T,"loop");
 };
@@ -100,6 +100,7 @@ sub h {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 my $y = $A->{I}->{$s} || die "No whay named $s on $A->{talk}: ".wdump 2, $A->{I};
+say "$A->{talk} h :  $s   < $C->{t}";
 $y->($A,$C,$G,$T,@Me);
 };
 sub loop {
@@ -129,7 +130,7 @@ if ($C->{c}->{M}) {
     push @{$C->{c}->{M}}, @{$A->{M}};
     $A
 }
-elsif ($C->{c}->{J}) {
+elsif ($C->{c}->{J} && $A->{am} eq 'In') {
     $G->{h}->($A,$C,$G,$T,"Mo",$C->{c}->{J},$A->{M},$C->{c}->{M}||[]);
 }
 else {
@@ -139,15 +140,13 @@ else {
 sub m {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-$C = [$s,@Me];
-($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Mo');
+($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Mo',$s,@Me);
 $G->{h}->($A,$C,$G,$T,"loop");
 };
 sub n {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-$C = [$s,@Me];
-($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'In');
+($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'In',$s,@Me);
 $G->{h}->($A,$C,$G,$T,"loop");
 };
 sub recycle {
@@ -168,7 +167,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 0341b5a63077
+        dige: d0cc3697ad8d
         eg: Ise::Shelf
       t: A
       "y": 
@@ -207,7 +206,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 852ee228ac19
+        dige: fef6ffec4c44
         eg: Ise::Shelf
       t: Sev
       "y": 
@@ -220,7 +219,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 8e14e95e0dea
+        dige: 323ff6be8898
         eg: Ise::Shelf
       t: h
       "y": 
@@ -233,7 +232,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: efeb63b25b74
+        dige: 8e7402648c27
         eg: Ise::Shelf
       t: loop
       "y": 
@@ -246,7 +245,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 87cf8bc6d0c9
+        dige: 1be52d7fef15
         eg: Ise::Shelf
       t: m
       "y": 
@@ -259,7 +258,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 4449d0d33841
+        dige: fcf0b92d9b24
         eg: Ise::Shelf
       t: 'n'
       "y": 

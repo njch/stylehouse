@@ -354,6 +354,7 @@ Ngwe: |
             !$sub && die "way nicht sub returned: $pin (no error tho)";
             $sub;
         };
+        say "Way A.talk $pin" unless $pin =~ /^_/;
         if ($D && !D.sc.subpeel) {
             return $sub;
         }
@@ -372,6 +373,7 @@ Shelf: |
     u allacgts
     n h =>'',<<''
         my $y = A.I->{$s} || die "No whay named $s on A.talk: ".wdump 2, A.I;
+        say "A.talk h :  $s   < C.t" unless C.t =~ /^_/;
         $y->($A,$C,$G,$T,@Me);
     
     n A =>''=><<''
@@ -381,6 +383,8 @@ Shelf: |
         A.mo = $A;
         A.am = $s || die "unsame?";
         A.talk = (A.J.le&&"(A.J.le.name)").A.J.name;
+        .
+        A.C = $C = {};
         (C.c.J, C.c.N, C.c.M) = (@Me);
         ref C.c.N eq 'ARRAY' || die "Not array CcN";
         ref C.c.M || delete C.c.M;
@@ -389,7 +393,6 @@ Shelf: |
         A.J = C.c.J if C.c.J;
         A.J || die "NOJ";
         .
-        A.C = $C;
         $T = A.T = {};
         A.fl = C.c.fl || {};
         sayyl "For A  A.talk: ".wdump 4,[\@Me, $C];
@@ -804,11 +807,10 @@ GBabz: |
             $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
             $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
             $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
-            $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$$2, /smg;
+            $s =~ s/(p.mwall)(\w*M)(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
             .
-               G&m,$J,$dJ->(@_),$M;
             # close side ourselves, likely to gobble suro if, etc.
-            $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->($3=>'');/smg;
+            $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'');/smg;
             #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
             .
             $s =~ s/I\.d\&(p.oint)/G\&$1/sgm;
