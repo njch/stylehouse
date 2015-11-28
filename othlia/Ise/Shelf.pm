@@ -98,6 +98,7 @@ my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 $DB::single = !$A->{I}->{$s};
 my $y = $A->{I}->{$s} || die "No whay named $s on $A->{talk}: ".wdump 2, $A->{I};
+say "$A->{talk} into $s";
 $y->($A,$C,$G,$T,@Me);
 };
 sub loop {
@@ -218,7 +219,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 44ff438956f7
+        dige: 0dcf18ed11f0
         eg: Ise::Shelf
       t: h
       "y": 

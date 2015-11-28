@@ -326,7 +326,8 @@ Ngwe: |
         unshift @k, @got if @got;
         (my $fi = $pin) =~ s/\W/-/g;
         my ($way,$dige);
-        if (my $D = t.__D) {
+        my $D;
+        if ($D = t.__D) {
             $dige = D.sc.dige || die "wayzipin wasnt scdige: ".ki$D;
             $way = D.c.s;
             $way =~ s/^A\.I\.(\w+) = //s;
@@ -337,13 +338,17 @@ Ngwe: |
             $dige = G.way.o.dige->{$fi}
                 || die "Not Gway not diges $fi: wayo: ".ki G.way.o;
         }
-        my $ark = join' ',@k;
+        my $ark = join',',@k;
         my $code;
         my $sub = G.dige_pin_ark->{$dige}->{$pin}->{$ark} ||= do {
             my $C = {};
             C.t = $pin;
             C.c = {s=>$way,from=>"way"};
-            C.sc = {code=>1,noAI=>1,args=>join',',ar=>@k};
+            C.sc = {code=>1,noAI=>1,args=>"ar,$ark"};
+            if ($D) {
+                delete C.sc.args unless D.sc.subpeel;
+                C.c.from = "I D.c.from";
+            }
             $code = G&won;
             $@ && die ":BEFORE $pin www $@";
             my $sub = G.airlock->($code);
@@ -352,7 +357,9 @@ Ngwe: |
             !$sub && die "way nicht sub returned: $pin (no error tho)";
             $sub;
         };
-        saygr "A.talk: compiles $pin" if $code;
+        if ($D && !D.sc.subpeel) {
+            return $sub;
+        }
         $sub->($t,map{$t->{$_}}@k);
     
     n won=>'',join("\n",map{G.way->{$_} || die "no $_"}qw'cono ersl');
@@ -367,9 +374,7 @@ ersl: |
 Shelf: |
     u allacgts
     n h =>'',<<''
-        $DB::single = !A.I->{$s};
         my $y = A.I->{$s} || die "No whay named $s on A.talk: ".wdump 2, A.I;
-        say "A.talk into $s";
         $y->($A,$C,$G,$T,@Me);
     
     n A =>''=><<''

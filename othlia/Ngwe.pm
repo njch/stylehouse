@@ -55,7 +55,8 @@ for (qw'A C G T') {
 unshift @k, @got if @got;
 (my $fi = $pin) =~ s/\W/-/g;
 my ($way,$dige);
-if (my $D = $t->{__D}) {
+my $D;
+if ($D = $t->{__D}) {
     $dige = $D->{sc}->{dige} || die "wayzipin wasnt scdige: ".ki$D;
     $way = $D->{c}->{s};
     $way =~ s/^A\.I\.(\w+) = //s;
@@ -66,13 +67,17 @@ else {
     $dige = $G->{way}->{o}->{dige}->{$fi}
         || die "Not Gway not diges $fi: wayo: ".ki $G->{way}->{o};
 }
-my $ark = join' ',@k;
+my $ark = join',',@k;
 my $code;
 my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
     my $C = {};
     $C->{t} = $pin;
     $C->{c} = {s=>$way,from=>"way"};
-    $C->{sc} = {code=>1,noAI=>1,args=>join',',ar=>@k};
+    $C->{sc} = {code=>1,noAI=>1,args=>"ar,$ark"};
+    if ($D) {
+        delete $C->{sc}->{args} unless $D->{sc}->{subpeel};
+        $C->{c}->{from} = "I $D->{c}->{from}";
+    }
     $code = $G->{h}->($A,$C,$G,$T,"won");
     $@ && die ":BEFORE $pin www $@";
     my $sub = $G->{airlock}->($code);
@@ -81,7 +86,9 @@ my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
     !$sub && die "way nicht sub returned: $pin (no error tho)";
     $sub;
 };
-saygr "$A->{talk}: compiles $pin" if $code;
+if ($D && !$D->{sc}->{subpeel}) {
+    return $sub;
+}
 $sub->($t,map{$t->{$_}}@k);
 };
 sub won {
@@ -259,7 +266,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 08f25dc07af2
+        dige: 86c208d1f0eb
         eg: Ngwe
       t: w
       "y": 

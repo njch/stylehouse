@@ -7,14 +7,14 @@ use G;
 our $A = {};
 
 sub robeg {
-    my ($A,$C,$G,$T,$s,@Me) = @_;
-    my $I = $A->{I};
-    # look
-    my $D = $s;
-    my $eg = $D->{sc}->{eg};
-    $eg =~ s/\//::/g;
-    say "Robeg for $D->{t} looking in $eg";
-    return 0; # TODO
+my ($A,$C,$G,$T,$s,@Me) = @_;
+my $I = $A->{I};
+# look
+my $D = $s;
+my $eg = $D->{sc}->{eg};
+$eg =~ s/\//::/g;
+say "Robeg for $D->{t} looking in $eg";
+return 0; # TODO
 };
 $A->{II} = Load(<<STEVE);
 --- 
@@ -28,7 +28,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 9a0f4abe2423
+        dige: c713da69fba9
         eg: Ise::Rob
       t: robeg
       "y": 
