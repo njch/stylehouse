@@ -22,9 +22,12 @@ $A->{M} = [];
 $A->{J} = $C->{c}->{J} if $C->{c}->{J};
 $A->{J} || die "NOJ";
 
+$A->{C} = $C;
+$T = $A->{T} = {};
 $A->{fl} = $C->{c}->{fl} || {};
 $A->{am} = $s || die "unsame?";
 $A->{talk} = ($A->{J}->{le}&&"($A->{J}->{le}->{name})").$A->{J}->{name};
+sayyl "For A  $A->{talk}: ".wdump 4,[\@Me, $C];
 {
 my $I = $A->{I} = {};
 %$I = (%$I,%{$G->{I}});
@@ -49,7 +52,7 @@ $G->{h}->($A,$C,$G,$T,"An");
 $A->{t}->("1");
 $A->{t}->("11111") || warn "NO 1";
 }
-($A,$C,$T)
+($A,$C,$G,$T)
 };
 sub Act {
 my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -57,7 +60,7 @@ my $I = $A->{I};
 $A->{s} = shift @{$A->{N}};
 if (ref $A->{s} eq 'HASH' && $A->{s}->{J} && $A->{s}->{mo} && $A->{s}->{talk}) {
     $A = $A->{s};
-    $A->{mo} eq $s || die "$A->{talk}  mo $A->{mo}->{talk} not $s->{talk}";
+    $A->{mo} eq $s || die "$A->{talk} re A mo $A->{mo}->{talk} notfrom $s->{talk}";
     $C = $A->{C}||die"travcno $A->{talk}";
     $T = $A->{T} ||= {};
 }
@@ -70,7 +73,7 @@ else {
 $T->{oM} = [];
 $G->{h}->($A,$C,$G,$T,"An");
 $A->{t}->("2");
-($A,$C,$T)
+($A,$C,$G,$T)
 };
 sub An {
 my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -96,9 +99,7 @@ $G->{h}->($A,$C,$G,$T,"loop");
 sub h {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-$DB::single = !$A->{I}->{$s};
 my $y = $A->{I}->{$s} || die "No whay named $s on $A->{talk}: ".wdump 2, $A->{I};
-say "$A->{talk} into $s";
 $y->($A,$C,$G,$T,@Me);
 };
 sub loop {
@@ -107,8 +108,8 @@ my $I = $A->{I};
 my $i;
 @{$A->{N}}||die"nois".wdump[$C,$A];
 while (@{$A->{N}}) { #
-    $i++ > 5000 && die "Huge Indi";
-    my ($A,$C,$T) = $G->{h}->($A,$C,$G,$T,"Act",$A);
+    $i++ > 5000 && die "Huge $A->{talk}";
+    my ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"Act",$A);
     $T->{not}&&next;
     $A->{t}->("6");
     $T->{not}&&next;
@@ -167,7 +168,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: e11a40c440a3
+        dige: 0341b5a63077
         eg: Ise::Shelf
       t: A
       "y": 
@@ -180,7 +181,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: c6ce22bf731a
+        dige: 74a33cf1874d
         eg: Ise::Shelf
       t: Act
       "y": 
@@ -219,7 +220,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 0dcf18ed11f0
+        dige: 8e14e95e0dea
         eg: Ise::Shelf
       t: h
       "y": 
@@ -232,7 +233,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 3a3f75f7befa
+        dige: efeb63b25b74
         eg: Ise::Shelf
       t: loop
       "y": 

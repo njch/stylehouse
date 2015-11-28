@@ -52,29 +52,26 @@ Two: | # make J (Jto)
         Rw uCon;
         J.uS = 0;
     };
-    my $dJ = sub {
-        my @m = @_;
-        shift @m if ref $m[0] && $m[0] eq $J;
-        pop @m while $m[-1] eq '';
-        @m>4&&die"mvelope>4".wdump 2, \@m;
-        [@m]
-    };
     # 6 shul start u pha
     J.u = sub {
-       $eu->();
+        my ($A,$C,$G,$T,@M) = @_;
+       pop @M while $M[-1] eq '';
+       $eu->($A);
        my $J = Rw Elj $J qq;
-       G&n,$J,[$dJ->(@_)];
+       G&n,$J,\@M;
     };
     J.n = sub {
-       $unu->();
-       G&n,$J,[$dJ->(@_)];
+        my ($A,$C,$G,$T,@M) = @_;
+       pop @M while $M[-1] eq '';
+       $unu->($A);
+       G&n,$J,\@M;
     };
     J.m = J.M = sub {
-       $unu->();
-       shift @_ if ref $_[0] && $_[0] eq $J;
-       my $M = shift;
-       ref $M eq 'ARRAY' || die "J.name 's M not ARRAY: $M";
-       G&m,$J,[$dJ->(@_)],$M;
+        my ($A,$C,$G,$T,@M) = @_;
+       pop @M while $M[-1] eq '';
+       $unu->($A);
+       my $M = shift @M;
+       G&m,$J,\@M,$M;
     };
 
     
@@ -91,7 +88,7 @@ Twin: |
     push @nar, ar.M if ar.M;
     G&n,@nar;
 Twev: |
-    G&n,$J;
+    G&Sev,$J;
 Jtt: | # Jto
     my $J;
     J.id = mkuid;
