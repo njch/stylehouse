@@ -26,6 +26,7 @@ $A->{J} = $C->{c}->{J} if $C->{c}->{J};
 $A->{J} || die "NOJ";
 
 $T = $A->{T} = {};
+$G::KA->{"$A"} = $A;
 $A->{fl} = $C->{c}->{fl} || {};
 sayyl "For A  $A->{talk}: ".wdump 4,[\@Me, $C];
 {
@@ -57,19 +58,22 @@ $A->{t}->("11111") || warn "NO 1";
 sub Act {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-$A->{s} = shift @{$A->{N}};
-if (ref $A->{s} eq 'HASH' && $A->{s}->{J} && $A->{s}->{mo} && $A->{s}->{talk}) {
-    $A = $A->{s};
-    $A->{mo} eq $s || die "$A->{talk} re A mo $A->{mo}->{talk} notfrom $s->{talk}";
+my $up = $s;
+$s = shift @{$A->{N}};
+if (ref $s eq 'HASH' && $s->{J} && $s->{mo} && $s->{talk}) {
+    $A = $s;
+    $A->{mo} eq $up || die "$A->{talk} re A mo $A->{mo}->{talk} notfrom $up->{talk}";
     $C = $A->{C}||die"travcno $A->{talk}";
     $T = $A->{T} ||= {};
 }
 else {
-    $A = {%$s};
-    $A->{mo}->{ont} = $A; # keep
+    $A = {%$up};
+    $A->{mo}->{ont} = $A;
+    $A->{s} = $s;
     $C = $A->{C} = {};
     $T = $A->{T} = {};
 }
+say "Zun act ".ki $A->{s};
 $T->{oM} = [];
 $G->{h}->($A,$C,$G,$T,"An");
 $A->{t}->("2");
@@ -100,7 +104,7 @@ sub h {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 my $y = $A->{I}->{$s} || die "No whay named $s on $A->{talk}: ".wdump 2, $A->{I};
-say "$A->{talk} h :  $s   < $C->{t}";
+say "$A->{talk} h :  $s   < $C->{t}" unless $C->{t} =~ /^_/;
 $y->($A,$C,$G,$T,@Me);
 };
 sub loop {
@@ -167,7 +171,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: d0cc3697ad8d
+        dige: fae15d7eea4b
         eg: Ise::Shelf
       t: A
       "y": 
@@ -180,7 +184,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 74a33cf1874d
+        dige: 84db555bab50
         eg: Ise::Shelf
       t: Act
       "y": 
@@ -219,7 +223,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 323ff6be8898
+        dige: e54d2b2599b9
         eg: Ise::Shelf
       t: h
       "y": 

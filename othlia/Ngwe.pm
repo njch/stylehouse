@@ -16,15 +16,76 @@ $G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T}||{});
 $G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way',{nonyam=>1});
 };
 sub sigstackend {
+my $s = $@;
 local $@;
 eval { G::confess( '' ) };
 my @stack = split m/\n/, $@;
 shift @stack for 1..2;
-my @stackend;
-push @stackend, shift @stack until $stack[0] =~ /ggggggg/ || !@stack;
-s/\t//g for @stackend;
+if ($stack[-1] =~ /^\s+Mojo::IOLoop::start/) {
+    pop @stack until $stack[-1] !~ /Mojo|eval/;
+}
+@stack = map{[$_, /^\s*(?:eval \{\.\.\.\} |([^\(\s]+)::([^\s\(]+?)\((.+)\) )called at (\S+|\(eval \S+\)) line (\d+)$/]} @stack;
+@stack = map{[$_->[2],'',{l=>$_},{pack=>$_->[1],call=>$_->[3],file=>$_->[4],line=>$_->[5]}]}@stack;
+@stack = map{{t=>$_->[0],y=>{},c=>$_->[2],sc=>$_->[3]}}@stack;
+#s/\t/  /g for @stackend;
 # write on the train thats about to derail
-saybl "Stakc: ".wdump 3, \@stackend;
+for (@stack) {
+    my $i = -1;
+    $_->{sc}->{Aref} = $1 if $_->{sc}->{call} =~ s/'(HASH\(\S+\))', (?:'(HASH\(\S+\))', ){3}//;
+    say "Called $1 -- $2";
+}
+saybl "Stack:";
+my $ind = " ";
+my $le;
+my $know;
+$know->{h}->{'Ise::Shelf'} = 1;
+my $KnowA = $G::KA;
+sayyl wdump 1, $KnowA;
+@stack = reverse @stack;
+for (@stack) {
+    my $sc = {%{$_->{sc}}};
+    my $called = delete $sc->{call};
+    $called =~ s/'((?:(.)(ASH|RRAY)|(\S+))\(\S+\))'/$2||$4/seg;
+    my $file = delete $sc->{file};
+    $file =~ s/^$main::Bin\///;
+    $file =~ s/^othlia\/// && $file =~ s/\//::/s && $file =~ s/\.pm$//;
+    my $pack = delete $sc->{pack};
+    my $fi = join "/", split '::', $pack;
+    if ($file =~ /$fi\.pm$/) {
+        $file = $pack;
+        undef $pack;
+    }
+    my $line = delete $sc->{line};
+    my $mayknow = delete $sc->{Aref};
+    my $Ano = $KnowA->{$mayknow} if $mayknow;
+    my $tal = $Ano->{talk} if $Ano;
+    $_->{c}->{tal} = $tal;
+    if ($know->{$_->{t}}->{$_->{sc}->{pack}}) {
+        $file = "<";
+        undef $pack;
+        $_->{sc}->{waspack} = $le->{sc}->{pack};
+    }
+    if ($le) {
+        undef $tal if $tal eq $le->{c}->{tal};
+        $ind .= " " if $_->{sc}->{pack} ne $le->{sc}->{pack} &&
+            !$le->{sc}->{waspack} || $le->{sc}->{waspack} ne $_->{sc}->{pack};
+        undef $file if $file eq $le->{sc}->{pack} || $file eq $le->{sc}->{waspack};
+        undef $pack if $pack eq $le->{sc}->{pack};
+    }
+    if (!$file && $pack) {
+        $file = $pack;
+        undef $pack;
+    }
+    if ($file =~ /^\(eval (\d+)/) {
+        $file = ($pack&&"$pack > ")."?".$1;
+        undef $pack;
+    }
+    $_->{t} = '?' if $_->{t} eq '__ANON__';
+    $tal = "$tal via" if $tal && $pack;
+    say " ".$ind."$_->{t}\t$file :$line\t\t $called\t\t$tal $pack   ".ki($sc);
+    #
+    $le = $_;
+}
 };
 sub w {
 my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -86,7 +147,7 @@ my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
     !$sub && die "way nicht sub returned: $pin (no error tho)";
     $sub;
 };
-say "Way $A->{talk} $pin";
+say "Way $A->{talk} $pin" unless $pin =~ /^_/;
 if ($D && !$D->{sc}->{subpeel}) {
     return $sub;
 }
@@ -254,7 +315,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 530c95b2b7f1
+        dige: 4c2d6d4da573
         eg: Ngwe
       t: sigstackend
       "y": 
@@ -267,7 +328,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 29f099fbf4ed
+        dige: 51eadab920c5
         eg: Ngwe
       t: w
       "y": 

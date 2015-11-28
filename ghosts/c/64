@@ -95,7 +95,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: |
-    my @for = qw'Ngwe Shelf'; # ShelfTidesGBabz  GBabz            
+    my @for = qw'Ngwe Shelf'; # Tides GBabz  GBabz            
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -260,6 +260,9 @@ gothat: |
     G.id = mkuid();
     G.I = A.I;
     G.A = $A;
+    A.talk = "G";
+    our $KA = {};
+    $G::KA->{"$A"} = $A;
     my $C = {};
     my $T = {};
     for my $sn (qw'pwin tie h w airlock') {
@@ -284,18 +287,79 @@ Ngwe: |
         
         
     n sigstackend =>''=><<'','%args:1'
+        my $s = $@;
         local $@;
         eval { G::confess( '' ) };
         my @stack = split m/\n/, $@;
         shift @stack for 1..2;
-        my @stackend;
-        push @stackend, shift @stack until $stack[0] =~ /ggggggg/ || !@stack;
-        s/\t//g for @stackend;
+        if ($stack[-1] =~ /^\s+Mojo::IOLoop::start/) {
+            pop @stack until $stack[-1] !~ /Mojo|eval/;
+        }
+        @stack = map{[$_, /^\s*(?:eval \{\.\.\.\} |([^\(\s]+)::([^\s\(]+?)\((.+)\) )called at (\S+|\(eval \S+\)) line (\d+)$/]} @stack;
+        @stack = map{[$_->[2],'',{l=>$_},{pack=>$_->[1],call=>$_->[3],file=>$_->[4],line=>$_->[5]}]}@stack;
+        @stack = map{{t=>$_->[0],y=>{},c=>$_->[2],sc=>$_->[3]}}@stack;
+        #s/\t/  /g for @stackend;
         # write on the train thats about to derail
-        saybl "Stakc: ".wdump 3, \@stackend;
+        for (@stack) {
+            my $i = -1;
+            _.sc.Aref = $1 if _.sc.call =~ s/'(HASH\(\S+\))', (?:'(HASH\(\S+\))', ){3}//;
+            say "Called $1 -- $2";
+        }
+        saybl "Stack:";
+        my $ind = " ";
+        my $le;
+        my $know;
+        know.h->{'Ise::Shelf'} = 1;
+        my $KnowA = $G::KA;
+        sayyl wdump 1, $KnowA;
+        @stack = reverse @stack;
+        for (@stack) {
+            my $sc = {%{_.sc}};
+            my $called = delete sc.call;
+            $called =~ s/'((?:(.)(ASH|RRAY)|(\S+))\(\S+\))'/$2||$4/seg;
+            my $file = delete sc.file;
+            $file =~ s/^$main::Bin\///;
+            $file =~ s/^othlia\/// && $file =~ s/\//::/s && $file =~ s/\.pm$//;
+            my $pack = delete sc.pack;
+            my $fi = join "/", split '::', $pack;
+            if ($file =~ /$fi\.pm$/) {
+                $file = $pack;
+                undef $pack;
+            }
+            my $line = delete sc.line;
+            my $mayknow = delete sc.Aref;
+            my $Ano = $KnowA->{$mayknow} if $mayknow;
+            my $tal = Ano.talk if $Ano;
+            _.c.tal = $tal;
+            if ($know->{_.t}->{_.sc.pack}) {
+                $file = "<";
+                undef $pack;
+                _.sc.waspack = le.sc.pack;
+            }
+            if ($le) {
+                undef $tal if $tal eq le.c.tal;
+                $ind .= " " if _.sc.pack ne le.sc.pack &&
+                    !le.sc.waspack || le.sc.waspack ne _.sc.pack;
+                undef $file if $file eq le.sc.pack || $file eq le.sc.waspack;
+                undef $pack if $pack eq le.sc.pack;
+            }
+            if (!$file && $pack) {
+                $file = $pack;
+                undef $pack;
+            }
+            if ($file =~ /^\(eval (\d+)/) {
+                $file = ($pack&&"$pack > ")."?".$1;
+                undef $pack;
+            }
+            _.t = '?' if _.t eq '__ANON__';
+            $tal = "$tal via" if $tal && $pack;
+            say " ".$ind."_.t\t$file :$line\t\t $called\t\t$tal $pack   ".ki($sc);
+            #
+            $le = $_;
+        }
     
     
-    # make ar @Me, always in order, ref $k = +ar mixin
+    # ww make ar @Me, always in order, ref $k = +ar mixin #c
     n 'w'=>'',<<''
         my $pin = $s;
         my ($t,@k);
@@ -394,6 +458,7 @@ Shelf: |
         A.J || die "NOJ";
         .
         $T = A.T = {};
+        $G::KA->{"$A"} = $A;
         A.fl = C.c.fl || {};
         sayyl "For A  A.talk: ".wdump 4,[\@Me, $C];
         {
@@ -427,19 +492,22 @@ Shelf: |
         G.drop.recycling->{A.J.id}->{A.am} = $I;
     
     n Act =>'',<<''
-        A.s = shift @{A.N};
-        if (ref A.s eq 'HASH' && A.s.J && A.s.mo && A.s.talk) {
-            $A = A.s;
-            A.mo eq $s || die "A.talk re A mo A.mo.talk notfrom s.talk";
+        my $up = $s;
+        $s = shift @{A.N};
+        if (ref $s eq 'HASH' && s.J && s.mo && s.talk) {
+            $A = $s;
+            A.mo eq $up || die "A.talk re A mo A.mo.talk notfrom up.talk";
             $C = A.C||die"travcno A.talk";
             $T = A.T ||= {};
         }
         else {
-            $A = {%$s};
-            A.mo.ont = $A; # keep
+            $A = {%$up};
+            A.mo.ont = $A;
+            A.s = $s;
             $C = A.C = {};
             $T = A.T = {};
         }
+        say "Zun act ".ki A.s;
         T.oM = [];
         G&An;
         A.t&2;
