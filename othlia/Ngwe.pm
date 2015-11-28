@@ -56,9 +56,10 @@ unshift @k, @got if @got;
 (my $fi = $pin) =~ s/\W/-/g;
 my ($way,$dige);
 if (my $D = $t->{__D}) {
-    say wdump 3, $D;
     $dige = $D->{sc}->{dige} || die "wayzipin wasnt scdige: ".ki$D;
     $way = $D->{c}->{s};
+    $way =~ s/^A\.I\.(\w+) = //s;
+    $way =~ s/}A\.I\S+\n/\n/s if $D->{t} eq 'An'; # redoes, too trouble
 }
 else {
     $way = $G->{way}->{$fi} || die "No way: $fi";
@@ -80,7 +81,7 @@ my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
     !$sub && die "way nicht sub returned: $pin (no error tho)";
     $sub;
 };
-sayre "OKAY: $pin is $dige: $code \n\n\nAND SUB: $sub";
+saygr "$A->{talk}: compiles $pin" if $code;
 $sub->($t,map{$t->{$_}}@k);
 };
 sub won {
@@ -258,7 +259,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: e66c507cc1cd
+        dige: 08f25dc07af2
         eg: Ngwe
       t: w
       "y": 
