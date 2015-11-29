@@ -13,7 +13,7 @@ my $I = $A->{I};
 for my $ik (sort keys %$iii) {
     my $D = $iii->{$ik};
     if (my $nk = $D->{sc}->{nk}) {
-        my $Ce = $I->{nF}->{C};
+        my $Ce = $I->{nF} && $I->{nF}->{C} || $C; # TODO
         die " SDIfC ".wdump 4,[$C, $Ce] if $C ne $Ce;
         next if !exists $C->{$nk};
         if (my $gk = $D->{sc}->{gk}) {
@@ -27,6 +27,7 @@ for my $ik (sort keys %$iii) {
         # acgtsubs can be defined at any cv
         # run themselves if act
         # usu. one receiver (Ci) and the rest scheme
+        # may up Iso personalities as sublingoes to decompress inpatterns.
         die "$D->{t} .act gets... $D->{sc}->{act}" if $D->{sc}->{act} ne '1';
         $dont = 1 if exists $A->{I}->{$D->{t}};
     }
@@ -245,7 +246,7 @@ I:
         args: A,C,G,T,s,iii,x,xrd
         bab: ~
         code: I
-        dige: dadc330fc7d6
+        dige: d99e05d9b92f
         eg: Ise::KnowTime
         l: "#c"
       t: carebowl

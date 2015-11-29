@@ -541,7 +541,7 @@ KnowTime: | # dome props
         for my $ik (sort keys %$iii) {
             my $D = $iii->{$ik};
             if (my $nk = D.sc.nk) {
-                my $Ce = I.nF ? I.nF.C : $C # TODO
+                my $Ce = I.nF && I.nF.C || $C; # TODO
                 die " SDIfC ".wdump 4,[$C, $Ce] if $C ne $Ce;
                 next if !exists $C->{$nk};
                 if (my $gk = D.sc.gk) {
@@ -686,14 +686,15 @@ Motion: |
         }
     
     # carry A through time
-    # tease out the next times off T.Z.$nexttime = $incv|$N
+    # T.Z always for lowest, tease out the next times off T.Z.$nexttime = $incv|$N
     # is N or incv, put things off til all else lo
     n Tz =>'',<<''
         my ($lo) = sort keys %$s;
         my $v = $s->{$lo};
+        $DB::single = 1;
         T.incv = $v if $v ne '1';
-        $v = [I.d&sano ] if ref $v ne $A;
-        push @{A.mo.re->{$lo}||=[]}, @$v;
+        $v = [ I.d&sano , undef ];
+        push @{A.mo.re->{$lo}||=[]}, $v;
         @{T.oM} = ();
     
     # TODO sort by y.i ) s = c
@@ -702,6 +703,7 @@ Motion: |
         if ($lo) {
             my $ay = delete $s->{$lo};
             my @N = map { {AZ=>{$lo=>$_}} } @$ay;
+            $DB::single = 1;
             push @{A.mo.N}, @N;
             saybl "Looping ".@N." to $lo" if A.J.V > 1;
         }
@@ -1084,13 +1086,14 @@ Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
     n AZu =>''=>{s=><<''},{l=>'Motion/oseverato'}
         die 'amany' if keys %$s > 1;
         my ($cv,$ac) = %$s;
-        my ($AA,$CC) = ($ac,ac.C);
-        $T = ac.T||{};
+        $DB::single = 1;
+        my ($AA,$CC) = ref $ac eq 'ARRAY' ? @$ac : ($ac,ac.C);
+        $T = $AA&&AA.T||{};
         my $cov = delete T.incv;
         my $aa = $AA?"AAcv=AA.cv":"NoAA";
         $AA ||= $A; # spawning cone thing
-        I.d&n,$AA,$CC,$G,$T;
         $A = $AA;
+        A.
         # see I.ex, changes A.cv = $vb to avoid A.t fulfilling exited time
         if (A.cv > $cv) {
             #sayre "Double comback A.cv > $cv: CC.t CC.y.cv ";

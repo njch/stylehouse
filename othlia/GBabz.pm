@@ -75,10 +75,11 @@ for my $l (split "\n", $s) {
     $s =~ s/($p->{mwall})(\w*M)(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
 
     # close side ourselves, likely to gobble suro if, etc.
-    $s =~ s/($p->{mwall})(u|n) (.+?);?$/${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'');/smg;
+    $s =~ s/($p->{mwall})(u|n) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'')".($4||';')/smeg;
     #$s =~ s/($p->{mwall})(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
 
     $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
+    $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
     $s =~ s/I\.d\&($p->{oint})/G\&$1/g;
     # lma quack $not->('tag');? from $G->{h}->($A,$C,$G,$T,"pui",$s)
     $s =~ s/($p->{oing}|\w+)\&($p->{oint})(,[^\s;]+)?(;)?/
@@ -182,7 +183,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 83a55720843c
+        dige: c7587146e087
         eg: GBabz
       t: parse_babbl
       "y": 
