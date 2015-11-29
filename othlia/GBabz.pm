@@ -78,7 +78,8 @@ for my $l (split "\n", $s) {
     $s =~ s/($p->{mwall})(u|n) (.+?);?$/${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'');/smg;
     #$s =~ s/($p->{mwall})(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
 
-    $s =~ s/I\.d\&($p->{oint})/G\&$1/sgm;
+    $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
+    $s =~ s/I\.d\&($p->{oint})/G\&$1/g;
     # lma quack $not->('tag');? from $G->{h}->($A,$C,$G,$T,"pui",$s)
     $s =~ s/($p->{oing}|\w+)\&($p->{oint})(,[^\s;]+)?(;)?/
         my ($on,$p,$e,$t) = ($1,$2,$3,$4);
@@ -181,7 +182,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 9932e9bef73c
+        dige: 83a55720843c
         eg: GBabz
       t: parse_babbl
       "y": 

@@ -237,7 +237,6 @@ got: |
         say "Not nothing here";
     
     
-
 gothat: |
     for my $AA (@{A.AAAA}) {
         my @D = map{values%$_} map{values%$_} values %{AA.II};
@@ -278,6 +277,7 @@ gothat: |
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 eel: |
     n KnowTime
+    n Motion
 Ngwe: |
     u allacgts
     
@@ -303,7 +303,6 @@ Ngwe: |
         for (@stack) {
             my $i = -1;
             _.sc.Aref = $1 if _.sc.call =~ s/'(HASH\(\S+\))', (?:'(HASH\(\S+\))', ){3}//;
-            say "Called $1 -- $2";
         }
         saybl "Stack:";
         my $ind = " ";
@@ -440,6 +439,9 @@ Shelf: |
         say "A.talk h :  $s   < C.t" unless C.t =~ /^_/;
         $y->($A,$C,$G,$T,@Me);
     
+    n d =>'',<<''
+        die "USING I->d !".wdump 2, [$s,@Me];
+    
     n A =>''=><<''
         ($A,my$up) = ({},$A);
         A.G = $G; # for wiring from A (G/T/Hypo)
@@ -451,6 +453,8 @@ Shelf: |
         A.C = $C = {};
         (C.c.J, C.c.N, C.c.M) = (@Me);
         ref C.c.N eq 'ARRAY' || die "Not array CcN";
+        my $t = C.c.N->[0];
+        C.c.N = [C.c.N] if defined $t && !ref $t; # C[] -> N[C[]]
         ref C.c.M || delete C.c.M;
         A.N = [@{C.c.N}];
         A.M = [];
@@ -460,7 +464,7 @@ Shelf: |
         $T = A.T = {};
         $G::KA->{"$A"} = $A;
         A.fl = C.c.fl || {};
-        sayyl "For A  A.talk: ".wdump 4,[\@Me, $C];
+        sayyl "For A  A.talk: ".wdump 4,C.c.N;
         {
         my $I = A.I = {};
         %$I = (%$I,%{G.I});
@@ -504,6 +508,7 @@ Shelf: |
             $A = {%$up};
             A.mo.ont = $A;
             A.s = $s;
+            sayyl "A.talk plucks ".ki $s;
             $C = A.C = {};
             $T = A.T = {};
         }
@@ -541,7 +546,7 @@ Shelf: |
         G&loop;
     
     n Sev =>'',<<''
-        $Me[0] ||= [[Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}]];
+        $Me[0] ||= [Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}];
         $Me[1] ||= [];
         ($A,$C,$G,$T) = G&A,'Sev',$s,@Me;
         A.I.scIfs || die "NO scIfs: A.J.name";
@@ -553,15 +558,20 @@ Shelf: |
         while (@{A.N}) { #
             $i++ > 5000 && die "Huge A.talk";
             my ($A,$C,$G,$T) = G&Act,$A;
-            T.not&&next;
-            A.t&6;
-            T.not&&next;
-            G&flywheels;
-            T.not&&next;
-            A.t&78;
-            T.not&&next;
+            for (1) {
+                T.not&&next;
+                A.t&6;
+                T.not&&next;
+                G&flywheels;
+                T.not&&next;
+                A.t&78;
+                T.not&&next;
+            }
+            continue {
+                $DB::single = 1;
+                G&z
+            }
         }
-        continue { I.d&z; }
         A.t&8;
         G&recycle;
         (A.nj) = values %{A.Js} if A.Js && keys %{A.Js} == 1;
@@ -881,7 +891,8 @@ GBabz: |
             $s =~ s/(p.mwall)(u|n) (.+?);?$/${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'');/smg;
             #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
             .
-            $s =~ s/I\.d\&(p.oint)/G\&$1/sgm;
+            $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
+            $s =~ s/I\.d\&(p.oint)/G\&$1/g;
             # lma quack $not->('tag');? from I.d&pui,$s
             $s =~ s/(p.oing|\w+)\&(p.oint)(,[^\s;]+)?(;)?/
                 my ($on,$p,$e,$t) = ($1,$2,$3,$4);

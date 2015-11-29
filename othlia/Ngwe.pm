@@ -32,7 +32,6 @@ if ($stack[-1] =~ /^\s+Mojo::IOLoop::start/) {
 for (@stack) {
     my $i = -1;
     $_->{sc}->{Aref} = $1 if $_->{sc}->{call} =~ s/'(HASH\(\S+\))', (?:'(HASH\(\S+\))', ){3}//;
-    say "Called $1 -- $2";
 }
 saybl "Stack:";
 my $ind = " ";
@@ -315,7 +314,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 4c2d6d4da573
+        dige: 91d4fe19b79a
         eg: Ngwe
       t: sigstackend
       "y": 

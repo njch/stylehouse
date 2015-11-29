@@ -19,6 +19,8 @@ $A->{talk} = ($A->{J}->{le}&&"($A->{J}->{le}->{name})").$A->{J}->{name};
 $A->{C} = $C = {};
 ($C->{c}->{J}, $C->{c}->{N}, $C->{c}->{M}) = (@Me);
 ref $C->{c}->{N} eq 'ARRAY' || die "Not array CcN";
+my $t = $C->{c}->{N}->[0];
+$C->{c}->{N} = [$C->{c}->{N}] if defined $t && !ref $t; # C[] -> N[C[]]
 ref $C->{c}->{M} || delete $C->{c}->{M};
 $A->{N} = [@{$C->{c}->{N}}];
 $A->{M} = [];
@@ -28,7 +30,7 @@ $A->{J} || die "NOJ";
 $T = $A->{T} = {};
 $G::KA->{"$A"} = $A;
 $A->{fl} = $C->{c}->{fl} || {};
-sayyl "For A  $A->{talk}: ".wdump 4,[\@Me, $C];
+sayyl "For A  $A->{talk}: ".wdump 4,$C->{c}->{N};
 {
 my $I = $A->{I} = {};
 %$I = (%$I,%{$G->{I}});
@@ -70,6 +72,7 @@ else {
     $A = {%$up};
     $A->{mo}->{ont} = $A;
     $A->{s} = $s;
+    sayyl "$A->{talk} plucks ".ki $s;
     $C = $A->{C} = {};
     $T = $A->{T} = {};
 }
@@ -94,11 +97,16 @@ $A
 sub Sev {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-$Me[0] ||= [[Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}]];
+$Me[0] ||= [Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}];
 $Me[1] ||= [];
 ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Sev',$s,@Me);
 $A->{I}->{scIfs} || die "NO scIfs: $A->{J}->{name}";
 $G->{h}->($A,$C,$G,$T,"loop");
+};
+sub d {
+my ($A,$C,$G,$T,$s,@Me) = @_;
+my $I = $A->{I};
+die "USING I->d !".wdump 2, [$s,@Me];
 };
 sub h {
 my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -115,15 +123,20 @@ my $i;
 while (@{$A->{N}}) { #
     $i++ > 5000 && die "Huge $A->{talk}";
     my ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"Act",$A);
-    $T->{not}&&next;
-    $A->{t}->("6");
-    $T->{not}&&next;
-    $G->{h}->($A,$C,$G,$T,"flywheels");
-    $T->{not}&&next;
-    $A->{t}->("78");
-    $T->{not}&&next;
+    for (1) {
+        $T->{not}&&next;
+        $A->{t}->("6");
+        $T->{not}&&next;
+        $G->{h}->($A,$C,$G,$T,"flywheels");
+        $T->{not}&&next;
+        $A->{t}->("78");
+        $T->{not}&&next;
+    }
+    continue {
+        $DB::single = 1;
+        $G->{h}->($A,$C,$G,$T,"z")
+    }
 }
-continue { $G->{h}->($A,$C,$G,$T,"z"); }
 $A->{t}->("8");
 $G->{h}->($A,$C,$G,$T,"recycle");
 ($A->{nj}) = values %{$A->{Js}} if $A->{Js} && keys %{$A->{Js}} == 1;
@@ -171,7 +184,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: fae15d7eea4b
+        dige: b42142efe2b0
         eg: Ise::Shelf
       t: A
       "y": 
@@ -184,7 +197,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 84db555bab50
+        dige: 4646f7f8ad17
         eg: Ise::Shelf
       t: Act
       "y": 
@@ -210,9 +223,22 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: fef6ffec4c44
+        dige: 98ecf53400ca
         eg: Ise::Shelf
       t: Sev
+      "y": 
+        cv: '0.1'
+    d: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 9dac59c7fcb5
+        eg: Ise::Shelf
+      t: d
       "y": 
         cv: '0.1'
     h: 
@@ -236,7 +262,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 8e7402648c27
+        dige: 57bcaae0ef33
         eg: Ise::Shelf
       t: loop
       "y": 
