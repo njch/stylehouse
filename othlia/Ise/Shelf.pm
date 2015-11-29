@@ -133,10 +133,10 @@ while (@{$A->{N}}) { #
         $T->{not}&&next;
     }
     continue {
-        $DB::single = 1;
         $G->{h}->($A,$C,$G,$T,"z")
     }
 }
+$A->{cv} = 0.78;
 $A->{t}->("8");
 $G->{h}->($A,$C,$G,$T,"recycle");
 ($A->{nj}) = values %{$A->{Js}} if $A->{Js} && keys %{$A->{Js}} == 1;
@@ -148,7 +148,7 @@ if ($C->{c}->{M}) {
     $A
 }
 elsif ($C->{c}->{J} && $A->{am} eq 'In') {
-    $G->{h}->($A,$C,$G,$T,"Mo",$C->{c}->{J},$A->{M},$C->{c}->{M}||[]);
+    $G->{h}->($A,$C,$G,$T,"m",$C->{c}->{J},$A->{M},$C->{c}->{M}||[]);
 }
 else {
     die "noJMout";
@@ -262,7 +262,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 57bcaae0ef33
+        dige: e6615943dc36
         eg: Ise::Shelf
       t: loop
       "y": 
