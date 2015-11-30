@@ -90,7 +90,7 @@ return \%na
                 LoadFile($f);
             }
             else {
-                die "Wormhole sens nothing: $f";
+                warn "Wormhole sens nothing: $f";
             }
         });
     }

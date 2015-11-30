@@ -209,24 +209,32 @@ waitme: |
         return sayre "waitme already forked";
         exit;
     }
+        
     if (my $pid = fork()) {
         sayyl "FOrked! ,,,," for 1..3;
         waitpid($pid,0);
         saybl "Restart? <";
-        while (<STDIN>) {
-            chomp;
-            J.me = $_;
+        while  (<STDIN>) {
+            my $k = $_;
+            say "__ $k";
+            say "IS: ".wdump 3, $k;
+            $DB::single = 1;
+            die "HERE! $k" unless $0 =~ /greg/;
+            chomp $k;
+            J.me = $k;
             sayyl "OK!";
             Rw goche $n=$1
-            while s/(\d+)//g;
+            while $k =~ s/(\d+)//g;
             Rw goche $n:_
-                for qw'64 8 84 4 9';
+                for qw'1 64 8 84 4 9';
             Rw waitme;
             return;
         }
     }
     else {
+        sayre "Hur";
         G.forked = 1;
+        saybl "ha";
     }
     
 forked: |
@@ -724,6 +732,11 @@ Tarp: |
     n "the J.slow J.fast"=>-pape=>{s=>'mild'=>thumb=>$f};
     
     Mn(f=>''=>$f=>'%dos:flse,op:J/slow,to:1');
+Dishing: |
+    my ($Ta) = map{_.nj}
+    n Tarp
+    
+    sayyl "Dishign: ".wdump 4, Ta.El.Duv.rv;
 flse: | # fusilagery - wants about 2 seconds
     my $r = E.c.hC->[-1];
     if (r.sc.to) {

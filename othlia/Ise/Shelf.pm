@@ -14,7 +14,6 @@ $A->{G} = $G; # for wiring from A (G/T/Hypo)
 $A->{up} = $up;
 $A->{mo} = $A;
 $A->{am} = $s || die "unsame?";
-$A->{talk} = ($A->{J}->{le}&&"($A->{J}->{le}->{name})").$A->{J}->{name};
 
 $A->{C} = $C = {};
 ($C->{c}->{J}, $C->{c}->{N}, $C->{c}->{M}) = (@Me);
@@ -26,29 +25,29 @@ $A->{N} = [@{$C->{c}->{N}}];
 $A->{M} = [];
 $A->{J} = $C->{c}->{J} if $C->{c}->{J};
 $A->{J} || die "NOJ";
+$A->{talk} = ($A->{J}->{le}&&"($A->{J}->{le}->{name})").$A->{J}->{name}."-".$A->{am};
 
 $T = $A->{T} = {};
 $G::KA->{"$A"} = $A;
 $A->{fl} = $C->{c}->{fl} || {};
-sayyl "For A  $A->{talk}: ".wdump 4,$C->{c}->{N};
+#sayyl "For A  $A->{talk}: ".wdump 4,$C->{c}->{N};
 {
 my $I = $A->{I} = {};
 %$I = (%$I,%{$G->{I}});
 my $II = $G->{w}->($A,$C,$G,$T,"collaspII",A=>$A);
 $I->{Ii} = $II->{Ii};
-say "$A->{talk} wants : $II->{Ii}";
 # split from R, dispatches of patches as I.$k = CODE
 # base exuder of self if no Ii resol
 $I->{Ii} = $II->{Ii};
 # throw in from R exact Ii, bits of Ii to I before t gets it
 if (my $re = delete $G->{drop}->{recycling}->{$A->{J}->{id}}->{$A->{am}}) {
-    sayyl "Recyclo $A->{talk} --- $I->{Ii}  (".keys %$I;
     if ($re->{Ii} eq $I->{Ii}) {
         %$I = (%$I,%$re);
         $A->{cv} = 0.1;
+        say "Rec $A->{talk}";
     }
     else {
-        sayre "Recycloped, Diff $I->{Ii}  <--  $re->{Ii}";
+        sayre "Recycloped:  Diff $I->{Ii}  <--  $re->{Ii}";
     }
 }
 $G->{h}->($A,$C,$G,$T,"An");
@@ -66,21 +65,30 @@ if (ref $s eq 'HASH' && $s->{J} && $s->{mo} && $s->{talk}) {
     $A = $s;
     $A->{mo} eq $up || die "$A->{talk} re A mo $A->{mo}->{talk} notfrom $up->{talk}";
     $C = $A->{C}||die"travcno $A->{talk}";
+    keys %$C == 4 || die "$A->{talk} carries wei ".wdump 3, $A;
     $T = $A->{T} ||= {};
+    delete $T->{not};
+    sayyl "Resume $A->{talk}  to $A->{cv}  $T->{not}  with $C->{t}  ";
 }
 else {
     $A = {%$up};
     $A->{mo}->{ont} = $A;
     $A->{s} = $s;
-    sayyl "$A->{talk} plucks ".ki $s;
     $C = $A->{C} = {};
     $T = $A->{T} = {};
 }
-say "Zun act ".ki $A->{s};
 $T->{oM} = [];
 $G->{h}->($A,$C,$G,$T,"An");
 $A->{t}->("2");
-($A,$C,$G,$T)
+if ($T->{isnot}) {
+    sayyl "Whack return";
+    return (undef,undef,undef,{isnot=>1});
+}
+sayre "an2An $T->{not} etc:".ki $_ for $C, $A->{C};
+($C,$T) = ($A->{C},$A->{T});
+$G->{h}->($A,$C,$G,$T,"An");
+sayyl "Am... $T->{not} $A->{cv}  ".ki $A->{C};
+($A,$A->{C},$G,$A->{T})
 };
 sub An {
 my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -112,17 +120,22 @@ sub h {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 my $y = $A->{I}->{$s} || die "No whay named $s on $A->{talk}: ".wdump 2, $A->{I};
-say "$A->{talk} h :  $s   < $C->{t}" unless $C->{t} =~ /^_/;
+$DB::single = 1 if $s eq 'J_3212';
+say "$A->{talk} h :  $s   < $C->{t}" unless $C->{t} =~ /^_/ || !$A->{J} || $A->{J}->{V} < 2;
 $y->($A,$C,$G,$T,@Me);
 };
 sub loop {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 my $i;
-@{$A->{N}}||die"nois".wdump[$C,$A];
+@{$A->{N}}||die"nois".wdump(5, $C).wdump 2,$A;
 while (@{$A->{N}}) { #
     $i++ > 5000 && die "Huge $A->{talk}";
     my ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"Act",$A);
+    next if delete $T->{isnot};
+    sayyl "Am...$T->{not} $A->{cv}  ".ki $C;
+    die wdump 3, [ACC=>diff=>$A->{C},$C] if $C ne $A->{C};
+    sayre "AT!T" if $A->{T} ne $T;
     for (1) {
         $T->{not}&&next;
         $A->{t}->("6");
@@ -148,7 +161,7 @@ if ($C->{c}->{M}) {
     $A
 }
 elsif ($C->{c}->{J} && $A->{am} eq 'In') {
-    $G->{h}->($A,$C,$G,$T,"m",$C->{c}->{J},$A->{M},$C->{c}->{M}||[]);
+    @{$A->{M}} && $G->{h}->($A,$C,$G,$T,"m",$C->{c}->{J},$A->{M},$C->{c}->{M}||[]);
 }
 else {
     die "noJMout";
@@ -184,7 +197,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: b42142efe2b0
+        dige: 1b52b9ac18b1
         eg: Ise::Shelf
       t: A
       "y": 
@@ -197,7 +210,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 4646f7f8ad17
+        dige: e357090d3fa0
         eg: Ise::Shelf
       t: Act
       "y": 
@@ -249,7 +262,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: e54d2b2599b9
+        dige: 3cc63ee77c43
         eg: Ise::Shelf
       t: h
       "y": 
@@ -262,7 +275,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: e6615943dc36
+        dige: 84dc0297a2e2
         eg: Ise::Shelf
       t: loop
       "y": 

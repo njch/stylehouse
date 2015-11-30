@@ -46,16 +46,18 @@ Two: | # make J (Jto)
     # Viu
     my $eu = sub { J.uS = 1 };
     my $unu = sub {
+        my ($A) = @_;
+        A.mo && A.talk || die "Not A? ".wdump 2, $A;
         J.uS || return;
         my $y = J.oy;
         Rw Jamroot $J $y if y.at;
-        Rw uCon;
+        Rw uCon $J $A;
         J.uS = 0;
     };
     # 6 shul start u pha
     J.u = sub {
         my ($A,$C,$G,$T,@M) = @_;
-       pop @M while $M[-1] eq '';
+       pop @M while @M && $M[-1] eq '';
        $eu->($A);
        my $J = Rw Elj $J qq;
        say "uIn to A.talk : @M";
@@ -63,14 +65,14 @@ Two: | # make J (Jto)
     };
     J.n = sub {
         my ($A,$C,$G,$T,@M) = @_;
-       pop @M while $M[-1] eq '';
+       pop @M while @M && $M[-1] eq '';
        $unu->($A);
        say "In to A.talk : @M";
        G&n,$J,\@M;
     };
     J.m = J.M = sub {
         my ($A,$C,$G,$T,@M) = @_;
-       pop @M while $M[-1] eq '';
+       pop @M while @M && $M[-1] eq '';
        $unu->($A);
        my $M = shift @M;
        say "M to A.talk : @M";
@@ -92,6 +94,58 @@ Twin: |
     G&n,@nar;
 Twev: |
     G&Sev,$J;
+TwoCon: |
+    my $qq = Rw Elj $J qq;
+    # low frequencies atop high frequencies
+    # travels/foli/foldout vs in-pin u..n..u..n..s
+    if (my $los = qq.A.los) {
+        my $Yb = qq.A.los.lbbst; # last qq bb (post-this)
+        %{qq.bb} = (
+            %{qq.A.keep.bb||{}}, # from beginning of time
+            %{qq.A.hqq.bb||{}}, # 6y inject before pin
+            %{los.bb||{}}, # non-first iterration of uing
+        );
+        los.end->();
+    }
+    
+    
+    Rw Noodle $J:qq;
+    
+    my $oo = Rw Elj $J oo;
+    
+    my $Y = qq.El.Duv || die "No Duvon ".wdump 3, $qq; # really V
+    my $rv = Y.rv;
+    if (@{rv.sc}) {
+        sayre "SLIPPING SC, dropping qq past" for 1..3;
+        J.on_usc->() if J.on_usc;
+        snooze;
+        Rw UnPreDuv $J:qq;
+        return Rw uCon;
+    }
+    
+    if (J.A.Ii eq rv.i) {
+        say "uCon ---- A.talk: ".F_delta() if J.V;
+    }
+    else {
+        my $N = [@{rv.c}];
+
+        J.A.Ii ?
+            J.A.Ii ne rv.i ?
+                sayre "A.talk: Diff o J.A.Ii -> rv.i"
+              : return J.V && say "A.talk: Same J.A.Ii"
+          : J.V && sayre "A.talk: New uCon ! rv.i";
+
+        Rw uThree $A $J $Y $qq $oo $rv $N;
+
+        say "uCon ch: J.name: ".F_delta() if J.V;
+    }
+    if (J.A.I.U) {
+        Rw In $J $t=U;
+    }
+    qq.A.los = Rw pha $J:qq los;
+    qq.A.los.lbbst = {%{qq.bb}};
+    #losI.d&pha,los;
+    
 Jtt: | # Jto
     my $J;
     J.id = mkuid;

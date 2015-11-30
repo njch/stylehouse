@@ -146,7 +146,7 @@ my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
     !$sub && die "way nicht sub returned: $pin (no error tho)";
     $sub;
 };
-say "Way $A->{talk} $pin" unless $pin =~ /^_/;
+#say "Way $A->{talk} $pin" unless $pin =~ /^_/;
 if ($D && !$D->{sc}->{subpeel}) {
     return $sub;
 }
@@ -157,7 +157,6 @@ my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 my $wast = $C->{t};
 $C->{t} =~ s/\W//sg;
-sayyl "Changed $wast --> $C->{t}" if $C->{t} ne $wast;
 my $ind = "";
 
 if ($C->{sc}->{acgt}) {
@@ -327,7 +326,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 51eadab920c5
+        dige: 312cf5cbaf0d
         eg: Ngwe
       t: w
       "y": 
@@ -340,7 +339,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: bbbf015083c6
+        dige: 3aa14dcacf23
         eg: Ngwe
       t: won
       "y": 

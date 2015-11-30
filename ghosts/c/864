@@ -78,13 +78,13 @@ pi/thumb: |
          sayyl " thumbnail++$s";
          my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
          if (!-d $thd) {
-             run 'mkdir', '-p', $thd;
+             `mkdir -p $thd`;
          }
          if ($u =~ /(mov|avi|mp4)$/i) {
-             run 'ffmpegthumbnailer -s 420 -t 20% -i '.$u.' -o '.$th
+             `ffmpegthumbnailer -s 420 -t 20% -i $u -o $th`
          }
          else {
-             run 'convert', $u, '-thumbnail','500x500', $th
+             `convert $u -thumbnail 500x500 $th`
          }
      }
     C.sc.src = $thl if $thl;

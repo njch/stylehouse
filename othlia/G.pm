@@ -185,7 +185,7 @@ if (!ref $ar || "$ar" !~ /(HASH)/) {
     $s =~ s/\n/\\n/g;
     return slim(30,$s);
 }
-#
+return ref $ar if ref $ar =~ /^[A-Z][a-z]/;
 my $lim = 150 - (150 * ($d / 3));
 my @keys = sort keys %$ar;
 @keys = ('name') if $ar->{name} && $ar->{bb};

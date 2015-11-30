@@ -93,7 +93,7 @@ Rune: |
     map {
         my ($k,$f) = split '=';
         G.way->{$k} = G.way->{$f};
-    } qw'Jto=Two In=Twin Modi=Twin Sev=Twev';
+    } qw'Jto=Two In=Twin Modi=Twin Sev=Twev uCon=TwoCon';
     
     Rw wayt $d=0.001 $p=Top;
 Top: |
@@ -146,7 +146,7 @@ Loading: |
     for my $k (sort @l) {
         my $f = G.Tfor->{$k} || "w/$k";
         my $s = -s $f;
-        $s || die "Not $f";
+        $s || sayre("Juynk in tied hash? Not $f") && next;
         G.Tt->{$k} eq $s && next;
         sayyl "Loading: $k";
         G.Tt->{$k} = $s;

@@ -77,6 +77,9 @@ for my $l (split "\n", $s) {
     # close side ourselves, likely to gobble suro if, etc.
     $s =~ s/($p->{mwall})(u|n) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'')".($4||';')/smeg;
     #$s =~ s/($p->{mwall})(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
+    $s =~ s/\$J->\{m\}->\(\$M,/J\.m->(\$A,\$C,\$G,\$T,\$M,/g;
+    $s =~ s/\$J->\{n\}->\(\$J,/J\.n->(\$A,\$C,\$G,\$T,/g;
+    $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g;
 
     $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
     $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
@@ -146,7 +149,7 @@ for my $l (split "\n", $s) {
     }
 
     # $sc->{k} -> $sc->{k};
-    $s =~ s/([A-Z-a-z_]\w*)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
+    $s =~ s/([A-Za-z_]\w*)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
     # 
     $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
     #
@@ -183,7 +186,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: c7587146e087
+        dige: 9f4ec0a09868
         eg: GBabz
       t: parse_babbl
       "y": 

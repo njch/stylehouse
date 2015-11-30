@@ -494,7 +494,7 @@ KnowTime: | # dome props
             .
             # our  osc (stay in K per Subtle ness);
             my @iz = grep {
-                $aim->{$_} || (aim.I && (A.Iso->{$_} || I.also->{$_}))
+                $aim->{$_} || (aim.I && A.Iso->{$_})
             } sort keys %$is;
             next if !@iz;
             .
@@ -525,6 +525,7 @@ KnowTime: | # dome props
             $c == 0.1 ? saygr $se : say $se if $se;
             .
             my $o;
+            o.talk = $talk;
             (o.vc,o.vb) = ($vc,$vb);
             I.d&exood,$o,$x,$xrd;
             ($vc,$vb) = (o.vc,o.vb);
@@ -541,8 +542,7 @@ KnowTime: | # dome props
         for my $ik (sort keys %$iii) {
             my $D = $iii->{$ik};
             if (my $nk = D.sc.nk) {
-                my $Ce = I.nF && I.nF.C || $C; # TODO
-                die " SDIfC ".wdump 4,[$C, $Ce] if $C ne $Ce;
+                die "AC-C confusio".wdump 4,[A.C,$C] if A.C ne $C;
                 next if !exists $C->{$nk};
                 if (my $gk = D.sc.gk) {
                     next if !exists $C->{$nk}->{$gk};
@@ -691,7 +691,6 @@ Motion: |
     n Tz =>'',<<''
         my ($lo) = sort keys %$s;
         my $v = $s->{$lo};
-        $DB::single = 1;
         T.incv = $v if $v ne '1';
         $v = [ I.d&sano , undef ];
         push @{A.mo.re->{$lo}||=[]}, $v;
@@ -703,7 +702,6 @@ Motion: |
         if ($lo) {
             my $ay = delete $s->{$lo};
             my @N = map { {AZ=>{$lo=>$_}} } @$ay;
-            $DB::single = 1;
             push @{A.mo.N}, @N;
             saybl "Looping ".@N." to $lo" if A.J.V > 1;
         }
@@ -765,7 +763,6 @@ SlideEa: | # liney schemery
             }
         }
     
-    J.VV.N = 1;
     n Ci =>12=><<'','%act,code:I 12'
         !ref $s ? I.d&string,$s
         :
@@ -1073,7 +1070,7 @@ C: |
 Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
     u allacgts
     
-    n servehash =>''=>{s=><<''}
+    n servehash =>'',<<''
           s.AZ ? I.d&AZu,s.AZ
         : s.MZ ? I.d&MZu,s.MZ
         : s.EZ ? I.d&EZu,s.EZ
@@ -1086,21 +1083,22 @@ Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
     n AZu =>''=>{s=><<''},{l=>'Motion/oseverato'}
         die 'amany' if keys %$s > 1;
         my ($cv,$ac) = %$s;
-        $DB::single = 1;
         my ($AA,$CC) = ref $ac eq 'ARRAY' ? @$ac : ($ac,ac.C);
-        $T = $AA&&AA.T||{};
-        my $cov = delete T.incv;
-        my $aa = $AA?"AAcv=AA.cv":"NoAA";
-        $AA ||= $A; # spawning cone thing
-        $A = $AA;
-        A.
-        # see I.ex, changes A.cv = $vb to avoid A.t fulfilling exited time
-        if (A.cv > $cv) {
-            #sayre "Double comback A.cv > $cv: CC.t CC.y.cv ";
-            #return T.not = 1;
+        $AA || $CC || die "AZ NO A or C: ".wdump 3, $s;
+        $AA && $CC && die "AZ toomuch A or C: ".wdump 3, $s;
+        my $cov;
+        if ($AA) {
+            $A = $AA;
+            my $Te = A.T;
+            $cov = delete Te.incv;
+            A.cv = $cov || $cv;
+            unshift @{A.mo.N}, $A;
+            return T.whack = T.isnot = 1;
+        }
+        else {
+            A.C = $CC;
         }
         A.cv = $cov || $cv;
-        I.d&An;
         T.whack = 1;
     
     n MZu =>''=>{s=><<''}
