@@ -30,7 +30,6 @@ $A->{talk} = ($A->{J}->{le}&&"($A->{J}->{le}->{name})").$A->{J}->{name}."-".$A->
 $T = $A->{T} = {};
 $G::KA->{"$A"} = $A;
 $A->{fl} = $C->{c}->{fl} || {};
-#sayyl "For A  $A->{talk}: ".wdump 4,$C->{c}->{N};
 {
 my $I = $A->{I} = {};
 %$I = (%$I,%{$G->{I}});
@@ -44,7 +43,6 @@ if (my $re = delete $G->{drop}->{recycling}->{$A->{J}->{id}}->{$A->{am}}) {
     if ($re->{Ii} eq $I->{Ii}) {
         %$I = (%$I,%$re);
         $A->{cv} = 0.1;
-        say "Rec $A->{talk}";
     }
     else {
         sayre "Recycloped:  Diff $I->{Ii}  <--  $re->{Ii}";
@@ -67,8 +65,7 @@ if (ref $s eq 'HASH' && $s->{J} && $s->{mo} && $s->{talk}) {
     $C = $A->{C}||die"travcno $A->{talk}";
     keys %$C == 4 || die "$A->{talk} carries wei ".wdump 3, $A;
     $T = $A->{T} ||= {};
-    delete $T->{not};
-    sayyl "Resume $A->{talk}  to $A->{cv}  $T->{not}  with $C->{t}  ";
+    saybl "Resume has TNOT: $A->{talk} to $A->{cv}   with $C->{t}" if delete $T->{not};
 }
 else {
     $A = {%$up};
@@ -79,15 +76,12 @@ else {
 }
 $T->{oM} = [];
 $G->{h}->($A,$C,$G,$T,"An");
-$A->{t}->("2");
-if ($T->{isnot}) {
-    sayyl "Whack return";
-    return (undef,undef,undef,{isnot=>1});
+if ($A->{cv} < 0.2) {
+    $A->{t}->("2");
+    return (undef,undef,undef,{isnot=>1}) if $T->{isnot};
+    ($C,$T) = ($A->{C},$A->{T});
+    $G->{h}->($A,$C,$G,$T,"An");
 }
-sayre "an2An $T->{not} etc:".ki $_ for $C, $A->{C};
-($C,$T) = ($A->{C},$A->{T});
-$G->{h}->($A,$C,$G,$T,"An");
-sayyl "Am... $T->{not} $A->{cv}  ".ki $A->{C};
 ($A,$A->{C},$G,$A->{T})
 };
 sub An {
@@ -120,7 +114,6 @@ sub h {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 my $y = $A->{I}->{$s} || die "No whay named $s on $A->{talk}: ".wdump 2, $A->{I};
-$DB::single = 1 if $s eq 'J_3212';
 say "$A->{talk} h :  $s   < $C->{t}" unless $C->{t} =~ /^_/ || !$A->{J} || $A->{J}->{V} < 2;
 $y->($A,$C,$G,$T,@Me);
 };
@@ -132,10 +125,7 @@ my $i;
 while (@{$A->{N}}) { #
     $i++ > 5000 && die "Huge $A->{talk}";
     my ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"Act",$A);
-    next if delete $T->{isnot};
-    sayyl "Am...$T->{not} $A->{cv}  ".ki $C;
-    die wdump 3, [ACC=>diff=>$A->{C},$C] if $C ne $A->{C};
-    sayre "AT!T" if $A->{T} ne $T;
+    next if delete $T->{isnot}; # zless
     for (1) {
         $T->{not}&&next;
         $A->{t}->("6");
@@ -197,7 +187,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 1b52b9ac18b1
+        dige: f2a98b6dd215
         eg: Ise::Shelf
       t: A
       "y": 
@@ -210,7 +200,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: e357090d3fa0
+        dige: c929109024ff
         eg: Ise::Shelf
       t: Act
       "y": 
@@ -262,7 +252,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 3cc63ee77c43
+        dige: abeb4e80b5dc
         eg: Ise::Shelf
       t: h
       "y": 
@@ -275,7 +265,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 84dc0297a2e2
+        dige: cb154c588283
         eg: Ise::Shelf
       t: loop
       "y": 

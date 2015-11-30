@@ -80,9 +80,9 @@ for my $l (split "\n", $s) {
     $s =~ s/\$J->\{m\}->\(\$M,/J\.m->(\$A,\$C,\$G,\$T,\$M,/g;
     $s =~ s/\$J->\{n\}->\(\$J,/J\.n->(\$A,\$C,\$G,\$T,/g;
     $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g;
-
     $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
     $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
+
     $s =~ s/I\.d\&($p->{oint})/G\&$1/g;
     # lma quack $not->('tag');? from $G->{h}->($A,$C,$G,$T,"pui",$s)
     $s =~ s/($p->{oing}|\w+)\&($p->{oint})(,[^\s;]+)?(;)?/
@@ -186,7 +186,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 9f4ec0a09868
+        dige: aedd1a0b8a12
         eg: GBabz
       t: parse_babbl
       "y": 

@@ -95,7 +95,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: |
-    my @for = qw'GBabz Shelf'; # Tides GBabz Ngwe              
+    my @for = qw' Ngwe Shelf'; # Tides GBabz               
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -273,7 +273,8 @@ gothat: |
         $G->{$sn} = G.I->{$sn} || die "No $sn from G I";
     }
     $SIG{__DIE__} = G.I.sigstackend || die "NO sigstackend";
-    G.IIII = [map{'G/T/'.$_}qw'H/Boat H/Rest K/eel'];
+    $SIG{__WARN__} = G.I.sigstackwarn || die "NO sigstackwarn";
+    G.IIII = [map{'G/T/'.$_}qw'H/Boat H/Rest Chang K/eel'];
     
     G&init;
     
@@ -292,6 +293,11 @@ Ngwe: |
         G.T = G&T,'w',G.T||{};
         G.way = G&T,'w/way',{nonyam=>1};
         
+    n sigstackwarn =>''=><<'','%args:1'
+        my ($s) = @_;
+        return if $s =~ /Deep recursion on subroutine/
+            || $s =~ /masks earlier declaration in same/;
+        warn "Warndg: $s";
         
     n sigstackend =>''=><<'','%args:1'
         my $s = $@;
@@ -418,6 +424,7 @@ Ngwe: |
             }
             $code = G&won;
             $@ && die ":BEFORE $pin www $@";
+            $SIG{__WARN__} = G.I.sigstackwarn || die "NO sigstackwarn";
             my $sub = G.airlock->($code);
             $@ && sayre "DED:\n".$code;
             $@ && die "way nicht compile: $pin:\n$@";
@@ -484,7 +491,6 @@ Shelf: |
             if (re.Ii eq I.Ii) {
                 %$I = (%$I,%$re);
                 A.cv = 0.1;
-                say "Rec A.talk";
             }
             else {
                 sayre "Recycloped:  Diff I.Ii  <--  re.Ii";
@@ -509,8 +515,7 @@ Shelf: |
             $C = A.C||die"travcno A.talk";
             keys %$C == 4 || die "A.talk carries wei ".wdump 3, $A;
             $T = A.T ||= {};
-            delete T.not;
-            sayyl "Resume A.talk  to A.cv  T.not  with C.t  ";
+            saybl "Resume has TNOT: A.talk to A.cv   with C.t" if delete T.not;
         }
         else {
             $A = {%$up};
@@ -521,10 +526,12 @@ Shelf: |
         }
         T.oM = [];
         G&An;
-        A.t&2;
-        return (undef,undef,undef,{isnot=>1}) if T.isnot;
-        ($C,$T) = (A.C,A.T);
-        G&An;
+        if (A.cv < 0.2) {
+            A.t&2;
+            return (undef,undef,undef,{isnot=>1}) if T.isnot;
+            ($C,$T) = (A.C,A.T);
+            G&An;
+        }
         ($A,A.C,$G,A.T)
     
     n An =>101,<<''
@@ -905,7 +912,7 @@ GBabz: |
             $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g;
             $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
             $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
-            
+            .
             $s =~ s/I\.d\&(p.oint)/G\&$1/g;
             # lma quack $not->('tag');? from I.d&pui,$s
             $s =~ s/(p.oing|\w+)\&(p.oint)(,[^\s;]+)?(;)?/

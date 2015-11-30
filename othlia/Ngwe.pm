@@ -86,6 +86,12 @@ for (@stack) {
     $le = $_;
 }
 };
+sub sigstackwarn {
+my ($s) = @_;
+return if $s =~ /Deep recursion on subroutine/
+    || $s =~ /masks earlier declaration in same/;
+warn "Warndg: $s";
+};
 sub w {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
@@ -140,6 +146,7 @@ my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
     }
     $code = $G->{h}->($A,$C,$G,$T,"won");
     $@ && die ":BEFORE $pin www $@";
+    $SIG{__WARN__} = $G->{I}->{sigstackwarn} || die "NO sigstackwarn";
     my $sub = $G->{airlock}->($code);
     $@ && sayre "DED:\n".$code;
     $@ && die "way nicht compile: $pin:\n$@";
@@ -318,6 +325,19 @@ I:
       t: sigstackend
       "y": 
         cv: '0.1'
+    sigstackwarn: 
+      c: 
+        from: Ngwe
+      sc: 
+        acgt: s
+        args: 1
+        bab: ~
+        code: I
+        dige: 4d927cd17c44
+        eg: Ngwe
+      t: sigstackwarn
+      "y": 
+        cv: '0.1'
     w: 
       c: 
         from: Ngwe
@@ -326,7 +346,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 312cf5cbaf0d
+        dige: a9554cbe8e6a
         eg: Ngwe
       t: w
       "y": 
