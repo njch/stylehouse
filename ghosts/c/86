@@ -10,13 +10,14 @@ samv: |
     if ($neg) {
         $scalar = -$scalar;
     }
-    my $d = (shift) || 4;
+    my $d = 4;
     if ($scalar == 0) {
         return "0s";
     }
     my $quanta = exp(log($scalar)-2.3025851*$d);
     my $rem = $scalar+0;
     my $rv = "";
+    say "$d   means $quanta";
     for my $i (0..@{G.samv}) {
            my $unit = G.samv->[$i];
         if ($rv or $unit->[1] <= $rem ) {
@@ -31,7 +32,8 @@ samv: |
            }
            elsif (defined $unit->[2] and !$unit->[2]) {
                # stop at seconds
-               my $prec = ceil(-log($quanta)/log(10)-1.01);
+               $DB::single = 1;
+               my $prec = ceil(-log($quanta)/log(10)-1.010000001);
                if ( $prec >= 1 ) {
                        $rv .= sprintf("%.${prec}f", $rem).$unit->[0];
                }
