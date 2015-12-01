@@ -13,8 +13,7 @@ my $I = $A->{I};
 for my $ik (sort keys %$iii) {
     my $D = $iii->{$ik};
     if (my $nk = $D->{sc}->{nk}) {
-        my $Ce = $I->{nF} && $I->{nF}->{C} || $C; # TODO
-        die " SDIfC ".wdump 4,[$C, $Ce] if $C ne $Ce;
+        die "AC-C confusio".wdump 4,[$A->{C},$C] if $A->{C} ne $C;
         next if !exists $C->{$nk};
         if (my $gk = $D->{sc}->{gk}) {
             next if !exists $C->{$nk}->{$gk};
@@ -30,15 +29,22 @@ for my $ik (sort keys %$iii) {
         # may up Iso personalities as sublingoes to decompress inpatterns.
         die "$D->{t} .act gets... $D->{sc}->{act}" if $D->{sc}->{act} ne '1';
         $dont = 1 if exists $A->{I}->{$D->{t}};
+        if ($dont) {
+            my $Ige = $A->{I}->{$D->{t}."_dige"};
+            if ($Ige ne $D->{sc}->{dige}) {
+                $dont = 0;
+            }
+        }
     }
     if (!$dont && $D->{sc}->{eg}) {
         $dont = $G->{h}->($A,$C,$G,$T,"robeg",$D);
     }
-    # the $D->{s} should be perl expecting ACGT (which become robes to rob)
+    # the $D->{s} should be perl expecting ACGT (which become robes to rob) z
     if (!$dont) {
         my $paw = join"_",'',$I->{k},$I->{cv},$D->{t};
         $paw =~ s/\W//g;
         $A->{I}->{$D->{t}} = $G->{w}->($A,$C,$G,$T,"$paw",A=>$A,C=>$C,G=>$G,T=>$T,__D=>$D);
+        $A->{I}->{$D->{t}."_dige"} = $D->{sc}->{dige};
     }
     # most tiny ticks
     # this ind is all flywheel
@@ -102,7 +108,7 @@ for my $vc (sort keys %$yv) {
 
     # our  osc (stay in K per Subtle ness);
     my @iz = grep {
-        $aim->{$_} || ($aim->{I} && ($A->{Iso}->{$_} || $I->{also}->{$_}))
+        $aim->{$_} || ($aim->{I} && $A->{Iso}->{$_})
     } sort keys %$is;
     next if !@iz;
 
@@ -133,6 +139,7 @@ for my $vc (sort keys %$yv) {
     $c == 0.1 ? saygr $se : say $se if $se;
 
     my $o;
+    $o->{talk} = $talk;
     ($o->{vc},$o->{vb}) = ($vc,$vb);
     $G->{h}->($A,$C,$G,$T,"exood",$o,$x,$xrd);
     ($vc,$vb) = ($o->{vc},$o->{vb});
@@ -188,7 +195,6 @@ $av = 0+("0.".$av) if $av;
 die "K$K cv$cv" unless $K && $cv;
 my $c = 0+("0.".$cv);
 my $Av = $av || $A->{cv};
-# adapt to much  mergey       extendo  rubble
 my $i = $G->{w}->($A,$C,$G,$T,"collaspII",A=>$A);
 die'difAvcol' if $Av ne ($av || $A->{cv});
 #
@@ -246,7 +252,7 @@ I:
         args: A,C,G,T,s,iii,x,xrd
         bab: ~
         code: I
-        dige: d99e05d9b92f
+        dige: e18fb8040929
         eg: Ise::KnowTime
         l: "#c"
       t: carebowl
@@ -260,7 +266,7 @@ I:
         args: A,C,G,T,i,K,cv,av
         bab: ~
         code: I
-        dige: 3b238778fb08
+        dige: 01724eaf6e09
         eg: Ise::KnowTime
         l: "#c"
       t: ex
@@ -288,7 +294,7 @@ I:
         args: A,C,G,T,K,cv,av
         bab: ~
         code: I
-        dige: 96476ca07e5d
+        dige: 5cf6ca974ebf
         eg: Ise::KnowTime
         nois: "#c"
       t: t

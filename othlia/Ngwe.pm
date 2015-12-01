@@ -7,157 +7,162 @@ use G;
 our $A = {};
 
 sub airlock {
-eval shift
+    eval shift
 };
 sub init {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-$G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T}||{});
-$G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way',{nonyam=>1});
+    $G->{T} = $G->{h}->($A,$C,$G,$T,"T",'w',$G->{T}||{});
+    $G->{way} = $G->{h}->($A,$C,$G,$T,"T",'w/way',{nonyam=>1});
 };
 sub sigstackend {
-my $s = $@;
-local $@;
-eval { G::confess( '' ) };
-my @stack = split m/\n/, $@;
-shift @stack for 1..2;
-if ($stack[-1] =~ /^\s+Mojo::IOLoop::start/) {
-    pop @stack until $stack[-1] !~ /Mojo|eval/;
-}
-@stack = map{[$_, /^\s*(?:eval \{\.\.\.\} |([^\(\s]+)::([^\s\(]+?)\((.+)\) )called at (\S+|\(eval \S+\)) line (\d+)$/]} @stack;
-@stack = map{[$_->[2],'',{l=>$_},{pack=>$_->[1],call=>$_->[3],file=>$_->[4],line=>$_->[5]}]}@stack;
-@stack = map{{t=>$_->[0],y=>{},c=>$_->[2],sc=>$_->[3]}}@stack;
-#s/\t/  /g for @stackend;
-# write on the train thats about to derail
-for (@stack) {
-    my $i = -1;
-    $_->{sc}->{Aref} = $1 if $_->{sc}->{call} =~ s/'(HASH\(\S+\))', (?:'(HASH\(\S+\))', ){3}//;
-}
-saybl "Stack:";
-my $ind = " ";
-my $le;
-my $know;
-$know->{h}->{'Ise::Shelf'} = 1;
-my $KnowA = $G::KA;
-sayyl wdump 1, $KnowA;
-@stack = reverse @stack;
-for (@stack) {
-    my $sc = {%{$_->{sc}}};
-    my $called = delete $sc->{call};
-    $called =~ s/'((?:(.)(ASH|RRAY)|(\S+))\(\S+\))'/$2||$4/seg;
-    my $file = delete $sc->{file};
-    $file =~ s/^$main::Bin\///;
-    $file =~ s/^othlia\/// && $file =~ s/\//::/s && $file =~ s/\.pm$//;
-    my $pack = delete $sc->{pack};
-    my $fi = join "/", split '::', $pack;
-    if ($file =~ /$fi\.pm$/) {
-        $file = $pack;
-        undef $pack;
+    my $s = $@;
+    local $@;
+    eval { G::confess( '' ) };
+    my @stack = split m/\n/, $@;
+    shift @stack for 1..2;
+    if ($stack[-1] =~ /^\s+Mojo::IOLoop::start/) {
+        pop @stack until $stack[-1] !~ /Mojo|eval/;
     }
-    my $line = delete $sc->{line};
-    my $mayknow = delete $sc->{Aref};
-    my $Ano = $KnowA->{$mayknow} if $mayknow;
-    my $tal = $Ano->{talk} if $Ano;
-    $_->{c}->{tal} = $tal;
-    if ($know->{$_->{t}}->{$_->{sc}->{pack}}) {
-        $file = "<";
-        undef $pack;
-        $_->{sc}->{waspack} = $le->{sc}->{pack};
+    @stack = map{[$_, /^\s*(?:eval \{\.\.\.\} |([^\(\s]+)::([^\s\(]+?)\((.+)\) )called at (\S+|\(eval \S+\)) line (\d+)$/]} @stack;
+    @stack = map{[$_->[2],'',{l=>$_},{pack=>$_->[1],call=>$_->[3],file=>$_->[4],line=>$_->[5]}]}@stack;
+    @stack = map{{t=>$_->[0],y=>{},c=>$_->[2],sc=>$_->[3]}}@stack;
+    #s/\t/  /g for @stackend;
+    # write on the train thats about to derail
+    for (@stack) {
+        my $i = -1;
+        $_->{sc}->{Aref} = $1 if $_->{sc}->{call} =~ s/'(HASH\(\S+\))', (?:'(HASH\(\S+\))', ){3}//;
     }
-    if ($le) {
-        undef $tal if $tal eq $le->{c}->{tal};
-        $ind .= " " if $_->{sc}->{pack} ne $le->{sc}->{pack} &&
-            !$le->{sc}->{waspack} || $le->{sc}->{waspack} ne $_->{sc}->{pack};
-        undef $file if $file eq $le->{sc}->{pack} || $file eq $le->{sc}->{waspack};
-        undef $pack if $pack eq $le->{sc}->{pack};
+    saybl "Stack:";
+    my $ind = " ";
+    my $le;
+    my $know;
+    $know->{h}->{'Ise::Shelf'} = 1;
+    my $KnowA = $G::KA;
+    @stack = reverse @stack;
+    my @sum;
+    push @sum, shift @stack while @stack > 10;
+    my @fo;
+    unshift @stack, grep { push @fo, $_; $_->{t} =~ 'w' || $_->{t} eq 'h' && $_->{sc}->{call} =~ /^'loop'/
+        || @fo > 2 && $fo[-2]->{t} eq 'h' && $fo[-2]->{sc}->{call} =~ /^'exood'/}
+        @sum;
+    for (@stack) {
+        my $sc = {%{$_->{sc}}};
+        my $called = delete $sc->{call};
+        $called =~ s/'((?:(.)(ASH|RRAY)|(\S+))\(\S+\))'/$2||$4/seg;
+        my $file = delete $sc->{file};
+        $file =~ s/^$main::Bin\///;
+        $file =~ s/^othlia\/// && $file =~ s/\//::/s && $file =~ s/\.pm$//;
+        my $pack = delete $sc->{pack};
+        my $fi = join "/", split '::', $pack;
+        if ($file =~ /$fi\.pm$/) {
+            $file = $pack;
+            undef $pack;
+        }
+        my $line = delete $sc->{line};
+        my $mayknow = delete $sc->{Aref};
+        my $Ano = $KnowA->{$mayknow} if $mayknow;
+        my $tal = $Ano->{talk} if $Ano;
+        $_->{c}->{tal} = $tal;
+        if ($know->{$_->{t}}->{$_->{sc}->{pack}}) {
+            $file = "<";
+            undef $pack;
+            $_->{sc}->{waspack} = $le->{sc}->{pack};
+        }
+        if ($le) {
+            undef $tal if $tal eq $le->{c}->{tal};
+            $ind .= " " if $_->{sc}->{pack} ne $le->{sc}->{pack} &&
+                !$le->{sc}->{waspack} || $le->{sc}->{waspack} ne $_->{sc}->{pack};
+            undef $file if $file eq $le->{sc}->{pack} || $file eq $le->{sc}->{waspack};
+            undef $pack if $pack eq $le->{sc}->{pack};
+        }
+        if (!$file && $pack) {
+            $file = $pack;
+            undef $pack;
+        }
+        if ($file =~ /^\(eval (\d+)/) {
+            $file = ($pack&&"$pack > ")."?".$1;
+            undef $pack;
+        }
+        $_->{t} = '?' if $_->{t} eq '__ANON__';
+        $tal = "$tal via" if $tal && $pack;
+        say " ".$ind."$_->{t}\t$file :$line\t\t $called\t\t$tal $pack   ".ki($sc);
+        #
+        $le = $_;
     }
-    if (!$file && $pack) {
-        $file = $pack;
-        undef $pack;
-    }
-    if ($file =~ /^\(eval (\d+)/) {
-        $file = ($pack&&"$pack > ")."?".$1;
-        undef $pack;
-    }
-    $_->{t} = '?' if $_->{t} eq '__ANON__';
-    $tal = "$tal via" if $tal && $pack;
-    say " ".$ind."$_->{t}\t$file :$line\t\t $called\t\t$tal $pack   ".ki($sc);
-    #
-    $le = $_;
-}
 };
 sub sigstackwarn {
-my ($s) = @_;
-return if $s =~ /Deep recursion on subroutine/
-    || $s =~ /masks earlier declaration in same/;
-warn "Warndg: $s";
+    my ($s) = @_;
+    return if $s =~ /Deep recursion on subroutine/
+        || $s =~ /masks earlier declaration in same/;
+    warn "Warndg: $s";
 };
 sub w {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-my $pin = $s;
-my ($t,@k);
-my @Eat = @Me;
-while (@Eat) {
-    my $k = shift @Eat;
-    if (ref $k) {
-        my @or = map{$_=>$k->{$_}} sort keys %$k;
-        unshift @Eat, @or;
+    my $pin = $s;
+    my ($t,@k);
+    my @Eat = @Me;
+    while (@Eat) {
+        my $k = shift @Eat;
+        if (ref $k) {
+            my @or = map{$_=>$k->{$_}} sort keys %$k;
+            unshift @Eat, @or;
+        }
+        else {
+            push @k, $k;
+            $t->{$k} = shift @Eat;
+        }
+    }
+    my @src = ($A,$C,$G,$T);
+    my @got;
+    for (qw'A C G T') {
+        my $sr = shift @src;
+        if (!exists $t->{$_}) {
+            $t->{$_} = $sr;
+            push @got, $_;
+        }
+    }
+    unshift @k, @got if @got;
+    (my $fi = $pin) =~ s/\W/-/g;
+    my ($way,$dige);
+    my $D;
+    if ($D = $t->{__D}) {
+        $dige = $D->{sc}->{dige} || die "wayzipin wasnt scdige: ".ki$D;
+        $way = $D->{c}->{s};
+        $way =~ s/^A\.I\.(\w+) = //s;
+        $way =~ s/}A\.I\S+\n/\n/s if $D->{t} eq 'An'; # redoes, too trouble
     }
     else {
-        push @k, $k;
-        $t->{$k} = shift @Eat;
+        $way = $G->{way}->{$fi} || die "No way: $fi";
+        $dige = $G->{way}->{o}->{dige}->{$fi}
+            || die "Not Gway not diges $fi: wayo: ".ki $G->{way}->{o};
     }
-}
-my @src = ($A,$C,$G,$T);
-my @got;
-for (qw'A C G T') {
-    my $sr = shift @src;
-    if (!exists $t->{$_}) {
-        $t->{$_} = $sr;
-        push @got, $_;
+    my $ark = join',',@k;
+    my $code;
+    my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
+        my $C = {};
+        $C->{t} = $pin;
+        $C->{c} = {s=>$way,from=>"way"};
+        $C->{sc} = {code=>1,noAI=>1,args=>"ar,$ark"};
+        if ($D) {
+            delete $C->{sc}->{args} unless $D->{sc}->{subpeel};
+            $C->{c}->{from} = "I $D->{c}->{from}";
+        }
+        $code = $G->{h}->($A,$C,$G,$T,"won");
+        $@ && die ":BEFORE $pin www $@";
+        $SIG{__WARN__} = $G->{I}->{sigstackwarn} || die "NO sigstackwarn";
+        my $sub = $G->{airlock}->($code);
+        $@ && sayre "DED:\n".$code;
+        $@ && die "way nicht compile: $pin:\n$@";
+        !$sub && die "way nicht sub returned: $pin (no error tho)";
+        $sub;
+    };
+    #say "Way $A->{talk} $pin" unless $pin =~ /^_/;
+    if ($D && !$D->{sc}->{subpeel}) {
+        return $sub;
     }
-}
-unshift @k, @got if @got;
-(my $fi = $pin) =~ s/\W/-/g;
-my ($way,$dige);
-my $D;
-if ($D = $t->{__D}) {
-    $dige = $D->{sc}->{dige} || die "wayzipin wasnt scdige: ".ki$D;
-    $way = $D->{c}->{s};
-    $way =~ s/^A\.I\.(\w+) = //s;
-    $way =~ s/}A\.I\S+\n/\n/s if $D->{t} eq 'An'; # redoes, too trouble
-}
-else {
-    $way = $G->{way}->{$fi} || die "No way: $fi";
-    $dige = $G->{way}->{o}->{dige}->{$fi}
-        || die "Not Gway not diges $fi: wayo: ".ki $G->{way}->{o};
-}
-my $ark = join',',@k;
-my $code;
-my $sub = $G->{dige_pin_ark}->{$dige}->{$pin}->{$ark} ||= do {
-    my $C = {};
-    $C->{t} = $pin;
-    $C->{c} = {s=>$way,from=>"way"};
-    $C->{sc} = {code=>1,noAI=>1,args=>"ar,$ark"};
-    if ($D) {
-        delete $C->{sc}->{args} unless $D->{sc}->{subpeel};
-        $C->{c}->{from} = "I $D->{c}->{from}";
-    }
-    $code = $G->{h}->($A,$C,$G,$T,"won");
-    $@ && die ":BEFORE $pin www $@";
-    $SIG{__WARN__} = $G->{I}->{sigstackwarn} || die "NO sigstackwarn";
-    my $sub = $G->{airlock}->($code);
-    $@ && sayre "DED:\n".$code;
-    $@ && die "way nicht compile: $pin:\n$@";
-    !$sub && die "way nicht sub returned: $pin (no error tho)";
-    $sub;
-};
-#say "Way $A->{talk} $pin" unless $pin =~ /^_/;
-if ($D && !$D->{sc}->{subpeel}) {
-    return $sub;
-}
-$sub->($t,map{$t->{$_}}@k);
+    $sub->($t,map{$t->{$_}}@k);
 };
 sub won {
 my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -294,7 +299,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 5bd9a03b7bf4
+        dige: b5ca5c54a134
         eg: Ngwe
       t: airlock
       "y": 
@@ -307,7 +312,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 7d5683de0f11
+        dige: 4abe9e6014d0
         eg: Ngwe
       t: init
       "y": 
@@ -320,7 +325,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 91d4fe19b79a
+        dige: 548c594a037b
         eg: Ngwe
       t: sigstackend
       "y": 
@@ -333,7 +338,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 4d927cd17c44
+        dige: 6563c8fe49c1
         eg: Ngwe
       t: sigstackwarn
       "y": 
@@ -346,7 +351,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: a9554cbe8e6a
+        dige: a8688ca66e6a
         eg: Ngwe
       t: w
       "y": 

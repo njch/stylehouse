@@ -95,7 +95,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: |
-    my @for = qw' Ngwe Shelf'; # Tides GBabz               
+    my @for = qw' KnowTime '; # Tides GBabz      Ngwe Shelf        
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -146,7 +146,7 @@ thilm: | # for another
             $s = I.d&parse_babbl,$s unless D.sc.bab eq 'non';
             $_ && $_ ne 'non' && die "INter bab D.t bab=$_" for D.sc.bab;
             my $nov = wdump 5, $D;
-            die "TOo long D D.t: $nov" if length($nov) > 500;
+            die "TOo long D D.t: $nov" if length($nov) > 600;
             my $wh = D.sc.head ? 'head' : 'l';
             unless (D.sc.head || D.sc.subis || D.sc.code eq 'Pack') {
                 t.II->{D.sc.code}->{D.y.cv}->{D.t} = $D;
@@ -282,10 +282,7 @@ gothat: |
     
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 eel: |
-    n Servo
-    n SlideEa
-    n Motion
-    n KnowTime
+    n SevWo
 Ngwe: |
     u allacgts
     
@@ -323,8 +320,13 @@ Ngwe: |
         my $know;
         know.h->{'Ise::Shelf'} = 1;
         my $KnowA = $G::KA;
-        sayyl wdump 1, $KnowA;
         @stack = reverse @stack;
+        my @sum;
+        push @sum, shift @stack while @stack > 10;
+        my @fo;
+        unshift @stack, grep { push @fo, $_; _.t =~ 'w' || _.t eq 'h' && _.sc.call =~ /^'loop'/
+            || @fo > 2 && $fo[-2]->{t} eq 'h' && $fo[-2]->{sc}->{call} =~ /^'exood'/}
+            @sum;
         for (@stack) {
             my $sc = {%{_.sc}};
             my $called = delete sc.call;
@@ -592,6 +594,7 @@ Shelf: |
         A.t&8;
         G&recycle;
         (A.nj) = values %{A.Js} if A.Js && keys %{A.Js} == 1;
+        A.bangdesk.main->() if A.bangdesk.main;
         if (C.c.M) {
             @{C.c.M} = () if C.c.M eq C.c.N;
             my @un = uniq @{A.M};
@@ -600,10 +603,10 @@ Shelf: |
             $A
         }
         elsif (C.c.J && A.am eq 'In') {
-            @{A.M} && G&m,C.c.J,A.M,C.c.M||[];
+            G&m,C.c.J,A.M,C.c.M||[] if @{A.M};
         }
         else {
-            die "noJMout";
+            die "noJMout A.am";
         }
 Tides: |
     u allacgts
@@ -835,7 +838,7 @@ Goolog: |
     
     
 GBabz: |
-    # see <<'' and levitate
+    # see  and levitate
     u allacgts
     
     # bab:non,,'%subpeel'
@@ -861,20 +864,24 @@ GBabz: |
         my @s;
         my $indbe;
         my $inend;
+        my $indun;
         for my $l (split "\n", $s) {
             my $s = $l;
             if ($indbe) {
-                if ($indbe eq 'nextind') {
-                    $s =~ /^(\s+)/;
-                    $indbe = qr/^$1/;
+                if ($indun eq 'NEXT') {
+                    $s =~ /^(\s+)/ || die "Must Indunext:\n$s[-1]\n$s";
+                    $indun = $1;
                 }
                 if ($s =~ $indbe) {
                     $s =~ s/^(\s*)\.(\s*)$/$1$2/;
+                    $s =~ s/^$indun// || sayre "Noscr '$indun' from $s"
+                        if defined $indun;
                     push @s, $s;
                     next;
                 }
                 else {
                     undef $indbe;
+                    undef $indun;
                     if ($s !~ /^\s*$/) {
                         if ($inend) {
                             pop @s  if $s[-1] eq '';
@@ -890,11 +897,16 @@ GBabz: |
             my $angt = '<'.'<';
             my $ze = qr/$angt['"](\w*)['"]/;
             if ($s =~ /^(\s*)\S.*$ze/) {
-                $indbe = $2 ?
-                    qr/^(?!\Q$1\E)/ # for <#<'EOD' til ^EOD, etc
-                  : qr/^($1\s+|\s*$)/; # some space in or no nonspace = quote
-                $s =~ s/$ze/$angt.($1?"'$1'":"'STEVE'")/e;
-                $inend = 'STEVE' if !$1;
+                if ($2) {
+                    # for <#<'EOD' til ^EOD, etc
+                    $indbe = qr/^(?!\Q$1\E)/;
+                }
+                else {
+                    $indbe = qr/^($1\s+|\s*$)/;
+                    $indun = 'NEXT';
+                    $s =~ s/$ze/$angt.($1?"'$1'":"'STEVE'")/e;
+                    $inend = 'STEVE' if !$1;
+                }
             }
             .
             #c babable # expect closing brackets and insert J
