@@ -52,9 +52,13 @@ our $_ob = undef;
 # to dry up
 
 use Exporter 'import';
-our @EXPORT = qw(read_file write_file Dump DumpFile Load LoadFile dclone gettimeofday usleep first max maxstr min minstr reduce shuffle sum natatime uniq ceil floor pi2 encode_entities decode_entities charinfo encode_utf8 decode_utf8 is_utf8 snooze dig ind acum slm slim sjson ejson djson zjson mkuuid mkuid flatline hitime hexbe hexend unico k2 kk ki saybl saygr sayg sayre sayyl say saycol wdump ddump inter F_delta stack fwind);
+our @EXPORT = qw(read_file write_file Dump DumpFile Load LoadFile dclone gettimeofday usleep first max maxstr min minstr reduce shuffle sum natatime uniq ceil floor pi2 encode_entities decode_entities charinfo encode_utf8 decode_utf8 is_utf8 enth snooze dig ind acum slm slim sjson ejson djson zjson mkuuid mkuid flatline hitime hexbe hexend unico k2 kk ki saybl saygr sayg sayre sayyl say saycol wdump ddump inter F_delta stack fwind);
 
 
+sub enth {
+encode_entities(decode_utf8(shift));
+
+}
 sub snooze {
 return Time::HiRes::usleep((shift || 500) * 10);
 
