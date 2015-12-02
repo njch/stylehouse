@@ -23,6 +23,16 @@ Dwight: | # grab old subs of G
     my $lot = "g/G/on g/G/way g/0/G g/G/cis";
     n shedful => '0.1-0.7', {pi=>'seas',s=>$lot}
     
+Draw: | # most wild (furthest from Wild, goes in circle)
+    u IIpifalls
+    u pi3d
+    u stopi_clife
+    u clifeGkeeps
+    n s=>''=>t
+    Rw dow $Draw:J.A.I;
+    # do tests... contigo
+    # merge/split things into Seate-good, Seate-bung etc
+    
 G: | # GGG subs, must get wormholes to do this this shortly
     my $f = "w/J.name\.yml";
     my $N = -f $f ? LoadFile($f) : do {
@@ -760,88 +770,6 @@ Goodat: |
         return undef unless $pin =~ /\*/;
         die "sat rs findy $pin";
     
-Gooway: |
-    u allacgts
-    
-    n w =>''=><<'',{acgt=>'pin,ar'}
-        my $D = GmkD($pin,$ar);
-        .
-        if (!defined D.bab) {
-            D.bab = G.way->{$pin};
-        }
-        .
-        if (!defined D.bab) {
-            if ($pin =~ /\//) {
-                D.bab = Gpwin($pin,G.way);
-            }
-        }
-        .
-        if (!defined D.bab && !ar.__D && ar.A) {
-            my $c = ar.A;
-            map{$c = $c->{$_} if $c} qw'J A II W 0.4';
-            if ($c) {
-                my $C = $c->{$pin};
-                if ($C) {
-                    c.sc.acgt && die "selected W4".ki$C;
-                    ar.__D = $C;
-                    $D = GmkD($pin,$ar);
-                }
-            }
-        }
-        .
-        return die "Not findin D.talk" if !defined D.bab;
-        .
-        Glog(D.talk) if G.logs;
-        .
-        my $Z = GDoming($D);
-        G.randomtask->() if G.randomtask;
-        my $r; eval { $r = [ GD($Z) ] };
-        sayyl "D.talk BANG: $@" if $@ && 5 > split '⊘',$@;
-        GDone($Z);
-        .
-        if ($@) {
-            D.nodie || die $@;
-            $@ = "";
-        }
-        return wantarray ? @$r : $r->[0];
-    
-    n comeback ''=><<''
-        my $Dome = $s;
-        my $a;
-        a.name = 'r';
-        a.from = $Dome;
-        my $Doing = $G->Doming($a); 
-        $G->D({D=>Dome.D, toplevel=>1, talk=>"351 dollars",name=>"comeback"});
-        $G->Done($Doing);
-        sayre $@ if $@; # TODO toplevely
-        $@ = "";
-    
-    n mkD =>''=><<'',{acgt=>'pin,ar'}
-        my $D;
-        D.point = $pin;
-        if (my $C = ar.__D) {
-            delete ar.__D;
-            D.bab = C.c.s || die "N s".ki $C;
-            D.noise .= C.sc.dige if C.sc.dige;
-            D.babnon = 1 if C.sc.bab eq 'non';
-            D.Verb = 1;
-        }
-        D.ar = $ar;
-        D.name = join ' ', D.point, sort keys %{D.ar};
-        D.sign = "Z";
-        D.talk = join' ',grep{defined}map{$D->{$_}}qw'sign name noise';
-        $D;
-Goolog: |
-    u allacgts
-    
-    n rese =>''=><<'','%code:G 1'
-        `rm w/glog`;
-        G.logs = 1;
-    
-    n log =>''=><<''
-        write_file('w/glog', {append=>1}, "\n$s");
-    
-    
 GBabz: |
     # see  and levitate
     u allacgts
@@ -1008,149 +936,7 @@ GBabz: |
         $s = join "\n", @s;
         .
         $s;
-Ghoots: |
-    u allacgts
-    
-    n sigstackend =>''=><<'',
-        local $@;
-        eval { confess( '' ) };
-        my @stack = split m/\n/, $@;
-        #shift @stack for 1..1; # hide above this sub, G eval & '  at G...';
-        my @stackend;
-        push @stackend, shift @stack until $stack[0] =~ /ggggggg/ || !@stack && die "NO find gggg stack";
-        s/\t//g for @stackend;
-        # write on the train thats about to derail
-        push @{$F[0]->{SigDieStack}||=[]}, \@stackend;
-    
-    n sigstackwa =>''=><<'',
-        return 1 if $_[0] =~ /^Use of uninitialized value/;
-        if ($_[0] =~ /Deep recursion on/) {
-           return if G.deepr++ < 9;
-           G.deepr = 0;
-           sayre "snoozing $F[0]->{talk}";
-           snooze();
-           return;
-        }
-        my @loc = caller(1);
-        $@ = join "\n", @_;
-        my $DOOF = GDuck($F[0],1);
-        $@ = "";
-        sayre $DOOF;
-        return 1;
-    
-    n Doming =>''=><<'',
-        my $D = shift;
-        die "More to DOming" if @_;
-        $D = Gpyramid($D);
-        unshift @F, $D;
-        D.F = [@F];
-        return $D;
-    
-    n pyramid =>''=><<'',
-        my $am = $s;
-        confess "Ba" if ref $am ne 'HASH';
-        #
-        my ($last) = @F;
-        my $u = {%$am};
-        if ($last) {
-            push @{last.Lo||=[]}, $u;
-            u.Li = $last;
-        }
-        else {
-            push @{G.East||=[]}, $u;
-        }
-        u.G = $G;
-        u.K = u.name || die "No Dome Name";
-        u.hitime = hitime;
-        u.order = H.pyramiding++;
-        u.stack = stack(2,7);
-        u.F = [@F];
-        u.depth = 0+@F;
-        u.Error = $@ if $@; #?
-        $u
-    
-    n Done =>''=><<'',
-        my $D = $s;
-        sayre join"", ("BATS  ")x 23 if $F[0] ne $D;
-        D.dolat = $@ if $@;
-        $_->() for @{D._after_do||[]};
-        shift @F;
-        GDuck($D) if $@;
-        $_->() for @{D._aft_etc_do||[]};
-        $D
-GDom: |
-    u allacgts
-    
-    n ggggggg =>''=><<'',{code=>'Perl 3',args=>'c,sc'}
-        eval{ $c->($sc) }
-    
-    # swim by the compile (Dm), do(g7 evals)/done($@ handle)/return
-    n D =>''=><<''
-        my $D = $s;
-        my $ar = D.ar || {};
-        .
-        die "RECURSION ".@F if @F > $MAX_FCURSION;
-        my $sub = D.D || do {
-             D.Ds = GDm($D);
-             D.Ds.sub;
-        };
-        D.sign = 'D';
-        D.talk = "D.sign D.name";
-        $D = GDoming($D);
-        my @return;
-        if (ref $sub eq "CODE" && !$@) {
-            local $SIG{__DIE__} = G.sigstackend;
-            local $SIG{__WARN__} = G.sigstackwa;
-            
-            wantarray ? 
-                do { @return = ggggggg($sub, D.ar) }
-                : do { $return[0] = ggggggg($sub, D.ar) };
-        }
-        .
-        GDone($D); # Ducks
-        D.r = [@return];
-        .
-        return wantarray ? @return : shift @return
-    
-    n Dm =>''=><<''
-        my $am = $s;
-        am.talk || confess wdump 2, $am;
-        my $Ds = G.drop.Dscache->{am.talk};
-        return $Ds if $Ds;
-        .
-        die "SOMEONENONE".wdump 1, $am if ref am.bab;
-        .
-        my $eval = am.bab;
-        $eval = Gparse_babble($eval) unless am.babnon;
-        .
-        my $ar = am.ar || {};
-         ar.R = $G;
-        my $download = join("", map {
-            'my$'.$_.'=$ar->{'.$_."}; "
-            } keys %$ar)
-            if %$ar;
-        my $sub = "bollox";
-        my $evs = 'sub { my $ar = shift; '
-        ."$download\n"
-        ."my \@doo_return = (sub { \n\n$eval\n })->();\n"
-        .'return @doo_return };';
-        .
-        $sub = GDoe($evs, $ar);
-        .
-        $@ = "nicht kompilieren!\n\n$@" if $@;
-        .
-        $Ds = {evs=>$evs, sub=>$sub, talk=>am.talk};
-        .
-        if (!$@ && ref $sub eq "CODE") {
-            G.drop.Dscache->{am.talk} = $Ds;
-        }
-        else {
-            am.bungeval = $evs;
-        }
-        $Ds
-    
-    n Doe =>''=><<'',{acgt=>'D_eval_string,ar'}
-         return eval $D_eval_string;
+
 Gouck: |
     u allacgts
     
@@ -1259,14 +1045,4 @@ Gouck: |
         $diag
     
    
-Goo: | # Gto is made, babbed, things for G's I which is G itself
-    # this all goes... somewhere
-    n Gooso
-    n Goodat
-    n Gooway
-    n Goolog
-    n GBabz
-    n Ghoots
-    n GDom
-    n Gouck
 
