@@ -110,7 +110,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: |
-    my @for = qw' GBabz '; # Tides   KnowTime   Ngwe Shelf        
+    my @for = qw'Ngwe GBabz Shelf'; # Tides   KnowTime    Shelf        
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -298,6 +298,8 @@ gothat: |
     Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 eel: |
     n SevWo
+    n Space
+    n Foli
 Ngwe: |
     u allacgts
     
@@ -466,7 +468,10 @@ ersl: |
 Shelf: |
     u allacgts
     n h =>'',<<''
-        my $y = A.I->{$s} || die "No whay named $s on A.talk: ".wdump 2, A.I;
+        my $y = A.I->{$s} || do {
+            sayre "Above for $s on A.talk isssssssss A.up.talk";
+            A.up.I->{$s} || die "No whay named $s on A.talk or A.up.talk: ".wdump 2, A.I;
+        };
         say "A.talk h :  $s   < C.t" unless C.t =~ /^_/ || !A.J || A.J.V < 2;
         $y->($A,$C,$G,$T,@Me);
     
@@ -829,7 +834,7 @@ GBabz: |
             }
             my $angt = '<'.'<';
             my $ze = qr/$angt['"](\w*)['"]/;
-            if ($s =~ /^(\s*)\S.*$ze/) {
+            if ($s =~ /^(\s*)(?!#)\S.*$ze/) {
                 if ($2) {
                     # for <#<'EOD' til ^EOD, etc
                     $indbe = qr/^(?!\Q$1\E)/;

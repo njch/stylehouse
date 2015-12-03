@@ -63,7 +63,7 @@ for my $l (split "\n", $s) {
     }
     my $angt = '<'.'<';
     my $ze = qr/$angt['"](\w*)['"]/;
-    if ($s =~ /^(\s*)\S.*$ze/) {
+    if ($s =~ /^(\s*)(?!#)\S.*$ze/) {
         if ($2) {
             # for <#<'EOD' til ^EOD, etc
             $indbe = qr/^(?!\Q$1\E)/;
@@ -80,7 +80,7 @@ for my $l (split "\n", $s) {
     # eg Atime(2) = $A->{time}->($J, 2)
     $s =~ s/($p->{mwall})(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
     $s =~ s/($p->{mwall})(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
-    $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$$2, /smg;
+    $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$A,\$C,\$G,\$T, \$$2, /smg;
     $s =~ s/($p->{mwall})(\w*[MN])(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
 
     # close side ourselves, likely to gobble suro if, etc.
@@ -196,7 +196,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: c29614801638
+        dige: 729923cf22a6
         eg: GBabz
       t: parse_babbl
       "y": 

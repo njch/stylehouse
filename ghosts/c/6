@@ -195,8 +195,32 @@ Foli: | # non driven trevil
     n '','','%of:J'
     n J =>6211211,<<''
         J.le && return;
-        my $x = A.J.pix || J.mo.J.pix || return;
-        Rw Foldout $x $A $C $J $T $y:J.oy;
+        my $x = [];
+        for my $j (A.J, J.mo.J) {
+            my $pix = j.pix;
+            push @$x, ref $pix eq 'ARRAY' ? @$pix : $pix if $pix;
+            if (my $pich = j.pich) {
+                push @$x, ref $_ eq 'ARRAY' ? @$_ : $_ for values %$pich;
+            }
+        }
+        @$x || return;
+        my @m = ref $x eq 'ARRAY' ? @$x : $x;
+        for my $x (@m) {
+            if (x.pi ? C.c.pi eq x.pi : 
+                x.any ? 1 :
+                0) {
+                saygr "matched: J.name ::: ".ki $x if A.V&T;
+                .
+                x.u &&
+                u x.u
+                .
+                C.c.pi = C.sc.pi = x.pito if x.pito;
+                .
+                x.Rw &&
+                    Rw x.Rw $J;
+            }
+            # up!
+        }
 Foldout: |
         my @m = ref $x eq 'ARRAY' ? @$x : $x;
         for my $x (@m) {
