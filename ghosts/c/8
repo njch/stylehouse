@@ -311,6 +311,19 @@ waitme: |
         saybl "ha";
     }
     
+goche: |
+    my $m = "g/c/".($n||8);
+    Rw ghosch $m
+ghosch: |
+    sayyl "Ghosch: $m";
+    return sayre "iggy $m" if $m !~ /^g(hosts?)?\/c\//;
+    my $u = LoadFile $m;
+    map {
+        (my $k = $_) =~ s/\W/-/g;
+        G.way->{$k} = $u->{$_};
+        saybl "Load $k" if $k =~ /\W/;
+    } keys %$u;
+    delete G.drop;
 forked: |
     # etc
     my $also;
@@ -499,33 +512,6 @@ pi/di: |
     for (`ls --full-time --inode`) {
         chomp;
     }
-ghosch: |
-    sayyl "Ghosch: $m";
-    return sayre "iggy $m" if $m !~ /^g(hosts?)?\/c\//;
-    my $u = LoadFile $m;
-    
-    G.way->{$_} = $u->{$_} for keys %$u;
-    delete G.drop;
-loadwav: |
-    sayyl " F  IND SOME FOR E.c.s";
-    
-    E.c.serJ && map {
-        Rw clack + $m:_
-    } "Already serJ = E.c.serJ.name";
-    E.c.serJ = $J;
-    
-    for (E.c.s) {
-        /^ghostchanges (.+)$/ ?
-            Rw ghosch + $m:1
-        :
-        /^hello/ ?
-            return saybl " hello! E.t: $_"
-        :
-        sayre "Unclassified talk: $_"
-    }
-    # be!  plus
-    
-    sayyl '' for 1..4;
 Usee: |
     u ReoCur
     y.at.ux = 1;
@@ -730,9 +716,7 @@ flse: | # fusilagery - wants about 2 seconds
         sayre "How to hold ".wdump 2, $r;
     }
     sayre "Have flse click: ".wdump 2, $r;
-goche: |
-    my $m = "g/c/".($n||8);
-    Rw ghosch $m
+
 pi/cde: |
     my $se = I.d&pin,$s,$A;
     #$se = wdump 3, $se;
