@@ -479,6 +479,14 @@ Shelf: |
     n d =>'',<<''
         die "USING I->d !".wdump 2, [$s,@Me];
     
+    n AN =>'',<<''
+        $C = {};
+        (C.c.J, C.c.N, C.c.M) = (@Me);
+        ref C.c.N eq 'ARRAY' || die "Not array CcN";
+        my $t = C.c.N->[0];
+        C.c.N = [C.c.N] if defined $t && !ref $t; # C[] -> N[C[]]
+        ref C.c.M || delete C.c.M;
+        
     n A =>''=><<''
         ($A,my$up) = ({},$A);
         A.G = $G; # for wiring from A (G/T/Hypo)
@@ -487,12 +495,7 @@ Shelf: |
         A.am = $s || die "unsame?";
         .
         A.C = $C = {};
-        (C.c.J, C.c.N, C.c.M) = (@Me);
-        ref C.c.N eq 'ARRAY' || die "Not array CcN";
-        my $t = C.c.N->[0];
-        C.c.N = [C.c.N] if defined $t && !ref $t; # C[] -> N[C[]]
-        ref C.c.M || delete C.c.M;
-        A.N = [@{C.c.N}];
+        A.N = [@{C.c.N||[]}];
         A.M = [];
         A.J = C.c.J if C.c.J;
         A.J || die "NOJ";
@@ -557,7 +560,7 @@ Shelf: |
         }
         ($A,A.C,$G,A.T)
     
-    n An =>101,<<''
+    n An =>'',<<''
         A.I || die "GimeI";
         A.note = {}; # pinging csc
         A.c = sub { G&c,@_; };
@@ -566,7 +569,6 @@ Shelf: |
         A.t = sub { G&t,@_; };
         A.V = sub { A.J.VV && A.J.VV->{$_[0]} || A.J.V };
         $A
-    
     #c ventlike      ඬ
     # make pool, synth space, want arches
     # fork & rejoin to exciting place
@@ -577,17 +579,17 @@ Shelf: |
     # Mn(.+) is n $J [$1] $M
     
     n n =>'',<<''
-        ($A,$C,$G,$T) = G&A,'In',$s,@Me;
+        ($A,$C,$G,$T) = G&AN,'In',$s,@Me;
         G&loop;
     
     n m =>'',<<''
-        ($A,$C,$G,$T) = G&A,'Mo',$s,@Me;
+        ($A,$C,$G,$T) = G&AN,'Mo',$s,@Me;
         G&loop;
     
     n Sev =>'',<<''
         $Me[0] ||= [Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}];
         $Me[1] ||= [];
-        ($A,$C,$G,$T) = G&A,'Sev',$s,@Me;
+        ($A,$C,$G,$T) = G&AN,'Sev',$s,@Me;
         A.I.scIfs || die "NO scIfs: A.J.name";
         G&loop;
 
