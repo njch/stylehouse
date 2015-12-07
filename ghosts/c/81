@@ -12,39 +12,69 @@ Sen: |
     y.out = 0.5;
     y.at.sca = 0.3;
     n s=>''=>1
-    my $U = J.A.II.U;
-    #n eo=>-pre=>wdump 2, $U;
-    my $k = "pi-hush";
-    sayyl G.way->{$k};
-    saybl G.way.o.dige->{$k};
     
+    my $U = J.A.II.U;
     Mn(eso=>-hush=>{s=>$U});
+    
     n and=>-jsthink
     
     #n oe=>'01-77x14','#','%hs:388,fs:99,blr:5,ig:3'
     J.VV.N = 1;
 Dub: |
     u AmPg
+    u Gan
+    n s=>''=>t
+    my $j = G&A,'S';
+    sayyl "Swe RR ".wdump 2, [J.row];
     Mn(fiv =>''=>":D") for 1..4;
+Gan: |
+    u allacgts
+    # what time2 returns?
+    n f =>'',<<''
+        G&A,$s||'S'
 AmPg: |
     n UpPg
-    u allact
-    n seolu =>32,<<'','%code:U,v:scJ'
-        J.oy.at.db = 1;
-        sayyl "Looking for C.t  in sa db";
     
+    u allact
+    n Arow =>32,<<'','%code:U,v:scJ'
+        J.oy.at.row = 1;
+        J.row = G&Jr;
+    
+    u allovse
+    n row =>32,<<'','%code:em'
+        J.row &&
+            G&qp,<<'',C.t;
+                delete from names where name = ?
+        my $o = J.row.o ||= {};
+        G&xot,$o,at.sc;
+        delete o.z;
+        G&qp,<<'',C.t,sjson($o);
+            insert into names (name,o) values (?,?)
+    
+    #
 UpPg: |
     u allacgts
-    use Mojo::Pg;
-    my $pg ||= Mojo::Pg->new('postgresql://s@/s');
+    n db =>'',<<''
+        use Mojo::Pg;
+        my $sJ = A.J && A.J.mo.s || die "no AJmos: A.talk";
+        my $pg = sJ.A.pg ||= Mojo::Pg->new('postgresql://s@/s');
+        my $mJ = A.J.mo.J || die "nomoJ";
+        mJ.A.db ||= do {
+            my $db = $pg->db;
+            $db
+        };
     
-    n db =>'',<<'',{pg=>$pg}
-        my $pg = T.D.pg;
-        $pg->db->do('create table if not exists names (name text indexed, o json)');
-        $pg->db
-    
-    n qp =>'',<<'',{pg=>$pg}
+    n qp =>'',<<''
         G&db ->query($s, @Me);
+
+    # create table if not exists names (name text, o json)
+    n Jr =>'',<<''
+        my @o;
+        G&qp,<<'',C.t ->hashes->map(sub{push @o,$_});
+            select * from names where name = ?
+        die "Many $s" if @o > 1;
+        wantarray ? @o : $o[0]
+    
 pi/jsthink: |
     n ste=>1=><<'','%e'
         var to = [];
