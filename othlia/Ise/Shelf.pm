@@ -15,13 +15,8 @@ $A->{up} = $up;
 $A->{mo} = $A;
 $A->{am} = $s || die "unsame?";
 
-$A->{C} = $C = {};
-($C->{c}->{J}, $C->{c}->{N}, $C->{c}->{M}) = (@Me);
-ref $C->{c}->{N} eq 'ARRAY' || die "Not array CcN";
-my $t = $C->{c}->{N}->[0];
-$C->{c}->{N} = [$C->{c}->{N}] if defined $t && !ref $t; # C[] -> N[C[]]
-ref $C->{c}->{M} || delete $C->{c}->{M};
-$A->{N} = [@{$C->{c}->{N}}];
+$A->{C} = $C;
+$A->{N} = [@{$C->{c}->{N}||[$C]}];
 $A->{M} = [];
 $A->{J} = $C->{c}->{J} if $C->{c}->{J};
 $A->{J} || die "NOJ";
@@ -53,6 +48,17 @@ $A->{t}->("1");
 $A->{t}->("11111") || warn "NO 1";
 }
 ($A,$C,$G,$T)
+};
+sub AN {
+my ($A,$C,$G,$T,$s,@Me) = @_;
+my $I = $A->{I};
+$C = {};
+($C->{c}->{J}, $C->{c}->{N}, $C->{c}->{M}) = (@Me);
+ref $C->{c}->{N} eq 'ARRAY' || die "Not array CcN";
+my $t = $C->{c}->{N}->[0];
+$C->{c}->{N} = [$C->{c}->{N}] if defined $t && !ref $t; # C[] -> N[C[]]
+ref $C->{c}->{M} || delete $C->{c}->{M};
+$G->{h}->($A,$C,$G,$T,"A",$s)
 };
 sub Act {
 my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -101,7 +107,7 @@ my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 $Me[0] ||= [Elvis=>''=>{J=>$s,Y=>'Pre',V=>'Duv'}];
 $Me[1] ||= [];
-($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Sev',$s,@Me);
+($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"AN",'Sev',$s,@Me);
 $A->{I}->{scIfs} || die "NO scIfs: $A->{J}->{name}";
 $G->{h}->($A,$C,$G,$T,"loop");
 };
@@ -164,13 +170,13 @@ else {
 sub m {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'Mo',$s,@Me);
+($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"AN",'Mo',$s,@Me);
 $G->{h}->($A,$C,$G,$T,"loop");
 };
 sub n {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"A",'In',$s,@Me);
+($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"AN",'In',$s,@Me);
 $G->{h}->($A,$C,$G,$T,"loop");
 };
 sub recycle {
@@ -191,9 +197,22 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: f2a98b6dd215
+        dige: 794fae491dd3
         eg: Ise::Shelf
       t: A
+      "y": 
+        cv: '0.1'
+    AN: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: e06917e4c9af
+        eg: Ise::Shelf
+      t: AN
       "y": 
         cv: '0.1'
     Act: 
@@ -230,7 +249,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 98ecf53400ca
+        dige: 3d64a2c76c68
         eg: Ise::Shelf
       t: Sev
       "y": 
@@ -282,7 +301,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 1be52d7fef15
+        dige: b8c09c07b8f9
         eg: Ise::Shelf
       t: m
       "y": 
@@ -295,7 +314,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: fcf0b92d9b24
+        dige: a990ff0f831f
         eg: Ise::Shelf
       t: 'n'
       "y": 

@@ -53,8 +53,9 @@ TestTool: |
         `mkdir -p $d` unless -d $d;
         my $got = C.c.st.got;
         say "Accepting for $f: ".wdump 2,$got;
-        return sayre("Ref leaky ".wdump 6, $got) && sleep 6 if 
-            length(wdump 4,$got) < length(wdump 5,$got);
+        
+        return sayre("Ref leaky ".wdump 6, $got) && sleep 6 if
+            G&oleak,$got,4;
         DumpFile($f, $got);
 
     n eeply =>'',<<'',{acgt=>'s,K'}

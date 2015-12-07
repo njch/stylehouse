@@ -1061,8 +1061,6 @@ C: |
         while (my($k,$v) = each %$c) {
             $s->{$k} = ref $v eq 'HASH' ?
                         {%{$s->{$k}||{}}, %$v}
-            : ref $v ? 
-                die "Hash a ref v: ".wdump 2, $s
             : $v;
         }
         return $s
@@ -1072,6 +1070,8 @@ C: |
         $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
         return $CC;
     
+    n oleak =>'',<<'',{acgt=>'s,n'}
+        length(wdump $n,$s) < length(wdump $n+1,$s);
    
 Servo: | # lightning over speech bubble in the c 5 liniarity (Motion doing)
     u allacgts
