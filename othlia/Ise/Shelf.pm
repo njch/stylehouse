@@ -40,7 +40,7 @@ if (my $re = delete $G->{drop}->{recycling}->{$A->{J}->{id}}->{$A->{am}}) {
         $A->{cv} = 0.1;
     }
     else {
-        sayre "Recycloped:  Diff $I->{Ii}  <--  $re->{Ii}";
+        #sayre "Recycloped:  Diff $I->{Ii}  <--  $re->{Ii}";
     }
 }
 $G->{h}->($A,$C,$G,$T,"An");
@@ -187,7 +187,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 794fae491dd3
+        dige: 18cd98643529
         eg: Ise::Shelf
       t: A
       "y": 
