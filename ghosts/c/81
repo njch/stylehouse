@@ -31,7 +31,6 @@ Dub: |
     u urw
     u AmPg
     
-    
     n s=>''=>t
     Atime(2);
     
@@ -125,7 +124,8 @@ AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
     n row =>4,<<'','%code:Art'
         return warn "Nonroot row: ".ki$C if !C.c.root;
         .
-        my $M = J.UG || J.oy.o.M;
+        my $M = J.UG || J.Oy.o.M;
+        sayyl "J.name has ".wdump 3, $M;
         die "J.name TOO DEEP o M ". wdump 7, $M if G&oleak,$M,4;
         .
         sayyl "Got row on C.t: ".ki $at;
@@ -137,7 +137,7 @@ AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
         r.sc.M = $M;
         my ($c,$sc) = map{sjson($_)} r.c, r.sc;
         .
-        J.row &&
+        J.ro &&
             G&qp,<<'',C.t;
                 delete from names where t = ?
         .
