@@ -116,16 +116,6 @@ my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 die "USING I->d !".wdump 2, [$s,@Me];
 };
-sub h {
-my ($A,$C,$G,$T,$s,@Me) = @_;
-my $I = $A->{I};
-my $y = $A->{I}->{$s} || do {
-    sayre "Above for $s on $A->{talk} isssssssss $A->{up}->{talk}";
-    $A->{up}->{I}->{$s} || die "No whay named $s on $A->{talk} or $A->{up}->{talk}: ".wdump 2, $A->{I};
-};
-say "$A->{talk} h :  $s   < $C->{t}" unless $C->{t} =~ /^_/ || !$A->{J} || $A->{J}->{V} < 2;
-$y->($A,$C,$G,$T,@Me);
-};
 sub loop {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
@@ -265,19 +255,6 @@ I:
         dige: 9dac59c7fcb5
         eg: Ise::Shelf
       t: d
-      "y": 
-        cv: '0.1'
-    h: 
-      c: 
-        from: Ise/Shelf
-      sc: 
-        acgt: s
-        args: A,C,G,T,s
-        bab: ~
-        code: I
-        dige: '429470880205'
-        eg: Ise::Shelf
-      t: h
       "y": 
         cv: '0.1'
     loop: 
