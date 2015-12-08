@@ -31,9 +31,12 @@ Dub: |
     u urw
     u AmPg
     
+    
+    n s=>''=>t
     Atime(2);
     
     Mn($_) for @{J.ro.sc.M||[]};
+    Mn("Tst"=>''=>":D");
     
     my $j = G&A,'S';
     n Rec=>$C
@@ -46,6 +49,7 @@ Rec: | # batchy you, web
     
     Atime(2);
     
+    n s=>''=>t
     
     for ( e&C ) {
         sayyl "Rec receives : ".ki $_;
@@ -65,6 +69,7 @@ Sugd: | # acum, regroup, persist, do batches
     
     # n MuSt # instance must have storage (AmPg)
     
+    # between pin and M:
     n Sugdev =>33,<<'','%code:U,v:scJ'
         @{J.UG} = grep {keys %$_} @{J.UG};
         my $y = J.oy;
@@ -109,9 +114,12 @@ AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
     n Arow =>32,<<'','%code:U,v:scJ'
         J.oy.at.row = 1;
         G&tyable;
-        my $r = J.ro = G&Jr;
-        J.UG = r.sc.M if J.UG;
-        $r
+        if (my $r = J.ro = G&Jr ) {
+            r.c = djson r.c;
+            r.sc = djson r.sc;
+            J.UG = r.sc.M if J.UG;
+            $r
+        }
     
     u allsvse
     n row =>4,<<'','%code:Art'
@@ -133,6 +141,7 @@ AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
             G&qp,<<'',C.t;
                 delete from names where t = ?
         .
+        say " For C.t  : $sc";
         G&qp,<<'',C.t,0.3,$c,$sc
             insert into names (t,y,c,sc) values (?,?,?,?)
     
@@ -154,7 +163,7 @@ UpPg: |
     
     n tyable =>'',<<''
         $s ||= 'names';
-        my $q = "create table if not exists $s (t text, y integer, c json, sc json)";
+        my $q = "create table if not exists $s (t text, y real, c json, sc json)";
         G&qp,$q
     
     n Jr =>'',<<''

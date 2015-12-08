@@ -132,7 +132,7 @@ sub loop {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 my $i;
-@{$A->{N}}||die"nois".wdump(5, $C).wdump 2,$A;
+@{$A->{N}}||die"nonois $A->{talk} ".wdump(3, $C).wdump 2,$A;
 while (@{$A->{N}}) { #
     $i++ > 5000 && die "Huge $A->{talk}";
     my ($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"Act",$A);
@@ -291,7 +291,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 56c404ced2ff
+        dige: 5d909c56b7af
         eg: Ise::Shelf
       t: loop
       "y": 
