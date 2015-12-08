@@ -102,6 +102,18 @@ $A->{t} = sub { $G->{h}->($A,$C,$G,$T,"t",@_); };
 $A->{V} = sub { $A->{J}->{VV} && $A->{J}->{VV}->{$_[0]} || $A->{J}->{V} };
 $A
 };
+sub In {
+my ($A,$C,$G,$T,$s,@Me) = @_;
+my $I = $A->{I};
+($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"AN",'In',$s,@Me);
+$G->{h}->($A,$C,$G,$T,"loop");
+};
+sub Mo {
+my ($A,$C,$G,$T,$s,@Me) = @_;
+my $I = $A->{I};
+($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"AN",'Mo',$s,@Me);
+$G->{h}->($A,$C,$G,$T,"loop");
+};
 sub Sev {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
@@ -151,23 +163,11 @@ if ($C->{c}->{M}) {
     $A
 }
 elsif ($C->{c}->{J} && $A->{am} eq 'In') {
-    $G->{h}->($A,$C,$G,$T,"m",$C->{c}->{J},$A->{M},$C->{c}->{M}||[]) if @{$A->{M}};
+    $G->{h}->($A,$C,$G,$T,"Mo",$C->{c}->{J},$A->{M},$C->{c}->{M}||[]) if @{$A->{M}};
 }
 else {
     die "noJMout $A->{am}";
 }
-};
-sub m {
-my ($A,$C,$G,$T,$s,@Me) = @_;
-my $I = $A->{I};
-($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"AN",'Mo',$s,@Me);
-$G->{h}->($A,$C,$G,$T,"loop");
-};
-sub n {
-my ($A,$C,$G,$T,$s,@Me) = @_;
-my $I = $A->{I};
-($A,$C,$G,$T) = $G->{h}->($A,$C,$G,$T,"AN",'In',$s,@Me);
-$G->{h}->($A,$C,$G,$T,"loop");
 };
 sub recycle {
 my ($A,$C,$G,$T,$s,@Me) = @_;
@@ -231,6 +231,32 @@ I:
       t: An
       "y": 
         cv: '0.1'
+    In: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: ee898b7ce694
+        eg: Ise::Shelf
+      t: In
+      "y": 
+        cv: '0.1'
+    Mo: 
+      c: 
+        from: Ise/Shelf
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        bab: ~
+        code: I
+        dige: 27eb1421046a
+        eg: Ise::Shelf
+      t: Mo
+      "y": 
+        cv: '0.1'
     Sev: 
       c: 
         from: Ise/Shelf
@@ -265,35 +291,9 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 63c2c41c7989
+        dige: 56c404ced2ff
         eg: Ise::Shelf
       t: loop
-      "y": 
-        cv: '0.1'
-    m: 
-      c: 
-        from: Ise/Shelf
-      sc: 
-        acgt: s
-        args: A,C,G,T,s
-        bab: ~
-        code: I
-        dige: b8c09c07b8f9
-        eg: Ise::Shelf
-      t: m
-      "y": 
-        cv: '0.1'
-    "n": 
-      c: 
-        from: Ise/Shelf
-      sc: 
-        acgt: s
-        args: A,C,G,T,s
-        bab: ~
-        code: I
-        dige: a990ff0f831f
-        eg: Ise::Shelf
-      t: 'n'
       "y": 
         cv: '0.1'
     recycle: 

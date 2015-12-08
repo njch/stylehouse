@@ -83,6 +83,7 @@ for my $l (split "\n", $s) {
     $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$A,\$C,\$G,\$T, \$$2, /smg;
     $s =~ s/($p->{mwall})(\w*[MN])(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
 
+    # should all gone now - comp comps
     # close side ourselves, likely to gobble suro if, etc.
     $s =~ s/($p->{mwall})(u|n) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'')".($4||';')/smeg;
     $s =~ s/($p->{mwall})(m) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,\$M,$3=>'')".($4||';')/smeg;
@@ -92,8 +93,10 @@ for my $l (split "\n", $s) {
     $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g;
     $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
     $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
-
     $s =~ s/I\.d\&($p->{oint})/G\&$1/g;
+
+    # also $G->{h}->($A,$C,$G,$T,"e","so") -> $G->{h}->($A,$C,$G,$T,"e","so"...)  generalised name pickup, spiral slumping
+    $s =~ s/ ((?!G)\w+)\&($p->{oint})/ G\&$1,"$2"/g;
     # lma quack $not->('tag');? from $G->{h}->($A,$C,$G,$T,"pui",$s)
     $s =~ s/($p->{oing}|\w+)\&($p->{oint})(,[^\s;]+)?(;)?/
         my ($on,$p,$e,$t) = ($1,$2,$3,$4);
@@ -196,7 +199,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 3df1317baaa9
+        dige: e6d80ff6a137
         eg: GBabz
       t: parse_babbl
       "y": 
