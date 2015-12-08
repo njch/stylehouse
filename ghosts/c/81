@@ -26,24 +26,27 @@ Sen: |
     #n oe=>'01-77x14','#','%hs:388,fs:99,blr:5,ig:3'
     J.VV.N = 1;
 Du: |
-    u AmM
     n Dub
 Dub: |
     u urw
     u AmPg
-    n s=>''=>t
+    
+    Atime(2);
+    
+    Mn($_) for @{J.ro.sc.M||[]};
+    
     my $j = G&A,'S';
-    Mn(J.row.o.M);
     n Rec=>$C
 Rec: | # batchy you, web
     u urw
     u Sugd
     u AmPg
-    
     J.ev.o = 'SpaceFlos';
     J.ev.opl = 'fiew';
     
     Atime(2);
+    
+    
     for ( e&C ) {
         sayyl "Rec receives : ".ki $_;
     }
@@ -52,95 +55,85 @@ pi/fiew: |
 indoch: | # Sugd from another event splitter
     warn "INDOCH";
 Sugd: | # acum, regroup, persist, do batches
-    # n MuSt # instance must have storage (AmPg)
-    
     u allact
-    n Sugdev =>32,<<'','%code:U,v:scJ'
+    n Sugdev =>3143,<<'','%code:U,v:scJ'
         J.ev.o ||= 'indoch';
         # dubimport
         J.ev.tr = 1;
         J.uzk ||= [qw'mean onto etc'];
         J.UG ||= [];
     
-    u allvse
-    n Jackup =>6612,<<'','%code:J'
-        my $M = J.oy.o;
-        $M = M.M if ref $M eq 'HASH';
-        ref $M eq 'ARRAY' || die "Nowanm".ki$M;
-        die "TOO HUGE o M ". wdump 7, J.oy.o if G&oleak,J.oy.o,4;
+    # n MuSt # instance must have storage (AmPg)
+    
+    n Sugdev =>33,<<'','%code:U,v:scJ'
+        @{J.UG} = grep {keys %$_} @{J.UG};
         my $y = J.oy;
-        y.at.M = $M;
         y.in = 0.1;
         y.out = 0.5;
         y.ert = 3;
+        G&Sugour,$J;
         J.VV.N = 1;
-        Rw Jamroot $J;
     
-    
-    
-    n downsave=>[-doi=>0.04]
-    #saybl "J.name JUG:: ".ki $_ for @{J.UG};
-    
-    my $pi = {};
-    for my $u (@{J.UG}) {
-        my $k = join(' ', map{u.sc->{$_}}@{J.uzk});
-        push @{$pi->{$k}||=[]}, $u;
-    }
-    for my $k (sort keys %$pi) {
-        my $v = $pi->{$k};
-        my $ts = {};
-        for my $u (@$v) {
-            my $ses = u.sc->{ts.k};
-            push @{$ts->{$ses}||=[]}, $u;
-        }
-        if (keys %$ts > 1) {
-            my @o = sort {@{$ts->{$a}} <=> @{$ts->{$b}}} keys %$ts;
-            saybl "You have doct: ".wdump [ @o ];
-            ts.win = $ts->{$_} for pop @o;
-            ts.k = 'doct';
-        }
-        Mn($k=>-ean=>{s=>$v,ts=>$ts});
-    }
- 
-AmM: |
-    u allvse
-    n J =>661,<<'','%code:J'
-        my $M = J.oy.o;
-        $M = M.M if ref $M eq 'HASH';
-        ref $M eq 'ARRAY' || die "Nowanm".ki$M;
-        die "TOO HUGE o M ". wdump 7, J.oy.o if G&oleak,J.oy.o,4;
-        J.oy.at.M = $M;
-        Rw Jamroot $J;
-        
-Gan: | # what time2 returns, sets up as $j 
     u allacgts
-    n f =>'',<<''
-        G&A,$s||'S'
-AmPg: |
+    n Sugour =>'',<<''
+        my $J = $s;
+        my $M = J.oy.o.M;
+        my $pi = {};
+        for my $u (@{J.UG}) {
+            my $k = join(' ', map{u.sc->{$_}}@{J.uzk});
+            push @{$pi->{$k}||=[]}, $u;
+        }
+        for my $k (sort keys %$pi) {
+            my $v = $pi->{$k};
+            my $ts = {};
+            for my $u (@$v) {
+                my $ses = u.sc->{ts.k};
+                push @{$ts->{$ses}||=[]}, $u;
+            }
+            if (keys %$ts > 1) {
+                my @o = sort {@{$ts->{$a}} <=> @{$ts->{$b}}} keys %$ts;
+                saybl "You have doct: ".wdump [ @o ];
+                ts.win = $ts->{$_} for pop @o;
+                ts.k = 'doct';
+            }
+            Mn($k=>-ean=>{s=>$v,ts=>$ts});
+        }
+        sayyl "Made an :".wdump 3, J.UG;
+    
+    #n downsave=>[-doi=>0.04]
+    
+AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
     n UpPg
     
     u allact
     n Arow =>32,<<'','%code:U,v:scJ'
         J.oy.at.row = 1;
-        my $r = J.row = G&Jr;
-        r.o = djson r.o if r.o;
-        J.UG = r.o.M;
+        G&tyable;
+        my $r = J.ro = G&Jr;
+        J.UG = r.sc.M if J.UG;
         $r
     
     u allsvse
     n row =>4,<<'','%code:Art'
         return warn "Nonroot row: ".ki$C if !C.c.root;
-        sayyl "Rowing ! C.t";
+        .
+        my $M = J.UG || J.oy.o.M;
+        die "J.name TOO DEEP o M ". wdump 7, $M if G&oleak,$M,4;
+        .
+        sayyl "Got row on C.t: ".ki $at;
+        my $r = J.ro ||= {};
+        r.c ||= {};
+        G&xot,r.sc||={},at.sc;
+        delete r.sc.row;
+        delete r.sc.z;
+        r.sc.M = $M;
+        my ($c,$sc) = map{sjson($_)} r.c, r.sc;
+        .
         J.row &&
             G&qp,<<'',C.t;
                 delete from names where t = ?
-        my $o = J.row.o ||= {};
-        sayyl "Got row on C.t: ".ki $at;
-        G&xot,$o,at.sc;
-        delete o.row;
-        delete o.z;
-        delete at.sc.M;
-        G&qp,<<'',C.t,0.3,sjson({}),sjson($o);
+        .
+        G&qp,<<'',C.t,0.3,$c,$sc
             insert into names (t,y,c,sc) values (?,?,?,?)
     
     #
@@ -158,7 +151,7 @@ UpPg: |
     
     n qp =>'',<<''
         G&db ->query($s,@Me);
-
+    
     n tyable =>'',<<''
         $s ||= 'names';
         my $q = "create table if not exists $s (t text, y integer, c json, sc json)";
