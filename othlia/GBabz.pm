@@ -41,7 +41,7 @@ for my $l (split "\n", $s) {
         }
         if ($s =~ $indbe) {
             $s =~ s/^(\s*)\.(\s*)$/$1$2/;
-            $s =~ s/^$indun// || sayre "Noscr '$indun' from $s"
+            $s =~ s/^$indun//
                 if defined $indun;
             push @s, $s;
             next;
@@ -196,7 +196,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 729923cf22a6
+        dige: 3df1317baaa9
         eg: GBabz
       t: parse_babbl
       "y": 
