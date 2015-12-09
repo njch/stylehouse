@@ -450,45 +450,16 @@ indoc: | # for notes, income
     sayyl "Intdoctrined J.name from A.J.name: ";
     sayyl " - ".ki $_ for @M;
 Dug: | # acum, regroup, persist, do batches
-    u ReoCur
     u Sugd
     u AmPg
     u urw
     J.ev.o ||= 'indoc';
     J.ev.tr = 1;
     
-    J.uzk = [qw'mean onto etc'];
-    y.in = 0.1;
-    y.out = 0.5;
-    y.ert = 3;
     J.VV.N = 1;
+    #n downsave=>[-doi=>0.04]
     
     Atime(2);
-    @{J.UG} = grep {keys %$_} @{J.UG};
-    
-    n downsave=>[-doi=>0.04]
-    #saybl "J.name JUG:: ".ki $_ for @{J.UG};
-    
-    my $pi = {};
-    for my $u (@{J.UG}) {
-        my $k = join(' ', map{u.sc->{$_}}@{J.uzk});
-        push @{$pi->{$k}||=[]}, $u;
-    }
-    for my $k (sort keys %$pi) {
-        my $v = $pi->{$k};
-        my $ts = {};
-        for my $u (@$v) {
-            my $ses = u.sc->{ts.k};
-            push @{$ts->{$ses}||=[]}, $u;
-        }
-        if (keys %$ts > 1) {
-            my @o = sort {@{$ts->{$a}} <=> @{$ts->{$b}}} keys %$ts;
-            saybl "You have doct: ".wdump [ @o ];
-            ts.win = $ts->{$_} for pop @o;
-            ts.k = 'doct';
-        }
-        Mn($k=>-ean=>{s=>$v,ts=>$ts});
-    }
  
 downsave: | # Dug downup
     if (A.us&S ) {
