@@ -57,6 +57,11 @@ SevWo: |
     
     u allacgts
     
+    n dlin =>''=><<'',{acgt=>'dir,to,it'}
+        my $l = "$dir/$it";
+        -l $l && readlink($l) ne $to && `unlink $l`;
+        `cd $dir; ln -s $to $it`;
+    
     n writef =>''=><<'',{acgt=>'f,s,append'}
         (my $d = $f) =~ s/\/[^\/]+?$//;
         unless (-d $d) {
@@ -152,20 +157,17 @@ Wuts: |
         G.Wh->{em.is.W} = A.J;
         my $me = I.d&hup,$em;
         delete me.lines;
-        $me = sjson $me;
-        I.d&writef,"life/W/em.is.W\.i",$me;
+        I.d&writef,"life/W/em.is.W\.i",sjson($me);
     
     n speak =>48=><<'','%cg:em'
         return if G.Jlone;
         .
         I.d&writef,"life/J/em.id\.c",em.lines;
         .
-        my $catch = sjson {y=>J=>id=>em.id};
-        I.d&writef,"life/J\.s",$catch,1;
+        I.d&writef,"life/J\.s",sjson({y=>'J',id=>em.id}),1;
     
     n takeover =>49=><<'','%cg:em'
-        -l $_ && `unlink $_` for "life/W/em.is.M";
-        `cd life/W; ln -s em.is.W\.c em.is.M`;
+        G&dlin,'life/W',"em.is.W\.c","em.is.M";
     
 Dig: |
     my $ge = LoadFile('g/c/8');
