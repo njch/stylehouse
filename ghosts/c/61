@@ -95,7 +95,12 @@ Rune: |
         G.way->{$k} = G.way->{$f};
     } qw'Jto=Two In=Twin Modi=Twin Sev=Twev uCon=TwoCon';
     
+    Rw $_ +
+        for grep { G.way->{$_} } G.what.'_up';
+    
     Rw wayt $d=0.001 $p=Top;
+    
+    $_->() for @{delete(G.Rune)||[]};
 Top: |
     say "|";
     my $now = hitime;

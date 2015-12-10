@@ -59,7 +59,9 @@ SevWo: |
     
     n dlin =>''=><<'',{acgt=>'dir,to,it'}
         my $l = "$dir/$it";
-        -l $l && readlink($l) ne $to && `unlink $l`;
+        my $is = -l $l;
+        return if $is && readlink($l) eq $to;
+        `unlink $l` if $is;
         `cd $dir; ln -s $to $it`;
     
     n writef =>''=><<'',{acgt=>'f,s,append'}
@@ -181,45 +183,75 @@ Dig: |
     #$l = wdump 3, [opssibl=>$l];
     $l = encode_entities(decode_utf8($l));
     Mn(afghani=>''=>$l,'%ht,tag:pre,fs:150');
-Webs: |
-    # WebSocket
-    n theweb=>-webso=>"http://localhost:10094"
-pi/webso: |
+
+Web_up: |
     use Mojolicious::Lite;
     push @{app->static->paths}, '/home/s/styleshed/public';
     app->secrets([readlink '/home/s/stylehouse/msecret']);
+    
+    my $s = "http://s:10094";
 
     websocket '/s' => sub {
         my $mojo = shift;
+        sayyl "Connect!";
+        G.Websock->($mojo);
+    };
+    
+    push @{G.Rune||=[]}, sub {
+        saybl "Starting  G.what     listens: $s";
+        app->start('daemon', '--listen' => "$s");
+    };
+Web: |
+    sayyl "Web is up";
+    
+    G.Websock = J.Websock ||= sub {
+        my $mojo = shift;
+        say "Web is socked!";
         my $M = [];
         Mn(elvi=>-websock=>{s=>$mojo});
         n WebSocks => @$M
     };
-
-    saybl "Starting J.name     listens: $s";
-    app->start('daemon', '--listen' => "$s");
+    
+    G.Websen = J.Websen ||= sub {
+        my $m = shift;
+        say "Web is sended!";
+        my $M = [];
+        Mn(elvi=>-websock=>{s=>$m});
+        n WebSocks => @$M
+    };
+    
+    n Wh
+    
+    
 WebSocks: |
+    J.VV.N = 1;
     y.ope = 1;
+    Atime(2)||return;
     for (A.e&C) {
         if (_.c.pi eq 'websock') {
             saybl "Have client: ".wdump 3, $_;
-            
+            n $_
+        }
+        else {
+            say "J.name something e;ses: ".wdump 3, C.c.e;
+            n $_
         }
     }
 pi/websock: |
-    my $tx = $s->tx;
-    Mojo::IOLoop->stream($tx->connection)->timeout(300000);
-      $s->on(message => sub {
-          my ($M, $m) = @_;
-          eval { Sw speaks[$m]; };
-          sayre "Elvis-induced error ".$S->pi."  $@" if $@;
-          $@ = "";
-      });
-      $s->on(finish => sub {
-          my ($M, $code, $reason) = @_;
-          Sw leaves[$code, $reason];
-      });
-      B.address = $tx->remote_address;
+    J.tx ||= do {
+        my $tx = $s->tx;
+        Mojo::IOLoop->stream($tx->connection)->timeout(300000);
+        $s->on(message => sub {
+            my ($M, $m) = @_;
+            sayyl "Message from A.tt.addr: ".slim 90, $m;
+        });
+        $s->on(finish => sub {
+            my ($M, $code, $reason) = @_;
+            sayre "Gone: A.tt.addr $code $reason";
+        });
+        n esta =>1=>hitime()
+        n addr =>2=>$tx->remote_address;
+    };
 pi/tfile: |
     n 1,1,Tailing =>'%hs:4856'
     n 2,2,$s
@@ -631,7 +663,6 @@ flse: | # fusilagery - wants about 2 seconds
         sayre "How to hold ".wdump 2, $r;
     }
     sayre "Have flse click: ".wdump 2, $r;
-
 pi/cde: |
     my $se = I.d&pin,$s,$A;
     #$se = wdump 3, $se;
