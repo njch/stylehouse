@@ -75,14 +75,14 @@ for my $l (split "\n", $s) {
             $inend = 'STEVE' if !$1;
         }
     }
-
+    
     #c babable # expect closing brackets and insert J
     # eg Atime(2) = $A->{time}->($J, 2)
     $s =~ s/($p->{mwall})(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
     $s =~ s/($p->{mwall})(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
     $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$A,\$C,\$G,\$T, \$$2, /smg;
     $s =~ s/($p->{mwall})(\w*[MN])(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
-
+    
     # should all gone now - comp comps
     # close side ourselves, likely to gobble suro if, etc.
     $s =~ s/($p->{mwall})(u|n) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'')".($4||';')/smeg;
@@ -94,7 +94,7 @@ for my $l (split "\n", $s) {
     $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
     $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
     $s =~ s/I\.d\&($p->{oint})/G\&$1/g;
-
+    
     # also $G->{h}->($A,$C,$G,$T,"e","so") -> $G->{h}->($A,$C,$G,$T,"e","so"...)  generalised name pickup, spiral slumping
     $s =~ s/ ((?!G)\w+)\&($p->{oint})/ G\&$1,"$2"/g;
     # lma quack $not->('tag');? from $G->{h}->($A,$C,$G,$T,"pui",$s)
@@ -117,10 +117,10 @@ for my $l (split "\n", $s) {
         my ($old, $op, $oa) = ($1, $2, $3);
         my $g;
         $g ||= '$G';
-
+        
         my $ne = ""; # hidden reverse
         $ne = $1 if $oa =~ s/($p->{sur})$//;
-
+        
         my @n;
         my @m;
         # want to mix {m m m %$ar m m} whereever + is
@@ -151,22 +151,22 @@ for my $l (split "\n", $s) {
         unshift @n, '$ar' if (!@n || $wanr) && $wanr ne "stick";
         push @n, "m=>[".join(',',map{'"'.$_.'"'}@m).']'
             if @m;
-
+        
         my @e;
         push @e, '"'.$op.'"';
         push @e, join(",",@n);
         my $en = join ",", @e;
-
+        
         my $wa = $g.'->{w}->($A,$C,$G,$T,'.$en.')'.$ne;
         $s =~ s/\Q$old\E/$wa/          || die "Ca't replace $1\n\n $s";
     }
-
+    
     # $sc->{k} -> $sc->{k};
     $s =~ s/([A-Za-z_]\w*)((?:\.\w+)+)/"\$$1".join"",map {"->{$_}"} grep {length} split '\.', $2;/segm;
     # 
     $s =~ s/aft \{/acum \$F[0] => _after_do => sub {/sg;
     #
-
+    
     push @s, $s;
 }
 push @s, $inend if $indbe && $inend;
@@ -199,7 +199,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: e6d80ff6a137
+        dige: ee1a0296d6ee
         eg: GBabz
       t: parse_babbl
       "y": 

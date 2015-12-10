@@ -30,7 +30,7 @@ allacgts: |
 allact: |
     u allact
     n allacgts
-    n all4nonJ
+    n all4noJ
     n 'allareact=1'=>42,<<''
         C.sc.act = 1 if !exists C.sc.act;
         C.sc.code = 'In' if !exists C.sc.code;
@@ -64,7 +64,11 @@ allof: |
         C.sc.code ||= do {
             my $cv = C.y.cv || 1;
             $cv =~ s/^0\.//;
-            (A.J.A.vse.of||C.t)." $cv"
+            my $of = A.J.A.vse.of
+            $of ||= do {
+                warn "Using Ct code=C.t $cv   for ".ki $C;
+                C.t
+            "$of $cv"
         };
     
 allvse: |
@@ -86,7 +90,7 @@ allovse: |
     u allact
     n allvse
     n 'allovse'=>4189,<<''
-        C.sc.v ||= 'cY';
+        C.sc.v ||= 'Y';
         C.sc.rg ||= 'cJ,cV,yk,yat,yta,ylv,yvl';
 allsvse: |
     u allact
