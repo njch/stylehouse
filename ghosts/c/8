@@ -164,6 +164,9 @@ Wuts: |
     n speak =>48=><<'','%cg:em'
         return if G.Jlone;
         .
+        if (G.Jsem) {
+            G.Jsem->($em);
+        }
         I.d&writef,"life/J/em.id\.c",em.lines;
         .
         I.d&writef,"life/J\.s",sjson({y=>'J',id=>em.id}),1;
@@ -183,7 +186,6 @@ Dig: |
     #$l = wdump 3, [opssibl=>$l];
     $l = encode_entities(decode_utf8($l));
     Mn(afghani=>''=>$l,'%ht,tag:pre,fs:150');
-
 Web_up: |
     use Mojolicious::Lite;
     push @{app->static->paths}, '/home/s/styleshed/public';
@@ -202,31 +204,66 @@ Web_up: |
         app->start('daemon', '--listen' => "$s");
     };
 Web: |
-    sayyl "Web is up";
+    u UpPg
+    
+    my ($A) =
+    n s=>''=>t
     
     G.Websock = J.Websock ||= sub {
         my $mojo = shift;
         say "Web is socked!";
+        my $s = $mojo;
+        my $tx = $s->tx;
+        J.tx = $tx;
+        my $addr = $tx->remote_address;
+        Mojo::IOLoop->stream($tx->connection)->timeout(300000);
+        $s->on(message => sub {
+            my ($M, $m) = @_;
+            sayyl "Message from $addr ".slim 90, $m;
+        });
+        $s->on(finish => sub {
+            my ($M, $code, $reason) = @_;
+            sayre "Gone: $addr $code $reason";
+        });
+        return;
         my $M = [];
         Mn(elvi=>-websock=>{s=>$mojo});
         n WebSocks => @$M
+        sayyl "Socksdone";
     };
     
     G.Websen = J.Websen ||= sub {
         my $m = shift;
-        say "Web is sended!";
-        my $M = [];
-        Mn(elvi=>-websock=>{s=>$m});
-        n WebSocks => @$M
+        say "Web is sended! $m";
+        J.tx->send($m);
     };
     
-    n Wh
+    my $ya = G.onfork.Web = sub {
+        my $db = G&db;
+        sayyl "Listening forte";
+        $db->on(notification => sub {
+            my ($db, $name, $pid, $payload) = @_;
+            say "$name: $payload";
+            J.Websen->($payload);
+        });
+        $db->listen('Js');
+    };
+    $ya->();
+    saybl "Web done";
     
+    
+Doing: |
+    u UpPg
+    
+    my ($A) =
+    n s=>''=>t
+    
+    my $db = G&db;
+    $db->notify(Js=>"SOGEOGMEO");
     
 WebSocks: |
     J.VV.N = 1;
     y.ope = 1;
-    Atime(2)||return;
     for (A.e&C) {
         if (_.c.pi eq 'websock') {
             saybl "Have client: ".wdump 3, $_;
@@ -238,6 +275,7 @@ WebSocks: |
         }
     }
 pi/websock: |
+    #y.ope = 1;
     J.tx ||= do {
         my $tx = $s->tx;
         Mojo::IOLoop->stream($tx->connection)->timeout(300000);
@@ -279,33 +317,6 @@ pi/tfile: |
         $S
     };
 Sl: |
-    y.at.oWl = 1;
-    J.ev.th ||= 'middle';
-    J.ev.li ||= 'climbos';
-    
-    n reJSlines
-    # makes everything but js=1
-    
-    #n "life/S\.s"=>-sol=>''=>'%dos:loadwav'
-    
-    #y.at.jslines = 1;
-    #n skdo=>2=>"a\.sitandspin();",'%js'
-    
-    #rand 1 < 0.17 &&
-    0 &&
-    n bla =>3=>G.way.paps,'%js'
-    
-    0 &&
-    n blag =>4=>{s=><<''},'%js'
-        //paper.project.clear();
-    
-    #n jshang
-    #n ThisPr
-    #n ReoCur
-    #n Precoall
-    
-    #J.dfko++ ||
-    #    n Notes
     J.fti ||= 0;
     if (J.fti >= 0) {
         Rw waitme;
@@ -313,10 +324,13 @@ Sl: |
     sayyl "Ftime up J.fti";
     Rw forked;
     
+Be: |
+    Rw Sl;
 waitme: |
     use POSIX ':sys_wait_h';
     if (G.forked) {
-        return sayre "waitme already forked";
+        sayre "waitme already forked" for 1..3;
+        return;
         exit;
     }
         
@@ -326,11 +340,9 @@ waitme: |
         saybl "Restart? <";
         my $IN = \*STDIN;
         while (my $k = <$IN>) {
-            say "__ $k";
-            say "IS: ".wdump 3, $k;
             chomp $k;
             J.me = $k;
-            sayyl "OK!";
+            say "__ $k";
             Rw goche $n=$1
             while $k =~ s/(\d+)//g;
             Rw goche $n:_
@@ -340,9 +352,7 @@ waitme: |
         }
     }
     else {
-        sayre "Hur";
         G.forked = 1;
-        saybl "ha";
     }
     
 goche: |
@@ -545,8 +555,6 @@ pi/di: |
     for (`ls --full-time --inode`) {
         chomp;
     }
-
-
 DetailMark: |
     my $mark = [',',qw' ? ; :'];
     A.us&C && A.us&S ? J.fkeo++ : J.fkeo--;
