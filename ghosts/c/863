@@ -270,4 +270,79 @@ pi/vimcolor: |
     #my $s = $G->vimcolor($u);
     #$s =~ s/^(<span) (class="synComment">.+?)(<\/span>)/$1 style="font-size:170%;" $2$com$3/;
     
+doc: |
+     if (H.name eq 'D') {
+        return "";
+     }
+     
+     my $meta = {};
+     meta.y = 'doc';
+     meta.id = mkuid;
+     meta.hol = H.ol;
+     meta.hitime = hitime;
+     
+     my $or = {%$ar};
+     or.G = gp $G;
+     my $en = wdump($or);
+     $en =~ s/^\s+//sgm;
+     
+     my $m = {};
+     m.hol = H.ol;
+     m.hitime = hitime;
+     m.Fscrape = Rw Doc/Fscrape;
+     my $k = m.Fscrape->[2]->{point};
+     
+     my $f = $F[0];
+     m.ar = join',',sort keys %{f.ar};
+     m.en = $en;
+     
+     
+      $G->tai("meta.y/meta.id\.c", $m);
+
+      my $tinymeta = {map{$_=>$meta->{$_}}qw{id y}};
+      # tas many, eg W/this   and it all joints up
+      $G->tas("meta.y", $tinymeta);
+     
+     # J up zee, store in G.swamp here
+     # spurt swamp zip & cargo
+     # someone asks this Hid (sleep mode)
+     # availing benignities before and after the fact)
+Doc/Fscrape: | # prop up from knowings
+     my @fs;
+     my @iF = @F;
+     shift @iF for 1..2;
+     for my $F (@iF) {
+         my $f;
+         f.K = F.K;
+         f.point = F.point;
+         if (!@fs) {
+             G.doc.Fknow->{F.id} = $F;
+         }
+         f.id = F.id if G.doc.Fknow->{F.id};
+         f.id ||= '?'; # tracable from near id
+         f.intr = {map{$_=>gp(F.intr->{$_})}keys %{F.intr}} if F.intr;
+         
+         push @fs, $f;
+     }
+     \@fs
+Doc/exit: | # watch things leave
+     my $y = 'doc';
+     my $l = sub {
+         sayyl "DOC         slwing $y =>  :::: $_[0]";
+         my $m = shift;
+         Rw Doc/exity $J $m;
+     };
+     $G->ily($y, $l);
+       
+Doc/exity: | # receive something that left
+     my $ci = djson $m;
+     my $cc = $G->tri("ci.y/ci.id\.c");
+     fixutf8($cc);
+     my $cd = djson $cc;
+     
+     cd.en = eval "my \$VAR1; cd.en; \$VAR1";
+     die $@ if $@;
+     
+     my $t = "ci.y/ci.id";
+     J bz $t 0.1 $cd, '%ou'=>'fstat', '%ts'=>cd.hitime
 
