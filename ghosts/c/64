@@ -223,7 +223,9 @@ gothat: | # script's most (main::) A, verbatim insert for got ^
     
     Rw Rune $A $C $G $T i;
     
-    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+    G.clockon && G.clockon->() ||
+        Mojo::IOLoop->is_running || Mojo::IOLoop->start;
+    
 eel: | # developing
     n Servo
     n Space
