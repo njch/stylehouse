@@ -28,11 +28,11 @@ saybl "Stack:";
 my $ind = " ";
 my $le;
 my $know;
-$know->{h}->{'Ise::Shelf'} = 1;
+$know->{h}->{'Ngwe'} = 1;
 my $KnowA = $G::KA;
 @stack = reverse @stack;
 my @sum;
-push @sum, shift @stack while @stack > 10;
+push @sum, shift @stack while @stack > 20;
 my @fo;
 unshift @stack, grep { push @fo, $_; $_->{t} =~ 'w' || $_->{t} eq 'h' && $_->{sc}->{call} =~ /^'loop'/
     || @fo > 2 && $fo[-2]->{t} eq 'h' && $fo[-2]->{sc}->{call} =~ /^'exood'/}
@@ -100,7 +100,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 61129a2e6fe2
+        dige: 7857f664a9d7
         eg: Bun
       t: sigstackend
       "y": 

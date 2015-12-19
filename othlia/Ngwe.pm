@@ -172,6 +172,7 @@ $C->{sc}->{got} && die ":Slooping";
             } split /,/, $v;
             push @no, [$C->{sc}->{nk},$C->{sc}->{gk}] if $C->{sc}->{nk} && $nk ne $C->{sc}->{nk};
             for my $s (@no) {
+                next if $s->[1] eq $C->{sc}->{gk};
                 push @$ara, "my \$".$s->[1]." = C\.".$s->[0]."\.".$s->[1].";";
             }
         }
@@ -279,7 +280,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 3aa14dcacf23
+        dige: d5703f4a22e7
         eg: Ngwe
       t: won
       "y": 

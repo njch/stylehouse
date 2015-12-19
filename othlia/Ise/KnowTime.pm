@@ -83,11 +83,11 @@ if ($aim->{$A->{am}}) {
 my $yv = {};
 for my $k (sort keys %$i) {
     my $ii = $i->{$k};
-
+    
     next if $k eq 'Ii';
     next if $k eq 'ooI';
     ref $ii eq 'HASH' || die "weird $k=$ii";
-
+    
     for my $vc (sort keys %$ii) {
         my $iii = $ii->{$vc};
         die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;
@@ -102,23 +102,22 @@ for my $vc (sort keys %$yv) {
     my $s = {};
     my $x = {};
     my $xrd = [];
-
+    
     next if $vc <= $Av && $vc != $c;
     next if $vc > $c;
-
+    
     # our  osc (stay in K per Subtle ness);
     my @iz = grep {
         $aim->{$_} || ($aim->{I} && $A->{Iso}->{$_})
     } sort keys %$is;
     next if !@iz;
-
+    
     # decide inter cv wideness loop
     if ($wasSubtle) {
         undef $wasSubtle;
     }
-    elsif ($vb && $vc > $vb && (
-        @{$A->{N}} || @{$A->{mo}->{re}->{$vb}||[]}
-        )) {
+    elsif ($vb && $vc > $vb &&
+        (@{$A->{N}} || @{$A->{mo}->{re}->{$vb}||[]})) {
         # sincing, wide order
         # various others want to be around for only some of the process...
         sayre "$vb -> $vc  bump, ". @{$A->{N}} if $A->{J}->{V} > 1;
@@ -137,7 +136,7 @@ for my $vc (sort keys %$yv) {
     my $se = $G->{w}->($A,$C,$G,$T,"TreeD",s=>$s,scby=>"gro") 
         if $A->{J}->{V} > 1 && keys %$s;
     $c == 0.1 ? saygr $se : say $se if $se;
-
+    
     my $o;
     $o->{talk} = $talk;
     ($o->{vc},$o->{vb}) = ($vc,$vb);
@@ -146,7 +145,7 @@ for my $vc (sort keys %$yv) {
     if ($o->{Subtle} && !$o->{nonSubtle}) {
         $wasSubtle = 1;
     }
-
+    
     return if $T->{not};  # will &z, oseve
     return if delete $T->{whack};
 }
@@ -163,10 +162,10 @@ for my $kik (@$xrd) {
     for my $s (@{$Ds->{is}}) {
         $D->{sc}->{acgt} eq 's'||die "nonacgts".wdump $D;
         exists $A->{I}->{$D->{t}}||die "acgtI $D->{t} not up: ".wdump $A->{I};
-
+        
         $T->{D} = $D;
         $G->{h}->($A,$C,$G,$T,"$D->{t}",$s);
-
+        
         if (my $ut = $T->{ut}) {
             if ($ut->{matchTd}) {
                 my $d = $s->{d} || die "confuse";
@@ -176,10 +175,10 @@ for my $kik (@$xrd) {
             }
             else { die"utrowhat ".wdump 2, $ut }
         }
-
+        
         # outwave: schools of many fish (not upcv if !@is)
         $o->{vb} ||= $o->{vc} if $D->{sc}->{v};
-
+        
         last if $T->{not} || $T->{whack};
     }
     delete $T->{ut};
@@ -201,6 +200,8 @@ die'difAvcol' if $Av ne ($av || $A->{cv});
 my $ncv;
 my $re;
 my $dont;
+# is for reentrant pins like concoi
+# different phases of awareness
 if ($Av < 0.6 || $c >= 0.7) {
     if ($c >= $Av) {
         $ncv = $c;
@@ -266,7 +267,7 @@ I:
         args: A,C,G,T,i,K,cv,av
         bab: ~
         code: I
-        dige: 01724eaf6e09
+        dige: abd15ac755ac
         eg: Ise::KnowTime
         l: "#c"
       t: ex
@@ -280,7 +281,7 @@ I:
         args: A,C,G,T,o,x,xrd
         bab: ~
         code: I
-        dige: 4364fddd3ad4
+        dige: e0d1bb4c4b11
         eg: Ise::KnowTime
         l: "#c"
       t: exood
@@ -294,7 +295,7 @@ I:
         args: A,C,G,T,K,cv,av
         bab: ~
         code: I
-        dige: 5cf6ca974ebf
+        dige: 971f4fb0fe3d
         eg: Ise::KnowTime
         nois: "#c"
       t: t
