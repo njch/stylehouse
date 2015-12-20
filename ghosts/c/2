@@ -1,5 +1,5 @@
 
-Two: | # make J (Jto)
+Jto: | # make J In=Twin Modi=Twin Sev=Twev uCon=TwoCon';
     my $J;
     J.id = mkuid;
     J.name = ar.t || ar.name || shift @{delete ar.m};
@@ -83,15 +83,15 @@ Two: | # make J (Jto)
     J.A.keep.bb = {%{J.bb}};
     
     return $J;
-Twin: |
+In: |
     ar.N ||= [ar.C] if ar.C;
     ar.N || die "Give N to In (Twin)";
     my @nar = ($J,ar.N);
     push @nar, ar.M if ar.M;
     G&In,@nar;
-Twev: |
+Sev: |
     G&Sev,$J;
-TwoCon: |
+uCon: |
     my $qq = Rw Elj $J qq;
     # low frequencies atop high frequencies
     # travels/foli/foldout vs in-pin u..n..u..n..s
@@ -327,54 +327,7 @@ Viu: | # u/n/m pinging uCon, setup part Jto
        $oAr->($ar);
        Rw In;
     };
-uCon: |
-    my $A = {J=>$J};
-    # am U?
-    A.talk = "A.J.name ".(A.J.le && A.J.le.name);
-    
-    my $qq = Rw Elj $J qq;
-    # low frequencies atop high frequencies
-    # travels/foli/foldout vs in-pin u..n..u..n..s
-    if (my $los = qq.A.los) {
-        my $Yb = qq.A.los.lbbst; # last qq bb (post-this)
-        %{qq.bb} = (
-            %{qq.A.keep.bb||{}}, # from beginning of time
-            %{qq.A.hqq.bb||{}}, # 6y inject before pin
-            %{los.bb||{}}, # non-first iteration of uing
-        );
-        los.end->();
-    }
-    my $Y = Rw Noodles $J:qq;
-    my $oo = Rw Elj $J oo;
-    
-    my $rv = Y.rv;
-    if (@{rv.sc}) {
-        J.on_usc->() if J.on_usc;
-        snooze;
-        Rw UnPreDuv $J:qq;
-        return Rw uCon;
-    }
-    
-    if (J.A.Ii eq rv.i) {
-        say "uCon ---- A.talk: ".F_delta() if J.V;
-    }
-    else {
-        my $N = [@{rv.c}];
 
-        J.A.Ii ?
-            J.A.Ii ne rv.i ?
-                sayre "A.talk: Diff o J.A.Ii -> rv.i"
-              : return J.V && say "A.talk: Same J.A.Ii"
-          : J.V && sayre "A.talk: New uCon ! rv.i";
-
-        Rw uThree $A $J $Y $qq $oo $rv $N;
-
-        say "uCon ch: J.name: ".F_delta() if J.V;
-    }
-    qq.A.los = Rw pha $J:qq los;
-    qq.A.los.lbbst = {%{qq.bb}};
-    #losI.d&pha,los;
-    
 qqlaces: | # wires of before, X = load w/u/$W can substitute for qq's Ws, probably...
     u allvse
     n '','','%of:Mo'
