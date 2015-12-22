@@ -10,79 +10,58 @@ Run: |
     G.what = shift(@Me) || 'Tarp';
     
     Rw $_
-        for grep {G.way->{$_}} map {$_.'_up'} grep {$_ eq 'Ws'} G.what;
+        for grep {G.way->{$_}} map {$_.'_up'} grep {/^W[se]$/} G.what;
     
     Rw wayt $d=0.001 $p=Top;
     
 Top: |
-    my $now = hitime;
-    my $gap = $now - G.lastout;
-    if (!G.asap && $gap < 0.2) {
-        sayre("slowlaned ${_}s")&& snooze 40000;
-        return;
-    }
-    Rw Many;    
-    G.lastout = $now;
-Many: |
-    $G || die;
-    G.lastin = hitime;
-    # The Beatles - Martha My Dear
+    G.now = hitime();
+    G.delta = G.last - G.now if G.last;
+    G.gap = G.lastout - G.now if G.lastout;
+    
     my $J;
-    my $t = 'Oth';
-    my $cv = 0.3;
+    my ($t,$cv,$s) = (Oth=>0.3=>G.what);
     $J = G.outerspace ||= do {
-        sayyl "Greating $G outerspace";
         $J = Rw Jto One;
-        my $s = G.what;
         my $sc;
         G.oin = sc.J = Rw Jto $t;
         Rw jamsc $J $t $cv $s $sc;
         Rw jamsc $J:G.oin $t $cv $s $sc;
         $J
     };
+    n $t=>$cv=>{J=>$t,vv=>6,s=>$s};
     
-    J.A.IIII = [@{G.IIII}];
-    J.A.Indo = 2;
-    #Rw Viu $J;
-    n $t =>$cv=>{J=>$t,vv=>6,s=>G.what};
-    my $y = G.Many||={};
-    y.i++;
-    my $ts = hitime;
-    y.la->{$ts} = 1;
-    my $ron = sub {
-        0.01 * int(100 * (shift() - shift()))
-    };
-    sayyl "many y.i   took ".$ron->($ts, G.lastin)
-        ." since: ".$ron->($ts, G.oin.A.first);
-    
+    G.lastout = hitime();
+    G.last = G.now;
 Oth: |
-    # rising 
+    # rising
     y.ope = 1;
+    y.at.oJl = 1;
     J.A.tid++;
-    n All
     
-    if ('Oth' eq $s) {
-        die "Find hangout";
-    }
-    else {
-        n $s
-    }
+    $s eq 'Oth' && die "Find hangout";
+    J.VV.N = 1;
+    say "oth is: $J  J.name";
+    n $s
+    
+    n All
     # randonly pour time ^
     T.nose = 1;
     
+We: |
+    n Modems
+    n SevWo
+    Rw wayt $d=1.9 $p=Othse $J;
+Othse: |
+    say wdump 3, ["J.mo.s, G.oin",J.mo.s, G.oin];
 All: |
     J.mo.s.al = $J;
-    n Byst
     n Check
-    n @$_ for map{[$_=>W=>{}]} map { sayyl "All uip _.name"; _.name }
+    n @$_ for map{[$_=>W=>{}]} map {_.name}
         map { J.mo.s.bb->{"$_\tJ"} } 
         grep {$_} map { /^(.+)\tall$/ && $1 } keys %{J.mo.s.bb};
         
     
-    
-Byst: | # the random for news interro
-    G.Byst = $J;
-    n s=>''=>t;
     
 Check: |
     Rw Loading;
