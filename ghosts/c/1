@@ -129,26 +129,32 @@ Babble: |
     n combits=>2=><<''
         # how to split our mind
     n '','','%of:u'
-    n cs=>2=><<'','%def'
-        
-    
+    n ss=>2=><<'','%def'
+        my @b = map{{c=>{s=>$_}}} split ' ', C.c.s;
+        T.ex = G&ri,[@b];
+        T.Z.6 = 2; # root.cv = V.cvs + 0.1 once 0.6
+    n '','','%of:I'
+    n s=>2=><<'','%def'
     
 Bubble: |
     u allacgts
     
-    n usage=>'',<<''
+    n usage =>'',<<''
         # make C & feed atom
         my $G;
         G.sus = 'Again';
         Gri&atom,\'%A:Top'
-    n ri=>'',<<''
+    n ri =>'',<<''
         my $z = G&At,In=>2,[@Me];
         G&$s,$z;
-    n ng=>'',<<''
+    n ng =>'',<<''
         G&At,$s=>2,[@Me];
         G&$s,$z;
         $z
-     
+    n At =>'',<<''
+        my $i = G&Aw,$s,@Me;
+        G&o,$i;
+        $i;
     n o =>'',<<''
         s.1 ||= G&i,$s;
         ($s,$A,$C,$G,$T) = ($A,$s,s.C,s.G||$G,s.T||$T);
@@ -158,11 +164,18 @@ Bubble: |
         # like qq 9 s is u desc, version, comes with J
         s.u = G.sus;
         @Me = G&ng,u=>8,[s.u];
-        G&iu,$s,$_ for
+        G&iu,$s,@Me;
     n iu =>''<<''
-        s.I = 
+        s.I.u 
+        
     n tex =>'',<<''
-        my $z = ref $s ? $s : 
+        my $A = @Me ? G&Aw,@Me : $A;
+        my $ov = A.y.ov || 0.0;
+        my $cv = A.y.cv || 0.1;
+        my $s = G&sel,u=>$cv,$ov;
+        return if T.not;
+    n sel =>'',<<''
+        
     n Aw =>'',<<''
         my $z = ref $s ? $s : do { unshift @Me, $s; G&atom };
         my @to = qw't cv';
@@ -173,6 +186,7 @@ Bubble: |
             $s = G&ecv,$s if $t eq 'cv';
             $z->{$t} = $s;
         }
+        z.N = \@Me;
         $z
     n ecv =>'',<<''
         $s /= 10 while $s >= 1 || $s <= -1;
@@ -181,6 +195,7 @@ Bubble: |
         ($s =~ /^.*?([1-9])/)[0]
     n atom =>'',<<''
         my $z = {A=>$A};
+        z.om = A.om || $A;
         z.y = $z;
         $z;
     
