@@ -122,10 +122,11 @@ Aim: |
     my ($A) =
     n s=>''=>t
     G.sus = 'Again';
+    G.ui.Again = G.T.A.Again;
     say wdump 3, [
+        G.ui,
         G&ri,atom=>\'%A:Top'
     ];
-
 Babble: |
     u allvse
     #u \'of:Babz'
@@ -208,40 +209,34 @@ Augen: |
             {c=>$c}
         };
         @Me = G&ui,u=>8,[s.u];
-        G&N,$s,u=>@Me;
+        saybl "Me say ". wdump 10, \@Me;
+        G&N,u=>$s,@Me;
     
+    # news read ag from many only c.s
     n ui =>'',<<''
         my @d = grep {ref eq 'ARRAY'} @Me;
         my $ts = join ' +_ ', map {join ' + ', @$_} @d;
-        sayre "   '$ts'    ".sjson \@d;
-        if (my $N = G.ui->{$ts}) {
-            return @$N;
+        if (my $X = G.ui->{$ts}) {
+            return [{t=>$ts,sc=>{u=>$X}}];
         }
-        # see G.sus and proto on A if no uJ
-        return;
-        #G.ui.
         G&At,$s,@Me;
     
     n N =>'',<<''
-        # $s = isle/person, $z = A indif
-        my($z,@Me) = (@Me);
-        my $f = G&typ,$z,$s;
-        # together
-        G&sp,$z,$f,@Me;
+        my ($in,$ay,$me) = ([],[],[]);
+        push @{ref $_},$_ for $s,@Me;
+        # $s = A indif of A, $z = person 
+        # - bats types between cones, behalf
+        my($f,@Me) = (@Me);
+        my $t = G&typ,$s,$f;
+        # together onto
+        G&sp,$s,$t,@Me;
         
-    # time is a grate focuser
-    # A cease to be in unity and now has competing parts
-    # sc from such field should fall away, could be m later
-    # meaning of life density very meaningful
-    # why is it just a thickl
-    # signifies nothingness.
-    # many spiral jobs, elvis, mux, overs, repl
     n typ =>'',<<''
         # adapts apart maps
-        my ($z) = @Me;
-        $z || die "send extra light";
-        my $f = z.4->{$s} || die "type $s is uNknown";
-        f.sc.apart ||= [ map {
+        my ($f) = @Me;
+        $f || die "send extra light";
+        my $t = s.4->{$f} || die "type $s is uNknown ".ki s.4;
+        t.sc.apart ||= [ map {
             [ map {
                 my $c;
                 /^([yc]|sc)(.+)$/;
@@ -250,14 +245,14 @@ Augen: |
                 {c=>$c}
             } split '_', $_ ]
         } grep {/_/} keys %{f.c} ];
-        $f;
+        $t;
     
     n sp =>'',<<''
         # $s is A cone
         my @t = grep {ref eq 'HASH'} @Me;
         my @N = grep {ref eq 'ARRAY'} @Me;
         # look for most minded end of u connecto
-        die "Spiral thee". wdump 17, [$s,\@t,\@N];
+        die "Spiral thee". wdump(17, [$s,\@t]).wdump \@N;
         for (@Me) {
             _.sc.u || next;
             G&om,$s,u=>$_;
