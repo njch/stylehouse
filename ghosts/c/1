@@ -162,6 +162,18 @@ Sp: | # S tunneli
     # 7 is change adaption
     # 8 synthesis intos
     # - parse Nput into
+    my $some = [
+        [local=>''=>{arm=>'J/A/IIII'}],
+        [sticks=>''=>{arm=>'J/A/III'}],
+        [inqq=>''=>{arm=>'J/A/I'}],
+    ];
+    # then G&S,C=>$sA,R=>$some,[@Me]
+    # retracing and placing in sA an tex sorte - cv/K/t
+    # which gets partitioned into i.1.cv(0-1
+    n emit =>'',<<''
+        my $n = ceil($s<1?$s*10:$s); # .51->6, 0.9->9
+        A.1.i->{$n}
+        
     n collaspII=>'',<<''
         # to make tex input chains - A.J.A.II but sortex
         # basically attach, but attachably
@@ -169,14 +181,12 @@ Sp: | # S tunneli
         # import A without sort if index same
         # sees changelog in z or changed index refs in 
         # watch sc changes, overbits them until drain - hst table
-        my $II = A.J.A.II ||= {};
-        Rw spII $A $II J/A/IIII J/A/III J/A/I;
-        $II;
     
     # some on A network resolver
     # T.Z out depths - entropy brollies
     n arm =>2,<<''
         my @N = @$arm;
+        my @C;
         while (@N) {
             my $m = shift @N;
             my $r = G.pwin->($m, $A);
@@ -191,26 +201,31 @@ Sp: | # S tunneli
                 push @C, {t=>$m,sc=>{u=>$r}};
             }
         }
+        T.Z.1 = \@C;
+    
     n src =>2,<<''
-        push @C, {t=>$_->[0],c=>{s=>$_->[1]}} for @$src;
+        T.Z.1 = [map{ {t=>$_->[0],sc=>{u=>$_->[1]}} } @$src];
     
     n Dive
 Dive: |
     u allvse
     n '','','%of:S'
     
+    n A =>2,<<'','%code:C'
+        A.mo
+    
+    n via =>2,<<'','%code:R'
+        # !
+    
     n slipout=>3,<<''
         my $Ii = join " + ", map{"_.t:_.c.s"} @C;
         $Ii eq II.Ii && return;
-        # we dive into always, should form tidy tree with D chaos at tips
-        # the screening space saver, the no way out-er
          
     
     n spII=>'',<<''
         if (my $TI = G.TT->{$Ii}) {
-            die "DifgTI " if TI.Ii ne $Ii;
             %$II = %$TI;
-            $Ii eq II.Ii || die "Hiked GTT TI.Ii ne $Ii";
+            TI.Ii ne $Ii || die "Hiked GTT TI.Ii ne $Ii";
             return G.protV && sayyl "Hiked GTT $Ii";
         }
         else {
@@ -220,16 +235,8 @@ Dive: |
         
         my $N = [@C];
         my $s = {};
-        my $say;
-        (($say = 
+        my $say = 
         Rw spIII $A $II $N K/cv/t $s
-        )=~ /stabilised/ #&& say("Stabilised A.talk ...")
-        && 0
-        || A.J.V > 1 || A.J.VV.t) &&
-        saybl Rw TreeD $s $scby=gro;
-
-        say "Spidered A.talk: ".F_delta if A.J.V;
-        $say
     
     n spIII =>3,<<''
         my $ooI = ar.ooI;
@@ -389,9 +396,6 @@ Augen: |
         ($s,$A,$C,$G,$T) = ($A,$s,s.C,s.G||$G,s.T||$T);
         G&tex,$s;
     
-    # collapsy c.s cache that tend W
-    # asumes G.ui provides an 8t u
-    # 8t may be real or Amagined
     # forever spiral langality beyond the stick pouch mechanics
     n ui =>'',<<''
         my @d = grep {ref eq 'ARRAY'} @Me;
@@ -399,7 +403,6 @@ Augen: |
         return [{t=>$ts,sc=>{u=>$_}}]
             for grep {$_} G.ui->{$ts};
         G&C,$s,@Me;
-        # u 8 [s.u], returning {C}, {C}, {C}...
     
     # rest to invigorate over the top
     # the u7 2d into produces the origins structure, index can be applied anywhere
@@ -426,7 +429,7 @@ Augen: |
         };
         # we'll make a spiral map of these too ^ taps how things are acting
         # most envirgorator
-        # the probably S, person,(cv),ov.. usual incrementor
+        # the probably S, person,(cv),t.. usual incrementor
         # spec chain breakup by nonref personin to next A
         my $t = G&typ,$s,'u';
         # $s will be coned to C, which houses C ups at the ends of update ventures
@@ -442,12 +445,10 @@ Augen: |
         # they can foreign T.Z apart by travel, s.y.y.T
         # want streamier situp for T.Z
         # v of C is made A.N, {A} where A.y not A, theyify
-        # the C A.N=[$s] w
+        # the C A.N=[$s] w`
         sayyl "Hi";
-        # chucks a bunch of records
-        # TZing out must be done before C for:S, picking with instRuctions
-        my $o = G&S,C=>$s,R=>$t,[@Me];
-        say "Gripus ".wdump 3, $o;
+        my $o = G&S,C=>[$s],R=>$t,[@Me];
+        say "Gripus ".wdump 6,[ o.N,[[$o]] ];
         exit;
         # s=A, protocol & data
         
@@ -466,8 +467,27 @@ Augen: |
     # create a new A.mo (loop gatherer) with same A.om (I implier)
     n S=>'',<<''
         my ($z,@z) = reverse G&wdef,'S',$s,@Me;
-        G&fits,$z,al=>@z;
+        G&fits,$z,al=>@z,$z;
+        G&tig,$z;
         $z
+    
+    n tig=>'',<<''
+        _.mo = $s for $s, values %{s.al||{}};
+        # inners need to 
+        while (1) {
+            G&away,$s && last;
+            G&thro,$s;
+        }
+        die wdump 6,[s.al.R.N,s,al.C.N,s.N];#s.om;
+        #while (G&cvin,$s
+    n away=>'',<<''
+        # fellow al light cone lessthan
+        
+        
+        
+    n thro=>'',<<''
+        # get u i synced
+        A.ii
     
     n fits=>'',<<''
         s.y eq $s || die "send A";
@@ -482,23 +502,19 @@ Augen: |
     #  that reaches for store around history baggage selved
     #  so to create indices of same t, etc
     n ow=>'',<<'',{acgt=>'s,k'}
-        my $sc = s.sc || $s;
-        # writes in language on there ^ 
-        # c is resharable intro:
         my $c = s.c || {};
-        
-        # his
-        my $d = $sc->{$k}||={}; # of store into protocol
-        my $ot = $sc->{"hst_$k"}; # ins & the, history
-        ($ot,my $to) = ({},$ot) if $ot;
-        for (@Me) { # data jam relative
+        my $sc = s.sc || $s;
+        my $d = $sc->{$k}||={};
+        #my $ot = $sc->{"hst_$k"};
+        #($ot,my $to) = ({},$ot) if $ot;
+        for (@Me) {
             # could t=>s out and t-<s in, jamming many t
             my $K = _.t;
             my $o = $d->{$K};
             # Mediate changing
             $d->{$K} = $_;
             # Other change
-            $ot->{$K} = $o if $ot && $o ne $_;
+            #$ot->{$K} = $o if $ot && $o ne $_;
         }
         # %$ot && send c.w, qs edge of tex
         # C riplets 
@@ -555,7 +571,6 @@ Augen: |
 Swee: | # push commands
     u allvse
     n '','','%of:C'
-    
     n via => 12=><<''
         C.sc.apart ||= [ map {
             [ map {
@@ -566,7 +581,8 @@ Swee: | # push commands
                 {c=>$c}
             } split ' ', $_ ]
         } C.c.ug ];
-Es: |
+        C.sc.sck ||= C.t;
+    
     
 Indular: | # wain wain
     # not allcode since uCons blank qq cone & then thing
