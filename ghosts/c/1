@@ -487,12 +487,22 @@ Augen: |
         C.c.di ||= ['',split' ',C.c.in];
         C.c.ti ||= [split' ',C.c.to] if C.c.to;
         my $de = C.c.di->[C.c.de];
+        my $re = C.c.re <= C.c.de;
         C.c.is = $de;
         C.c.is = 'C' if !defined $de;
         
         # is looking at the source agent, surf II
-        C.c.re <= C.c.de &&
-        $de && C.c.s eq R.c.s && return say "A C.t s ok $de   ";#.ki C.c.s;
+        # the only mechani
+        my $off = sub {
+            C.c.usto = R.c.usto if $_[0] && R.c.usto;
+            if (C.c.usto) {
+                #1||C.t eq 'Styles';
+                C.y.U.sc.usto->{C.t} = C.c.usto;
+            }
+        };
+        return $off->(1) && say "A C.t s ok $de   "
+            if C.c.re <= C.c.de &&
+                $de && C.c.s eq R.c.s;
         my $tw = C.sc.tw = {};
         if (defined $de) {
             $tw->{$_} = C.c.s->{$_} for !$de ? C.t : keys %{C.c.s};
@@ -501,12 +511,15 @@ Augen: |
             delete tw.ooI;
             delete tw.Ii;
         }
-        C.c.re <= C.c.de &&
-        $de && G&heq,R.sc.tw,$tw && return say "A C.t tw ok $de";
+        return $off->(1) && say "A C.t tw ok $de"
+            if C.c.re <= C.c.de &&
+                $de && G&heq,R.sc.tw,$tw;
         # bits to revamp for group or
         # then whattoselect
         for my $k (sort keys %$tw) {
             my $c = G&hup,$C;
+            delete c.sc.usto;
+            delete c.c.usto;
             c.t = $k;
             if (C.c.is) {
                 c.sc->{C.c.is} = $k if C.c.is;
@@ -543,22 +556,18 @@ Augen: |
             sayre "Same euk C.t $de" if G&heq,R.sc.usto,$u;
             my $to = C.c.usto = {};
             #say wdump 6,[$to,$u] if T.nuck < 3;
-            #sayre "This C.t is".ki $to;
-            die wdump $u if C.c.de < 2;
+            #;
             say "C.t from ".join " ", sort keys %$u;
             G&supe,$to,3,$_ for values %$u;
             
-            sayre "This ".wdump 5, [$to,$u];
+            #sayre "This ".wdump 5, [$to,$u];
             sayre "Node   C.t   C.c.s.t sez ".ki C.c.usto if T.nuck++ < 13;
-            saybl wdump 3, C.c.usto if T.nuck < 9;
-            die wdump 30, $to if T.nuck > 4;
+            #saybl wdump 3, C.c.usto if T.nuck < 9;
+            #die wdump 30, $to if T.nuck > 16;
+           # die sayre "This C.t is".ki($u).wdump 3, $to if C.c.de < 1;
         }
-        if (C.c.usto) {
-            #1||C.t eq 'Styles';
-            sayyl "Sduy  C.t  -> ".ki C.c.usto;
-            C.y.U.sc.usto->{C.t} = C.c.usto;
-        }
-        snooze(5000);
+        $off->();
+        #snooze(5000);
         C.sc.th = R.sc.th;
         %$R = %$C;
         if (!C.c.de) {
@@ -570,7 +579,8 @@ Augen: |
     n supe =>'',<<'' 
         my $l = shift @Me;
         $l--;
-        for my $m (@Me) {
+        while (@Me) {
+            my $m = shift @Me;
             my @k = keys %$m;
             for my $k (@k) {
                 my $v = $m->{$k};
@@ -580,7 +590,6 @@ Augen: |
                 }
                 else {
                     $s->{$k} = $v;
-                    say "Applise $k v $v";
                 }
             }
         }
