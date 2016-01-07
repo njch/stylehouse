@@ -484,40 +484,45 @@ Augen: |
         my $R = C.c.R ||= s.R->{C.t} ||= {};
         C.c.us ||= R.c.us ||= $s->{C.t} ||= {};
         .
-        C.c.di ||= ['',split' ',C.c.in];
-        C.c.ti ||= [split' ',C.c.to] if C.c.to;
+        # '' looks at $s, surfs II
+        # syncopate times
+        C.c.di ||= ['',split' ',delete C.c.in];
+        C.c.ti ||= [split' ',delete C.c.to] if C.c.to;
         my $de = C.c.di->[C.c.de];
         my $re = C.c.re <= C.c.de;
         C.c.is = $de;
         C.c.is = 'C' if !defined $de;
         
-        # is looking at the source agent, surf II
         # the only mechani
         my $off = sub {
             C.c.usto = R.c.usto if $_[0] && R.c.usto;
             if (C.c.usto) {
-                #1||C.t eq 'Styles';
                 C.y.U.sc.usto->{C.t} = C.c.usto;
             }
         };
+        
         return $off->(1) && say "A C.t s ok $de   "
-            if C.c.re <= C.c.de &&
-                $de && C.c.s eq R.c.s;
+            if $re && $de &&
+                C.c.s eq R.c.s;
+        
         my $tw = C.sc.tw = {};
         if (defined $de) {
             $tw->{$_} = C.c.s->{$_} for !$de ? C.t : keys %{C.c.s};
+            if (C.c.is eq 'K') {
+                delete tw.ooI;
+                delete tw.Ii;
+            }
         }
-        if (C.c.is eq 'K') { # or C.sc.ver
-            delete tw.ooI;
-            delete tw.Ii;
-        }
+        
         return $off->(1) && say "A C.t tw ok $de"
-            if C.c.re <= C.c.de &&
-                $de && G&heq,R.sc.tw,$tw;
+            if $re && $de &&
+                G&heq,R.sc.tw,$tw;
+        
         # bits to revamp for group or
         # then whattoselect
         for my $k (sort keys %$tw) {
             my $c = G&hup,$C;
+            die wdump $c if T.nuck++ == 133;
             delete c.sc.usto;
             delete c.c.usto;
             c.t = $k;
@@ -534,9 +539,8 @@ Augen: |
             G&st,$s,$c;
         }
         if (!defined $de) {
-            # %{C.c.us} = %{C.c.s};
+            # %{C.c.us} = %{C.c.s}; # embrace c/sc
             C.y.U.c.us->{C.t} = C.c.s;
-            #my ($top) = G&ylo,'U';
             if (my $t = C.c.ti) {
                 my @k = grep {defined} map { C.sc->{$_} } @$t;
                 die "@k not for ".ki$t if @k != @$t;
@@ -553,25 +557,23 @@ Augen: |
             }
         }
         if (my $u = C.sc.usto) {
-            sayre "Same euk C.t $de" if G&heq,R.sc.usto,$u;
-            my $to = C.c.usto = {};
-            #say wdump 6,[$to,$u] if T.nuck < 3;
-            #;
-            #say "C.t from ".join " ", sort keys %$u;
-            G&supe,$to,3,$_ for values %$u;
-            
-            #sayre "This ".wdump 5, [$to,$u];
-            sayre "Node   C.t   C.c.s.t sez ".ki C.c.usto if T.nuck++ < 13;
-            #saybl wdump 3, C.c.usto if T.nuck < 9;
-            #die wdump 30, $to if T.nuck > 16;
-           # die sayre "This C.t is".ki($u).wdump 3, $to if C.c.de < 1;
+            if (G&heq,R.sc.usto,$u ) {
+                sayre "Same euk C.t $de";
+                C.c.usto = R.c.usto;
+                C.c.ustolk = R.c.ustolk;
+            }
+            else {
+                my $to = C.c.usto = {};
+                G&supe,$to,3,$_ for values %$u;
+                my $o = C.c.ustolk = [sort keys %{C.c.usto}];
+                sayre "Node   C.t   C.c.s.t sez  @$o" if T.nuck++ < 13;
+            }
         }
         $off->();
-        #snooze(5000);
         C.sc.th = R.sc.th;
         if (!C.c.de) {
-            sayyl "Seem to C.t  ".join '  ', sort keys %{C.c.usto};
-            #sayre "AgAin".wdump 2,[C.c.usto, R.c.usto];# if C.c.usto eq R.c.usto;
+            my $o = C.c.ustolk;
+            sayyl "Seem to C.t  ".join ' 2 ', @$o;
         }
         %$R = %$C;
         $C
