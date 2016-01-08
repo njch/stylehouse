@@ -274,6 +274,23 @@ Bubble: |
         $s = G&Aw,$s,@Me;
         G&o,$s;
         $s;
+    # more plays on words than content
+    # persons&things oscillation, last one to be mo
+    # A tossed in with get a new mind wrapped around it
+    n wdef=>'',<<''
+        my $per = {};
+        my @z; # bits of mind
+        my @p = (@Me);
+        my @s;
+        while (@p) {
+            my $e = shift @p;
+            $e || last;
+            ref $e || push(@s, $e) && next;
+            push @s, $s if !@s; # default person
+            push @z, G&Aw,@s,$e;
+            @s = ();
+        }
+        @z;
     n Aw =>'',<<''
         my $z = ref $s ? $s : do { unshift @Me, $s; G&atom };
         my @to = qw't cv ov';
@@ -349,8 +366,8 @@ Augen: |
     
     # attain wholifier
     # fairly trans parent A.II al readier
-    # &At,Vev=>3,[C] # shells out new Vev A->Cs until 3
-    #  
+    # G&At,Vev=>3,[C] # shells out new Vev A->Cs until 3
+    # 
     n o =>'',<<''
         s.1 ||= G&i,$s;
         ($s,$A,$C,$G,$T) = ($A,$s,s.C,s.G||$G,s.T||$T);
@@ -457,7 +474,7 @@ Augen: |
     # create a new A.mo (loop gatherer) with same A.om (I implier)
     n S=>'',<<''
         my ($z,@z) = reverse G&wdef,'S',$s,@Me;
-        G&fits,$z,al=>@z,$z;
+        G&ow,$z,al=>@z,$z;
         G&tig,$z;
         $z
     
@@ -472,14 +489,15 @@ Augen: |
         #while (G&cvin,$s
     n away=>'',<<''
         s.om.II = s.om.J.A.II || die "NojAII ".ki s.om;
-        my $i = G&st,$s,$_
-            for [II=>{s=>s.om,in=>'K cv t',to=>'cv K t'}];
+        # that this C is kinda lying around clues and the seed itself
+        my $i = G&st,$s,$_ for [II=>{s=>s.om,in=>'K cv t',to=>'cv K t'}];
         sayyl "Away: ". wdump 3, $i;
+        # 
         # steal s.om.J.A.II
         # N others 
         # fellow al light cone lessthan
         # they say A.cv before leaving (even T.Z)
-        # C puts G&Z,1,{
+        # C puts G&Z,1,[[$nt=>{c}]...]
         #s.m.cv < s.cv
         1
     n thro=>'',<<''
@@ -506,6 +524,39 @@ Augen: |
                 }
             }
         }
+    
+    # simple .$k.$t = C from Cs
+    # queue a push like a n does, substrate fromity from substrate
+    # A would have no c, giving itself as idea
+    # some over would batchify sources on supplied s
+    #  that reaches for store around history baggage selved
+    #  (actuaets history)
+    #  so to create indices of same t, etc
+    n ow=>'',<<''
+        my $k = shift @Me;
+        my $c = s.c || {};
+        my $sc = s.sc || $s;
+        my $d = $sc->{$k}||={};
+        #my $ot = $sc->{"hst_$k"};
+        #($ot,my $to) = ({},$ot) if $ot;
+        my $tw = {};
+        for (@Me) {
+            # could t=>s out and t-<s in, jamming many t
+            my $K = _.t;
+            if (my $al = $tw->{$K}) {
+                die "Already loded a $K ".wdump [ $_, $al ];
+            }
+            $tw->{$K} = $_;
+            my $o = $d->{$K};
+            $d->{$K} = $_;
+            #$ot->{$K} = $o if $ot && $o ne $_;
+        }
+        # %$ot && send c.w, qs edge of tex
+        # C riplets 
+    
+    n fits=>'',<<''
+        s.y eq $s || die "send A";
+        G&ow,$s,@Me
     
     n ylo =>'',<<''
         my @o = $C;
@@ -542,59 +593,21 @@ Augen: |
     # promise 1s for oneself to do
     # make impon this other surface, whose A.am is 
     n Z =>'',<<''
+        unshift @Me, $s;
         my (@S) = grep {!ref $_} @Me;
-        unshift @S, A.t
-        # ^ K cv ov, mostly cv, if \d
+        unshift @S, A.t if $S[0] !~ /\D/;
+        my ($K,$cv,$ov) = @S;
+        $cv ||= 0.1;
+        my $s = A.t eq $K ? $A : G&fint,$K;
+        # find A.m.al
         # create on A.m
         my (@N) = grep {ref $_} @Me;
         #
     
-    n fits=>'',<<''
-        s.y eq $s || die "send A";
-        G&ow,$s,@Me
+    n fint =>'',<<''
+        my $m = A.m;
+        m.al->{$s}
     
-    # queue a push like a n does, substrate fromity from substrate
-    # A would have no c, giving itself as idea
-    # some over would batchify sources on supplied s
-    #  that reaches for store around history baggage selved
-    #  so to create indices of same t, etc
-    n ow=>'',<<'',{acgt=>'s,k'}
-        my $c = s.c || {};
-        my $sc = s.sc || $s;
-        my $d = $sc->{$k}||={};
-        #my $ot = $sc->{"hst_$k"};
-        #($ot,my $to) = ({},$ot) if $ot;
-        for (@Me) {
-            # could t=>s out and t-<s in, jamming many t
-            my $K = _.t;
-            my $o = $d->{$K};
-            # Mediate changing
-            $d->{$K} = $_;
-            # Other change
-            #$ot->{$K} = $o if $ot && $o ne $_;
-        }
-        # %$ot && send c.w, qs edge of tex
-        # C riplets 
-    
-    # more plays on words than content
-    # persons&things oscillation, last one to be mo
-    # A tossed in with get a new mind wrapped around it
-    # of:C should make such light cone destinations writable for S looking for things
-    n wdef=>'',<<''
-        my $per = {};
-        my @z; # bits of mind
-        my @p = (@Me);
-        my @s;
-        while (@p) {
-            my $e = shift @p;
-            $e || last;
-            ref $e || push(@s, $e) && next;
-            push @s, $s if !@s; # default person
-            push @z, G&Aw,@s,$e;
-            @s = ();
-        }
-        @z;
-        
     #c pre zen ting
     n st =>'',<<'' 
         my ($C) = G&tC,@Me;
