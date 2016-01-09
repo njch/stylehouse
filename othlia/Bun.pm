@@ -22,7 +22,7 @@ if ($stack[-1] =~ /^\s+Mojo::IOLoop::start/) {
 # write on the train thats about to derail
 for (@stack) {
     my $i = -1;
-    $_->{sc}->{Aref} = $1 if $_->{sc}->{call} =~ s/'(HASH\(\S+\))', (?:'(HASH\(\S+\))', ){3}//;
+    $_->{sc}->{Aref} = $1 if $_->{sc}->{call} =~ s/'?(HASH\(\S+\))'?, (?:'?(HASH\(\S+\))'?, ){3}//;
 }
 saybl "Stack:";
 my $ind = " ";
@@ -100,8 +100,9 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 7857f664a9d7
+        dige: 88e2d9e04827
         eg: Bun
+        of: I
       t: sigstackend
       "y": 
         cv: '0.1'
@@ -115,6 +116,7 @@ I:
         code: I
         dige: 4d927cd17c44
         eg: Bun
+        of: I
       t: sigstackwarn
       "y": 
         cv: '0.1'

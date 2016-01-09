@@ -27,13 +27,17 @@ my $Jsrc = qr/(J\d*(?:\.\w+)?) (\w+)/;
 my $Jlump = qr/(\S+) (\S+)\s+(\S.+)/;
 $s =~ s/$p->{mwall}$Jsrc $Jlump$/$1.$2->("$3\\t$4" => $5);/smg;
 
-# :
+
 my @s;
 my $indbe;
 my $inend;
 my $indun;
 for my $l (split "\n", $s) {
     my $s = $l;
+    my $ind = '<<';
+    sayyl "WSuw $s" if
+    # :
+    $s =~ s/^(\w+)(?: (-?\w+))?:(?: (%.+))?$/n $1 =>'$2',$ind'','$3'/smg;
     if ($indbe) {
         if ($indun eq 'NEXT') {
             $s =~ /^(\s+)/ || die "Must Indunext:\n$s[-1]\n$s";
@@ -77,10 +81,11 @@ for my $l (split "\n", $s) {
     }
     
     #c babable # expect closing brackets and insert J
+    
     # eg Atime(2) = $A->{time}->($J, 2)
     $s =~ s/($p->{mwall})(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
     $s =~ s/($p->{mwall})(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
-    $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$A,\$C,\$G,\$T, \$$2, /smg;
+    $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$A,\$C,\$G,\$T, /smg;
     $s =~ s/($p->{mwall})(\w*[MN])(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
     
     # should all gone now - comp comps
@@ -112,6 +117,7 @@ for my $l (split "\n", $s) {
         join '->', $1, map {'{"'.$_.'"}'}
         grep {$_} split m{\.>}, $2;
     /smge;
+
     #c Rw
     while ($s =~ /(Rw ($p->{oint})(?:(?!$p->{sur}) (.+?))?)$p->{sur}/gsm) {
         my ($old, $op, $oa) = ($1, $2, $3);
@@ -188,6 +194,7 @@ I:
         code: I
         dige: e489cdec53d0
         eg: GBabz
+        of: I
       t: bitsof_babble
       "y": 
         cv: '0.1'
@@ -199,8 +206,9 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: ee1a0296d6ee
+        dige: ce68152e1c57
         eg: GBabz
+        of: I
       t: parse_babbl
       "y": 
         cv: '0.1'
