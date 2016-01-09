@@ -32,12 +32,11 @@ my @s;
 my $indbe;
 my $inend;
 my $indun;
+my $angt = '<'.'<';
 for my $l (split "\n", $s) {
     my $s = $l;
-    my $ind = '<<';
-    sayyl "WSuw $s" if
-    # :
-    $s =~ s/^(\w+)(?: (-?\w+))?:(?: (%.+))?$/n $1 =>'$2',$ind'','$3'/smg;
+    # things:
+    $s =~ s/^(\w+)(?: (-?\w+))?:(?: (%.+))?$/n $1 =>'$2',$angt'','$3'/smg;
     if ($indbe) {
         if ($indun eq 'NEXT') {
             $s =~ /^(\s+)/ || die "Must Indunext:\n$s[-1]\n$s";
@@ -65,7 +64,6 @@ for my $l (split "\n", $s) {
             undef $inend;
         }
     }
-    my $angt = '<'.'<';
     my $ze = qr/$angt['"](\w*)['"]/;
     if ($s =~ /^(\s*)(?!#)\S.*$ze/) {
         if ($2) {
@@ -206,7 +204,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: ce68152e1c57
+        dige: 627184148aa0
         eg: GBabz
         of: I
       t: parse_babbl

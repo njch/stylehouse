@@ -227,9 +227,8 @@ Aim: |
         #G&ri,atom=>\'%A:Top';
     #say "Done: ". wdump 2, $z;
     my $o = z.1;
-    G&tig,$o;
     my $R = o.R.II;
-    sayyl wdump 6, [o.II.sc];
+    sayyl "Aimed: ".wdump 3, [o.II.sc];
     #sayre "DO".wdump 5, G.ui;
     
 Babble: | # input coding, severab, sectory compressions
@@ -280,7 +279,6 @@ Bubble: |
     # persons&things oscillation, last one to be mo
     # A tossed in with get a new mind wrapped around it
     wdef:
-        saybl "wA Together Def:$s". wdump 2,[$s,@Me];
         my $per = {};
         my @z; # bits of mind
         my @p = (@Me);
@@ -383,7 +381,7 @@ Augen: |
         }];
         
         my $t = s.4.u ||= G&tC,$mup;
-        my $o = G&S,C=>[$s],R=>$t,[@Me];
+        my $o = G&S,$s,C=>[$s],R=>$t,[@Me];
         $o;
         # we'll make a spiral map of these too ^ taps how things are acting
         # most envirgorator
@@ -432,11 +430,14 @@ Augen: |
     # u being c and sc opposites, an into I recipe or contents
     # create a new A.mo (loop gatherer) with same A.om (I implier)
     S:
-        my ($z) = my @z = reverse G&wdef,'S',$s,@Me;
-        # G&st,$z,[al=>{tug=>\@z,ordas=>tug}
-        G&ow,$z,al=>@z,$z;
+        # s is theg, z is the m, all is mo, then Ans <-> mos
+        my @z = reverse G&wdef,'S',@Me;
+        my $z = $z[0];
+        G&ow,$z,al=>@z;
+        _.m = $z for values %{z.al||{}};
         # ^ should be one swoop:
-        _.m = $s for $s, values %{s.al||{}};
+        # G&st,$z,[al=>{tug=>\@z,ordas=>tug}
+        # interest in dispatching to A where m not us
         G&mode,$z;
         $z
     
@@ -453,7 +454,7 @@ Augen: |
         my $ii = G&st,$s,[ii=>{s=>$i,lk=>'usto'}];
         my $sc = ii.c.R.sc;
         
-        sayyl "Away: ". wdump 2, $sc;
+        #sayyl "Away: ". wdump 2, $sc;
         sc.lker ||= 0;
         my $cv = sc.lk->[sc.lker];
         # A.cv is already to, A.ov is next wanted
@@ -816,65 +817,10 @@ Augen: |
                 delete tw.Ii;
             }
         }
-        if (my $i = C.c.lk) {
-            my $u = C.c.s;
-            C.sc.lk = u.c->{$i.'lk'};
-            C.sc.unlk = u.c->{$i};
-            ref C.sc.lk eq 'ARRAY' || die "no lk array";
-            ref C.sc.unlk eq 'HASH' || die "no unlk hash";
-            C.sc.lk eq R.sc.lk && C.sc.unlk eq R.sc.unlk && return $C;
-            C.sc.lk eq R.sc.lk || delete R.sc.lker;
-            C.c.nos = 1;
-        }
         
-        # one time see things again in order
-        if (my $u = C.c.tug) {
-            C.c.nos = 1;
-            C.c.notw = 1;
-            my $nd;
-            for (@$u) {
-                my $t = _.t;
-                $nd->{$t}++ && die "two same lights";
-                $tw->{$t} = $_;
-                push @{C.sc.lk||=[]}, $t;
-            }
-            $s->{C.t} = $tw; # al t=>A
-            $s->{C.t.'lk'} = C.sc.lk;
-        }
-        # when some splits from A.mo=A
-        if (my $n = C.c.An) {
-            C.c.nos = 1;
-            C.c.notw = 1;
-            n.y eq $n || die "An so A";
-            
-            my $id = "$n";
-            
-            my $ov = n.ov || 0;
-            
-            %$tw = %{R.sc.tw} if R.sc.tw;
-            my $new = !$tw->{$id};
-            $tw->{$id} = $n;
-            
-            my $tt = C.sc.tt = R.sc.tt || {};
-            my $old = $tt->{$id};
-            $tt->{$id} = $ov;
-            
-            my $sl = C.sc.sl = R.sc.sl || [];
-            my $tv = C.sc.tv = R.sc.tv || {};
-            if ($old ne $ov) {
-                my $o = $tv->{$old};
-                delete $o->{$id};
-                if (!keys %$o) {
-                    if ($old eq $sl->[0]) {
-                        # pull sl
-                    }
-                }
-            }
-            
-            if ($tw->{$id}) {
-                # ^ is self
-            }
-        }
+        G&stlk,$s if C.c.lk;
+        G&sttug,$s if C.c.tug;
+        G&stAn,$s if C.c.An;
         
         return $off->(1) && say "A C.t tw ok $de"
             if $re && $de &&
@@ -956,6 +902,75 @@ Augen: |
         %$R = %$C;
         $C
     
+    #c st c ing
+    stlk:
+        my $R = C.c.R;
+        if (my $i = C.c.lk) {
+            my $u = C.c.s;
+            C.sc.lk = u.c->{$i.'lk'};
+            C.sc.unlk = u.c->{$i};
+            ref C.sc.lk eq 'ARRAY' || die "no lk array";
+            ref C.sc.unlk eq 'HASH' || die "no unlk hash";
+            C.sc.lk eq R.sc.lk && C.sc.unlk eq R.sc.unlk && return $C;
+            C.sc.lk eq R.sc.lk || delete R.sc.lker;
+            C.c.nos = 1;
+        }
+    sttug:
+        my $R = C.c.R;
+        # one time see things again in order
+        if (my $u = C.c.tug) {
+            C.c.nos = 1;
+            C.c.notw = 1;
+            my $tw = C.sc.tw;
+            my $nd;
+            for (@$u) {
+                my $t = _.t;
+                $nd->{$t}++ && die "two same lights";
+                $tw->{$t} = $_;
+                push @{C.sc.lk||=[]}, $t;
+            }
+            $s->{C.t} = $tw; # al t=>A
+            $s->{C.t.'lk'} = C.sc.lk;
+        }
+    
+    stAn:
+        my $R = C.c.R;
+        # when some splits from A.mo=A
+        if (my $n = C.c.An) {
+            C.c.nos = 1;
+            C.c.notw = 1;
+            n.y eq $n || die "An so A";
+            
+            my $id = "$n";
+            
+            my $ov = n.ov || 0;
+            
+            my $tw = C.sc.tw;
+            die "ANalreadytw" if keys %$tw;
+            %$tw = %{R.sc.tw} if R.sc.tw;
+            my $new = !$tw->{$id};
+            $tw->{$id} = $n;
+            
+            my $tt = C.sc.tt = R.sc.tt || {};
+            my $old = $tt->{$id};
+            $tt->{$id} = $ov;
+            
+            my $sl = C.sc.sl = R.sc.sl || [];
+            my $tv = C.sc.tv = R.sc.tv || {};
+            if ($old ne $ov) {
+                my $o = $tv->{$old};
+                delete $o->{$id};
+                if (!keys %$o) {
+                    if ($old eq $sl->[0]) {
+                        # pull sl
+                    }
+                }
+            }
+            
+            if ($tw->{$id}) {
+                # ^ is self
+            }
+        }
 Spir: |
     u allacgts
     
