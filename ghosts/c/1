@@ -912,17 +912,18 @@ Augen: |
         %$R = %$C;
         $C
     
-    #c these must save R.scs, lk holds itervals to c.somelk
+    #c these must save R.scs
+    # lk holds itervals to c.somelk
     stlk:
         my $R = C.c.R;
         if (my $i = C.c.lk) {
+            C.c.nos = 1;
             my $u = C.c.s;
             C.sc.lk = u.c->{$i.'lk'};
             C.sc.unlk = u.c->{$i};
             ref C.sc.lk eq 'ARRAY' || die "no lk array";
             ref C.sc.unlk eq 'HASH' || die "no unlk hash";
             %{C.sc} = (%{R.sc},%{C.sc}) if C.sc.lk eq R.sc.lk;
-            C.c.nos = 1;
         }
     # one time _.t => _ and input ordered _.t *lk onto s.*
     sttug:
@@ -944,7 +945,9 @@ Augen: |
             $s->{C.t} = $tw; # al t=>A
             $s->{C.t.'lk'} = C.sc.lk;
         }
-    # grow C from N trick ats 
+    # grow N ordered C as an An for a.mo
+    # that is where we 
+    # also inter what 
     
     #c steam
     stAn:
