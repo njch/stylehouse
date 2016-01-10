@@ -443,7 +443,7 @@ Augen: |
         $z
     
     mode:
-        G&thro,$s until G&away,$s
+        G&thro,$s,@Me until G&away,$s,@Me
     
     away:
         s.om.II = s.om.J.A.II || die "NojAII ".ki s.om;
@@ -453,6 +453,12 @@ Augen: |
         my $ii = G&st,$s,[ii=>{s=>$i,lk=>'usto'}];
         my $sc = ii.c.R.sc;
         
+        if (s.m eq $s) {
+            map { G&st,$s,[alov=>{Ant=>$_}] }
+            map { s.al->{$_} }
+                @{s.allk};
+        }
+        die wdump 2, $s;
         #sayyl "Away: ". wdump 2, $sc;
         sc.lker ||= 0;
         my $cv = sc.lk->[sc.lker];
@@ -466,10 +472,8 @@ Augen: |
         # do al / by ov or allk - ov tugs
         # al throw by notself
         my $self = !s.ov;
-        $self ||= s.m.alovsl->[0] < $self
-        if (s.m eq $s) {
-            my @va = sort map { _.ov } values
-        }
+        #$self ||= s.m.alovsl->[0] < $self
+        
         # iterate a cv pocket
         if (s.m && $s eq a.m) {
             # do 
@@ -487,14 +491,9 @@ Augen: |
         }
         #my $iii = G&st,$s,$_ for $isAn ?
             
-        my $m = $isAn ? s.mo : s.m;
+        #my $m = $isAn ? s.mo : s.m;
         #m.ovsl || die "m noovsl m.t";
-        s.ov > m.ovsl->[0]; # fatter that other & fly
-        if (s.m) {
-            if (s.m eq $s) {
-                s.ov > s.ovsl->[0]; # includes self
-            }
-        }
+        #s.ov > m.ovsl->[0]; # fatter that other & fly
         
         1;
     
@@ -1000,7 +999,7 @@ Augen: |
                     # must insert o
                     my $i = 0;
                     $i++ until !@$sl || $sl->[$i] >= $ov;
-                    $sl->[$i] == $ov && die "Thought $i would new $ov ".wdump 3, $sl;
+                    @$sl && $sl->[$i] == $ov && die "Thought $i would new $ov ".wdump 3, $sl;
                     splice @$sl, $i, 0, ($ov);
                     sayre "SL $ov: ".ki $sl;
                 }
