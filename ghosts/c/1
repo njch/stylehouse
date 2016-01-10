@@ -216,7 +216,6 @@ Aim: |
     my ($A) =
     do:
         t
-    #n s=>''=>t
     for ('Again') {
         G.sus = $_;
         my $C = G.ui->{$_} ||= {t=>$_};
@@ -228,7 +227,7 @@ Aim: |
     #say "Done: ". wdump 2, $z;
     my $o = z.1;
     my $R = o.R.II;
-    sayyl "Aimed: ".wdump 3, [o.II.sc];
+    sayyl "Aimed: ".wdump 3, $o;
     #sayre "DO".wdump 5, G.ui;
     
 Babble: | # input coding, severab, sectory compressions
@@ -433,10 +432,10 @@ Augen: |
         # s is theg, z is the m, all is mo, then Ans <-> mos
         my @z = reverse G&wdef,'S',@Me;
         my $z = $z[0];
-        G&ow,$z,al=>@z;
-        _.m = $z for values %{z.al||{}};
+        G&st,$z,[al=>{tug=>\@z,mks=>'m'}];
+        #G&ow,$z,al=>@z;
+        #_.m = $z for values %{z.al||{}};
         # ^ should be one swoop:
-        # G&st,$z,[al=>{tug=>\@z,ordas=>tug}
         # interest in dispatching to A where m not us
         G&mode,$z;
         $z
@@ -466,7 +465,6 @@ Augen: |
         
         # check mo ovsl self only, m.ov
         #  mo haves ovsl
-        saybl wdump 2,[ ord("\t"),$s, s.m ];
         my $isAn = s.mo && s.mo ne $s;
         my $ism = s.m && s.m eq $s;
         if ($ism) {
@@ -928,14 +926,18 @@ Augen: |
                 $nd->{$t}++ && die "two same lights";
                 $tw->{$t} = $_;
                 push @{C.sc.lk||=[]}, $t;
+                if (my $m = C.c.mks) {
+                    $_->{$m} = $s;
+                }
             }
             $s->{C.t} = $tw; # al t=>A
             $s->{C.t.'lk'} = C.sc.lk;
         }
     
+    #c steam
     stAn:
         my $R = C.c.R;
-        # when some splits from A.mo=A
+        # when some splits from A.mo=A, lives on mo.c, which differ Always
         if (my $n = C.c.An) {
             C.c.nos = 1;
             C.c.notw = 1;
@@ -957,15 +959,44 @@ Augen: |
             
             my $sl = C.sc.sl = R.sc.sl || [];
             my $tv = C.sc.tv = R.sc.tv || {};
-            if ($old ne $ov) {
+            my $done;
+            if (defined $old && $old ne $ov) {
                 my $o = $tv->{$old};
                 delete $o->{$id};
                 if (!keys %$o) {
-                    if ($old eq $sl->[0]) {
-                        # pull sl
+                    for (0..6) {
+                        $old eq $sl->[$_] || next;
+                        splice @$sl, $_, 1;
+                        $done = $_;
+                        last;
+                    }
+                    if (!defined $done) {
+                        @$sl = sort keys %$tv;
                     }
                 }
             }
+            if (!defined $old || $old ne $ov) {
+                my $o = $tv->{$ov} ||= {};
+                my $vnew = !keys %$o;
+                $o->{$id} = $n;
+                if ($vnew) {
+                    # must insert o
+                    my $done;
+                    for (0..6) {
+                        $old eq $sl->[$_] || next;
+                        splice @$sl, $_, 1;
+                        $done = $_;
+                        last;
+                    }
+                    if (!defined $done) {
+                        @$sl = sort keys %$tv;
+                    }
+                    my $i = 0;
+                    $i++ until !@$sl || $sl->[$i] >= $ov;
+                    $sl->[$i] eq $ov && die "Thought $i would $ov ".wdump 3, $sl;
+                }
+            }
+            
             
             if ($tw->{$id}) {
                 # ^ is self
