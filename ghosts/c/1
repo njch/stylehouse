@@ -455,6 +455,7 @@ Augen: |
         my $ii = G&st,$s,ii=>{s=>$i,lk=>'usto'};
         my $sc = ii.c.R.sc;
         
+        # ties itselves in knots to avoid foaming
         # interest in dispatching to A where m not us
         # that this C is kinda lying around clues and the seed itself
         # s.c.ii.c.R.sc is junk iterator
@@ -509,17 +510,20 @@ Augen: |
         if (sc.lk->[$i] <= s.cv) {
             $i++;
         }
+        my ($ta) = s.cv =~ /^0?(.+)$/;
+        if (!exists sc.lk->[$i]) {
+            sayyl "Done $i  - s.t $ta s.ov";
+            return 1;
+        }
         sc.it = $i;
         
         s.c.osc = $sc; # unlk.$ov = $o
         s.c.ov = sc.lk->[$i];
         s.c.aim ||= {map{$_=>1}I=>A.t};
         
-        my ($ta) = s.cv =~ /^0?(.+)$/;
-        @$Me = ($necv,"Did $ta s.c.ov");
+        @$Me = ($necv,"To $ta s.c.ov");
         # somewhere (C) a by yU folength N inputty (Teo)
         0
-    #c@
     thro:
         if (s.c.mo == 1 && s.cv >= 0.1) {
             s.c.mo = 2; # back to 1 for N repercolate
@@ -569,8 +573,8 @@ Augen: |
             die wdump [\@s, $x];
             
             
-            A.cv = s.c.ov;
-            A.ov = sc.lk->[sc.it+1];
+            s.cv = s.c.ov;
+            s.ov = sc.lk->[sc.it+1] || s.cv;
             
             # A.cv=0.9 if T.not   # will &z, oseve
             # A.ov=cv^ if >
@@ -586,7 +590,7 @@ Augen: |
         G&st,s.m,[alov=>{Ant=>$s}] if s.mo eq $s;
         # returns what to say to away
     
-    # (.c.)o of things if, makes selections
+    #c (.c.)o of things if, makes selections #c
     how:
         for my $o (@Me) {
             for my $k (keys %$o) {
