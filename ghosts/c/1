@@ -434,30 +434,35 @@ Augen: |
         # s is theg, z is the m, all is mo, then Ans <-> mos
         my @z = reverse G&wdef,'S',@Me;
         my $z = $z[0];
-        G&st,$z,[al=>{tug=>\@z,mks=>'m'}];
+        G&st,$z,al=>{tug=>\@z,mks=>'m'};
         # s.m,mo,n share R
         G&mode,$z;
         $z
     
     mode:
-        G&thro,$s,@Me until G&away,$s,@Me
+        @Me = G&thro,$s,@Me until G&away,$s,\@Me,@Me
     
     away:
+        my $Me = shift @Me;
+        # @Me is stack messages about the Tangent
+        
+        # steal an I
         s.om.II = s.om.J.A.II || die "NojAII ".ki s.om;
         # s.R.II spiral + cv index
-        my $i = G&st,$s,[II=>{s=>s.om,in=>'K,cv,t',to=>'cv,K,t'}];
+        my $i = G&st,$s,II=>{s=>s.om,in=>'K,cv,t',to=>'cv,K,t'};
         # s.c.ii iterator, per Ans
-        my $ii = G&st,$s,[ii=>{s=>$i,lk=>'usto'}];
+        my $ii = G&st,$s,ii=>{s=>$i,lk=>'usto'};
         my $sc = ii.c.R.sc;
         
         # interest in dispatching to A where m not us
         # that this C is kinda lying around clues and the seed itself
         # s.c.ii.c.R.sc is junk iterator
         
-        s.c.m ||= 1 if s.m eq $s;
+        s.c.m ||= 1 if s.m && s.m eq $s;
+        s.c.mo ||= 1 if s.mo && s.mo eq $s;
         
         my $wan;
-        if (s.m eq $s) {
+        if (s.c.m) {
             my ($lo) = s.c.alov || do {
                 reverse
                 map { G&st,$s,[alov=>{Ant=>$_}] }
@@ -477,7 +482,17 @@ Augen: |
         undef $wan if $wan eq $s;
         die "throw to wan.t" if $wan;
         
+        if (s.m) {
+            my $lo = s.m.c.alov || die;
+            my $low = lo.sc.sl->[0];
+            say " s.t at A.ov  vs $low";
+            #return 1 if A.ov != 
+        }
         
+        if (s.c.mo) {
+            # is away to 
+            G&st,s.m,alov=>{Ant=>$s} if !s.mo || s.mo eq $s;
+        }
         
         my $i = sc.it || 0;
         if (sc.lk->[$i] ne s.cv) {
@@ -490,9 +505,12 @@ Augen: |
         sc.it = $i;
         my $necv = sc.lk->[$i];
         my $o = sc.unlk->{$necv};
+        #A.ov = 
+        saybl wdump 2, [chos=>$necv,$o];
         
-        saybl wdump 3, [chos=>$necv,$o];
-        
+        # message in thro @Me, stack
+        @$Me = ("Did $necv $o");
+        return 0;
         exit;
         
         sc.lker ||= 0;
@@ -504,47 +522,114 @@ Augen: |
         # leaves if:
         # cv > other cv
         
-        # do al / by ov or allk - ov tugs
-        # al throw by notself
-        my $self = !s.ov;
-        #$self ||= s.m.alovsl->[0] < $self
-        
-        # iterate a cv pocket
-        if (s.m && $s eq a.m) {
-            # do 
-        }
-        my $n = 0.2;
-        say "winding s.t to s.cv $n";
-        #  mo haves ovsl
-        my $isAn = s.mo && s.mo ne $s;
-        my $ism = s.m && s.m eq $s;
-        if ($ism) {
-            # fow lowest _.ovsl->[0] values %{s.al}
-            # is the s.ovs.name.
-        }
-        #my $iii = G&st,$s,$_ for $isAn ?
-            
-        #my $m = $isAn ? s.mo : s.m;
-        #m.ovsl || die "m noovsl m.t";
-        #s.ov > m.ovsl->[0]; # fatter that other & fly
-        
         1;
     
     n thro=>'',<<''
-        if (s.N && !s.mo) {
+        if (s.c.mo == 1 && s.cv >= 0.1) {
             # An/actomise
+            _.y.A.c.n = 1 for G&Ze,$s,1,N=>A.N;
+            s.c.mo = 2;
         }
+        if (s.c.mo == 2) {
+            
+        }
+        die "Alo" if T.doel++;
         # s.cv = $done;
         # s.ov = $next;
-        G&st,s.mo,[moov=>[Ant=>$s]] if s.mo && s.mo ne $s;
-        G&st,s.m,[alov=>[Ant=>$s]] if !s.mo || s.mo eq $s;
+        G&st,s.mo,[moov=>{Ant=>$s}] if s.mo && s.mo ne $s;
+        G&st,s.m,[alov=>{Ant=>$s}] if !s.mo || s.mo eq $s;
+        # returns what to say to away
     
-    # adapt to much  mergey       extendo  rubble
+    #c adapt to much  mergey       extendo  rubble
     # do stuff # in fractions
         #Rw dow $done:s.om.II;
         #DumpFile('dtwo',i.c.uz.II);
     
-    # promise 1s for oneself to do
+    n ecs =>'',<<'',{acgt=>'i,K,cv,av'}
+        # av,c = 0.ilise
+        my $aim;
+        $aim->{$K} = 1;
+        aim.I = 1 if $aim->{A.am} || $aim->{A.t};
+        my $Av;
+        .
+        my $yv = {};
+        for my $k (sort keys %$i) {
+            my $ii = $i->{$k};
+            .
+            next if $k eq 'Ii';
+            next if $k eq 'ooI';
+            ref $ii eq 'HASH' || die "weird $k=$ii";
+            .
+            for my $vc (sort keys %$ii) {
+                my $iii = $ii->{$vc};
+                die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;
+                $yv->{$vc}->{$k} = $iii;
+            }
+        }
+        .
+        my $vb;
+        my $wasSubtle;
+        for my $vc (sort keys %$yv) {
+            my $is = $yv->{$vc};
+            my $s = {};
+            my $x = {};
+            my $xrd = [];
+            my ($c,$talk);
+            .
+            next if $vc <= $Av && $vc != $c;
+            next if $vc > $c;
+            .
+            # our  osc (stay in K per Subtle ness);
+            my @iz = grep {
+                $aim->{$_} || (aim.I && A.Iso->{$_})
+            } sort keys %$is;
+            next if !@iz;
+            .
+            # decide inter cv wideness loop
+            if ($wasSubtle) {
+                undef $wasSubtle;
+            }
+            elsif ($vb && $vc > $vb &&
+                (@{A.N} || @{A.mo.re->{$vb}||[]})) {
+                # sincing, wide order
+                # various others want to be around for only some of the process...
+                sayre "$vb -> $vc  bump, ". @{A.N} if A.J.V > 1;
+                T.Z->{$vb} = 1;
+                A.cv = $vb; # so we dont wind up to 6 on the way out of t
+                return T.not = 1;
+            }
+            I.cv = $vc;
+            I.vb = $vb;
+            for my $k (@iz) {
+                my $iii = $is->{$k};
+                I.k = $k;
+                I.d&carebowl,$s,$iii,$x,$xrd;
+            }
+            # suble
+            my $se = Rw TreeD $s $scby=gro 
+                if A.J.V > 1 && keys %$s;
+            $c == 0.1 ? saygr $se : say $se if $se;
+            .
+            my $o;
+            o.talk = $talk;
+            (o.vc,o.vb) = ($vc,$vb);
+            I.d&exood,$o,$x,$xrd;
+            ($vc,$vb) = (o.vc,o.vb);
+            if (o.Subtle && !o.nonSubtle) {
+                $wasSubtle = 1;
+            }
+            .
+            return if T.not;  # will &z, oseve
+            return if delete T.whack;
+        }
+    
+    #
+
+    n fint =>'',<<''
+        my $m = A.m;
+        m.al->{$s} 
+        #G&ow,$z,al=>@z,$z;
+    #c promise 1s for oneself to do
     # make impon this other surface, whose A.am is 
     n Z =>'',<<''
         # s.m.al.$person attach/create for N
@@ -617,94 +702,7 @@ Augen: |
         # sc.u = {}
         # a pi is a versioning being
         
-    n ecs =>'',<<'',{l=>'#c',acgt=>'i,K,cv,av'}
-        # av,c = 0.ilise
-        my $aim;
-        aim->{$K} = 1;
-        
-        .
-        my $aim = {$K=>1};
-        if ($aim->{A.am}) {
-            $aim->{$_} = 1 for @{A.Isl||[]};
-            aim.I = 1;
-        }
-        .
-        my $yv = {};
-        for my $k (sort keys %$i) {
-            my $ii = $i->{$k};
-            .
-            next if $k eq 'Ii';
-            next if $k eq 'ooI';
-            ref $ii eq 'HASH' || die "weird $k=$ii";
-            .
-            for my $vc (sort keys %$ii) {
-                my $iii = $ii->{$vc};
-                die'$k !0<$vc<1' unless $vc > 0 && $vc < 1;
-                $yv->{$vc}->{$k} = $iii;
-            }
-        }
-        .
-        my $vb;
-        my $wasSubtle;
-        for my $vc (sort keys %$yv) {
-            my $is = $yv->{$vc};
-            my $s = {};
-            my $x = {};
-            my $xrd = [];
-            .
-            next if $vc <= $Av && $vc != $c;
-            next if $vc > $c;
-            .
-            # our  osc (stay in K per Subtle ness);
-            my @iz = grep {
-                $aim->{$_} || (aim.I && A.Iso->{$_})
-            } sort keys %$is;
-            next if !@iz;
-            .
-            # decide inter cv wideness loop
-            if ($wasSubtle) {
-                undef $wasSubtle;
-            }
-            elsif ($vb && $vc > $vb &&
-                (@{A.N} || @{A.mo.re->{$vb}||[]})) {
-                # sincing, wide order
-                # various others want to be around for only some of the process...
-                sayre "$vb -> $vc  bump, ". @{A.N} if A.J.V > 1;
-                T.Z->{$vb} = 1;
-                A.cv = $vb; # so we dont wind up to 6 on the way out of t
-                return T.not = 1;
-            }
-            I.cv = $vc;
-            I.vb = $vb;
-            for my $k (@iz) {
-                my $iii = $is->{$k};
-                I.k = $k;
-                I.d&carebowl,$s,$iii,$x,$xrd;
-            }
-            # suble
-            my $se = Rw TreeD $s $scby=gro 
-                if A.J.V > 1 && keys %$s;
-            $c == 0.1 ? saygr $se : say $se if $se;
-            .
-            my $o;
-            o.talk = $talk;
-            (o.vc,o.vb) = ($vc,$vb);
-            I.d&exood,$o,$x,$xrd;
-            ($vc,$vb) = (o.vc,o.vb);
-            if (o.Subtle && !o.nonSubtle) {
-                $wasSubtle = 1;
-            }
-            .
-            return if T.not;  # will &z, oseve
-            return if delete T.whack;
-        }
-    
-    #
 
-    n fint =>'',<<''
-        my $m = A.m;
-        m.al->{$s} 
-        #G&ow,$z,al=>@z,$z;
     #c prongy return difference mash, index copy
     n supe =>'',<<'' 
         my $l = shift @Me;
@@ -762,10 +760,11 @@ Augen: |
         @o
     
     n tC =>'',<<''
+        @Me = ($s,@Me);
+        @Me = ([@Me]) if !ref $Me[0];
         my @o = 
         map{_.y.cv = _.y if _.y && !ref _.y;
             _.y ||= {};
-            #_.y.cv ||= 0.1;
             _.c ||= {};
             _.sc ||= {};
             $_ }
@@ -790,14 +789,14 @@ Augen: |
             else {
                 die "par".ki$_
             }
-        } $s, @Me;
+        } @Me;
         wantarray ? @o :
             @o != 1 ? die "tC not 1: ".wdump(4,\@o) :
                 $o[0];
             
     
     #c pre zen ting
-    n st =>'',<<'' 
+    n st =>'',<<''
         my ($C) = G&tC,@Me;
         C.c.re ||= 1;
         # C may already have R, hardwiring clue
