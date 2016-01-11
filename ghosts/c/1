@@ -222,12 +222,14 @@ Aim: |
         C.sc.u = G.T.A->{$_};
     }
     my $z = 
-        G&At,In=>2,[@Me];
+        G&At,In=>2,[Steve=>{s=>"washere"}];
         #G&ri,atom=>\'%A:Top';
     #say "Done: ". wdump 2, $z;
     my $o = z.1;
     my $R = o.R.II;
-    sayyl "Aimed: ".wdump 2, $o;
+    sayyl "Aimed: ".wdump 1, $o;
+    saybl wdump 5, map{G&tC,$_ } @{o.N};
+    sayre wdump 4, map{G&tC,$_ } @{z.N};
     #sayre "DO".wdump 5, G.ui;
     
 Babble: | # input coding, severab, sectory compressions
@@ -453,13 +455,29 @@ Augen: |
         my $ii = G&st,$s,[ii=>{s=>$i,lk=>'usto'}];
         my $sc = ii.c.R.sc;
         
+        my $wan;
         if (s.m eq $s) {
-            map { G&st,$s,[alov=>{Ant=>$_}] }
-            map { s.al->{$_} }
-                @{s.allk};
+            my ($lo) = s.c.alov || do {
+                reverse
+                map { G&st,$s,[alov=>{Ant=>$_}] }
+                map { s.al->{$_} }
+                    @{s.allk};
+            };
+            my $low = lo.sc.sl->[0];
+            my $o = lo.sc.tv->{$low} || die "no tv $low";
+            for (@{s.allk}) {
+                $wan = $o->{$_} || next;
+                last;
+            }
+            defined $wan || die "No to $low";
+            sayre "sm  s.t going to wan.t";
         }
-        die wdump 2, $s;
-        #sayyl "Away: ". wdump 2, $sc;
+        sayyl "s.t s.cv - s.ov ! want wan.t";
+        undef $wan if $wan eq $s;
+        die "throw to wan.t" if $wan;
+        
+        
+        
         sc.lker ||= 0;
         my $cv = sc.lk->[sc.lker];
         # A.cv is already to, A.ov is next wanted
@@ -479,9 +497,7 @@ Augen: |
             # do 
         }
         my $n = 0.2;
-        say "winding A.t to s.cv $n";
-        # if next cv is > smalled s.m.al*cv
-        # check mo ovsl self only, m.ov
+        say "winding s.t to s.cv $n";
         #  mo haves ovsl
         my $isAn = s.mo && s.mo ne $s;
         my $ism = s.m && s.m eq $s;
@@ -508,16 +524,9 @@ Augen: |
     
     # adapt to much  mergey       extendo  rubble
     # do stuff # in fractions
-    
-    n sciter =>'',<<''
         #Rw dow $done:s.om.II;
         #DumpFile('dtwo',i.c.uz.II);
-        # N others 
-        # fellow al light cone lessthan
-        # they say A.cv before leaving (even T.Z)
-        # C puts G&Z,1,[[$nt=>{c}]...]
-        #s.m.cv < s.cv
-        1
+    
     # promise 1s for oneself to do
     # make impon this other surface, whose A.am is 
     n Z =>'',<<''
@@ -750,6 +759,12 @@ Augen: |
     
     n tC =>'',<<''
         my @o = 
+        map{_.y.cv = _.y if _.y && !ref _.y;
+            _.y ||= {};
+            #_.y.cv ||= 0.1;
+            _.c ||= {};
+            _.sc ||= {};
+            $_ }
         grep{defined}
         map {
             if (ref $_ eq 'ARRAY') {
@@ -1004,7 +1019,8 @@ Augen: |
                     sayre "SL $ov: ".ki $sl;
                 }
             }
-            # sc.tw.$id = sc.tv.$ov.$id = $n    sc.sl[0] = lowest $ov, etc
+            # sc.tw.$id = sc.tv.$ov.$id = $n
+            # sc.sl[0] = lowest $ov, etc
         }
 Spir: |
     u allacgts
