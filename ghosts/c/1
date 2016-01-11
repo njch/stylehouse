@@ -444,15 +444,14 @@ Augen: |
         @Me = G&thro,$s,@Me until G&away,$s,\@Me,@Me
     
     # lines up .c oscs;
+    # make my $sc st ii: %sc ii s:i lk=usto
     away:
         my $Me = shift @Me;
-        # @Me is stack messages about the Tangent
         
         # steal an I
         s.om.II = s.om.J.A.II || die "NojAII ".ki s.om;
         # s.R.II spiral + cv index
         my $i = G&st,$s,II=>{s=>s.om,in=>'K,cv,t',to=>'cv,K,t'};
-        # s.c.ii iterator, per Ans
         my $ii = G&st,$s,ii=>{s=>$i,lk=>'usto'};
         my $sc = ii.c.R.sc;
         
@@ -464,6 +463,7 @@ Augen: |
         s.c.mo ||= 1 if s.mo && s.mo eq $s;
         
         # figure for other al loop, cv wide
+        # is a travel
         my $wan;
         if (s.c.m) {
             my ($lo) = s.c.alov || do {
@@ -487,8 +487,8 @@ Augen: |
         if ($wan) {
             die "mode s.t to wan.t";
         }
+        # A.Subtle && A.Subtle->{$k}s trap until done
         
-        # A.Subtle && A.Subtle->{$k}
         if (s.m) {
             my $lo = s.m.c.alov || die;
             my $low = lo.sc.sl->[0];
@@ -496,23 +496,25 @@ Augen: |
             #return 1 if A.ov != 
         }
         
+        # sc is ii order & state by lk holds it, adjusted to next > s.cv all the time
         # A.cv sync cv index lk
         # once in its a huge bundle of dont fall out (mind)
         my $i = sc.it || 0;
         if (sc.lk->[$i] ne s.cv) {
-            $i++ while sc.lk->[$i+1] < s.cv;
-            $i-- while sc.lk->[$i] > s.cv && $i > 0;
+            $i++ while exists sc.lk->[$i+1] && sc.lk->[$i+1] < s.cv;
+            $i-- while $i > 0 && sc.lk->[$i] > s.cv;
         }
         if (sc.lk->[$i] <= s.cv) {
             $i++;
         }
         sc.it = $i;
         my $necv = sc.lk->[$i];
+        
+        s.c.ov = $necv;
+        s.c.osc = $sc;
         my $o = sc.unlk->{$necv};
         
         s.c.aim ||= {map{$_=>1}I=>A.t};
-        s.c.osc = $sc;
-        s.c.ov = $necv;
         my ($ta) = s.cv =~ /^0?(.+)$/;
         @$Me = ($necv,"Did $ta $necv $o");
         # A.cv is already to last ov||0, A.ov is next wanted after thro
@@ -530,19 +532,20 @@ Augen: |
         
         if (s.c.mo == 2) {
             # switch to children forever
+            # give osc/ov
+            # many persons throat mAny persons per cv
             G&thro,$_,"_.t~s.c.o" for @{s.c.N}
         }
         else {
             # Personalities (of/K/code) wind of synth noise stick for sort
-            my $sc = s.c.osc;
-            my $ov = s.c.ov;
-            my $o = s.c.o = sc.unlk->{$ov};
+            my $sc = s.c.osc||die"nonoscthro";
+            my $ov = s.c.ov||die"noovthro";
+            my $o = s.c.o = sc.unlk->{$ov}||die"notlk$ov";
             # comp how if
             return if s.c.aim && !grep { s.c.aim->{$_} } keys %$o;
             # noise is the ornre
-            # it contributes eventual flips
+            # it contributes flips
             s.c.x = {};
-            s.c.xrd = [];
             my $C = s.C ||= {};
             my $T = s.T ||= {};
             
@@ -550,7 +553,6 @@ Augen: |
             
             G&exo,$s,s.c.x;
             
-            delete T.whack; # close & fine slow mode
             # A.cv=0.9 if T.not   # will &z, oseve
             # A.ov=cv^ if >
             
@@ -576,7 +578,6 @@ Augen: |
         }
         
         die "Alo" if T.doel++;
-        
         # s.cv = $done;
         # s.ov = $next;
         G&st,s.mo,[moov=>{Ant=>$s}] if s.mo && s.mo ne $s;
@@ -586,88 +587,89 @@ Augen: |
     # (.c.)o of things if, makes selections
     how:
         for my $o (@Me) {
-        while (my ($k,$tD) = each %$o) {
-        s.c.aim && !s.c.aim->{$k} && next;
-        while (my ($t,$D) = each %$tD) {
-            # head match
-            if (D.sc.nk && !D.sc.def) {
-                !exists $C->{D.sc.nk} && next;
-                D.sc.gk && !exists $C->{D.sc.nk}->{D.sc.gk} && next;
-            }
-            my @is = A.s;
-            if (D.sc.Ifs) {
-                die "A impli";
-                @is = G&scIfs,D.sc.Ifs;
-            }
-            !@is && next;
-            # artists get drunk with power and fall of piers
-            # usu. one receiver (Ci) and the rest scheme
-            # may up Iso personalities as sublingoes to decompress inpatterns.
-            if (D.sc.acgt) {
-                # acgt lump normal as microfilm .001
-                # film replaces if you shave A.I
-                # which should Rustle up/m local code
-                # and float random code, manifolds of effects
-                # able to present ends to each other
-                my $dont = 1 if exists A.I->{D.t};
-                
-                $dont = 0 if $dont && A.I->{D.t."_dige"} ne D.sc.dige;
-                
-                $dont = G&robeg,$D if !$dont && D.sc.eg;
-                
-                unless ($dont) {
-                    A.I->{D.t} = Rw D.t $A $C $G $T $__D:D;
-                    A.I->{D.t.'_dige'} = D.sc.dige;
+            for my $k (sort keys %$o) {
+                my $tD = $o->{$k};
+                s.c.aim && !s.c.aim->{$k} && next;
+                for my $t (sort keys %$tD) {
+                    my $D = $tD->{$t};
+                    # head match
+                    if (D.sc.nk && !D.sc.def) {
+                        !exists $C->{D.sc.nk} && next;
+                        D.sc.gk && !exists $C->{D.sc.nk}->{D.sc.gk} && next;
+                    }
+                    my @is = A.s;
+                    if (D.sc.Ifs) {
+                        die "A impli";
+                        @is = G&scIfs,D.sc.Ifs;
+                    }
+                    !@is && next;
+                    # artists get drunk with power and fall of piers
+                    # usu. one receiver (Ci) and the rest scheme
+                    # may up Iso personalities as sublingoes to decompress inpatterns.
+                    if (D.sc.acgt) {
+                        # acgt lump normal as microfilm .001
+                        # film replaces if you shave A.I
+                        # which should Rustle up/m local code
+                        # and float random code, manifolds of effects
+                        # able to present ends to each other
+                        my $dont = 1 if exists A.I->{D.t};
+
+                        $dont = 0 if $dont && A.I->{D.t."_dige"} ne D.sc.dige;
+
+                        $dont = G&robeg,$D if !$dont && D.sc.eg;
+
+                        unless ($dont) {
+                            A.I->{D.t} = Rw D.t $A $C $G $T $__D:D;
+                            A.I->{D.t.'_dige'} = D.sc.dige;
+                        }
+                    }
+                    # this ind is all flywheel
+                    # it's a kind of unity that wants to be a block of code like this
+                    # most tiny ticks
+                    # and c
+                    s.c.x->{$k}->{$t} = \@is if D.sc.act;
                 }
             }
-            # this ind is all flywheel
-            # it's a kind of unity that wants to be a block of code like this
-            # most tiny ticks
-            # and c
-            s.c.x->{$k}->{$t} = \@is if D.sc.act;
-        }
-        }
         }
     
     #c adapt to much  mergey # extendo  rubble # do stuff # in fractions
     exo:
         for my $x (@Me) {
-        while (my ($k,$tD) = each %$x) {
-        s.c.aim && !s.c.aim->{$k} && next;
-        while (my ($t,$Ds) = each %$tD) {
-            my $D = s.c.o->{$k}->{$t} || die "Nohead $k $t";
-            # head match
-            my $A = $s;
-            my $C = A.C;
-            my $T = A.T;
-            for my $s (@$Ds) {
-                D.sc.acgt eq 's'||die "nonacgts".wdump $D;
-                exists A.I->{D.t}||die "acgtI D.t not up";
-                .
-                T.D = $D;
-                G&D.t,$s;
-                # T personality slickers, T.68 x ut ,
-                if (my $ut = T.ut) {
-                    if (ut.matchTd) {
-                        my $d = s.d || die "confuse";
-                        d.od.s.T.q->{d.e.k} ||= $d;
-                        d.od.s.T.m->{d.e.k} ||= $d
-                            unless delete T.noTd;
+            for my $k (sort keys %$x) {
+                my $tD = $x->{$k};
+                s.c.aim && !s.c.aim->{$k} && next;
+                for my $t (sort keys %$tD) {
+                    my $Ds = $tD->{$t};
+                    my $D = s.c.o->{$k}->{$t} || die "Nohead $k $t";
+                    # head match
+                    my $A = $s;
+                    my $C = A.C;
+                    my $T = A.T;
+                    for my $s (@$Ds) {
+                        D.sc.acgt eq 's'||die "nonacgts".wdump $D;
+                        exists A.I->{D.t}||die "acgtI D.t not up";
+
+                        T.D = $D;
+                        G&D.t,$s;
+
+                        # T personality slickers, T.68 x ut , 
+                        # all produces a slope for how much time you've got
+                        if (my $ut = T.ut) {
+                            if (ut.matchTd) {
+                                my $d = s.d || die "confuse";
+                                d.od.s.T.q->{d.e.k} ||= $d;
+                                d.od.s.T.m->{d.e.k} ||= $d
+                                    unless delete T.noTd;
+                            }
+                            else { die"utrowhat ".wdump 2, $ut }
+                        }
+                        # outwave: schools of many fish (cv=ov silentnot upcv if !@is)
+                        last if T.not || T.whack;
                     }
-                    else { die"utrowhat ".wdump 2, $ut }
+                    delete T.ut;
+                    return if delete T.whack || T.not; # close & fine slow mode
                 }
-                
-                    .
-                    # outwave: schools of many fish (not upcv if !@is)
-                    o.vb ||= o.vc if D.sc.v;
-                    .
-                    last if T.not || T.whack;
-                }
-                delete T.ut;
-                last if T.not || T.whack;
             }
-        }
-        }
         }
     
     #c promise 1s for oneself to do
