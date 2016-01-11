@@ -487,6 +487,7 @@ Augen: |
             die "mode s.t to wan.t";
         }
         
+        # A.Subtle && A.Subtle->{$k}
         if (s.m) {
             my $lo = s.m.c.alov || die;
             my $low = lo.sc.sl->[0];
@@ -494,7 +495,7 @@ Augen: |
             #return 1 if A.ov != 
         }
         
-        # A.cv sync lk
+        # A.cv sync cv index lk
         my $i = sc.it || 0;
         if (sc.lk->[$i] ne s.cv) {
             $i++ while sc.lk->[$i+1] < s.cv;
@@ -516,7 +517,7 @@ Augen: |
         # somewhere (C) a by yU folength N inputty (Teo)
         0
     #c@
-    n thro=>'',<<''
+    thro:
         if (s.c.mo == 1 && s.cv >= 0.1) {
             s.c.mo = 2;
             # An/actomise
@@ -533,21 +534,21 @@ Augen: |
             # Personalities (of/K/code) wind of synth noise stick for sort
             my $sc = s.c.osc;
             my $ov = s.c.ov;
-            my $o = sc.unlk->{$ov};
-            my @is = keys %$o;
-            @is = grep { s.c.aim->{$_} } @is if s.c.aim;
-            return if !@is;
-            my $z = {};
-            my $x = {};
-            my $xrd = [];
+            my $o = s.c.o = sc.unlk->{$ov};
+            # comp how if
+            return if s.c.aim && !grep { s.c.aim->{$_} } keys %$o;
+            # noise is the ornre
+            # it contributes eventual flips
+            s.c.x = {};
+            s.c.xrd = [];
+            my $C = s.C ||= {};
+            my $T = s.T ||= {};
             
+            G&how,$s,$o;
             
-            for my $k (@is) {
-                my $tD = $o->{$k};
-                G&how,$s,$tD,$x,$xrd;
-            }
-            #G&exo,$s,$x,$xrd;
+            G&exo,$s,s.c.x;
             
+            delete T.whack; # close & fine slow mode
             # A.cv=0.9 if T.not   # will &z, oseve
             # A.ov=cv^ if >
             
@@ -556,23 +557,90 @@ Augen: |
             # break through to new pi or acum pi
             # is a base twisted from source
             # s/^(\w+)\$ /my \$$1 =\nn /;
+            # first grab layer should be done by the next functions c.som=$it
+            # the thing to do may emerge, need 4d cradling
             # how virtamins fly in T, coopt on A.mo,middlemost(J)
             # 
             my @s =
-            \vertamins=>
-            ;
+            \vertamins=>;
             die wdump [\@s, $x];
             .
             # see if each thing is slightly what we want a proceed cv
-            delete T.whack;
             # for things to be in piles in two strands,
             
+            .
+            return if T.not;  # will &z, oseve
+            return if delete T.whack;
+        }
+        
+        die "Alo" if T.doel++;
+        
+        # s.cv = $done;
+        # s.ov = $next;
+        G&st,s.mo,[moov=>{Ant=>$s}] if s.mo && s.mo ne $s;
+        G&st,s.m,[alov=>{Ant=>$s}] if s.mo eq $s;
+        # returns what to say to away
+    
+    # x <- k/cv things if
+    how:
+        for my $o (@Me) {
+        while (my ($k,$tD) = each %$o) {
+        s.c.aim && !s.c.aim->{$k} && next;
+        while (my ($t,$D) = each %$tD) {
+            # head match
             
-            for my $kik (@$xrd) {
-                my ($k,$ik) = @$kik;
-                A.Subtle && A.Subtle->{$k} ? o.Subtle++ : o.nonSubtle++;
-                my $Ds = $x->{$k}->{$ik};
-                my $D = Ds.D;
+            if (D.sc.nk && !D.sc.def) {
+                !exists $C->{D.sc.nk} && next;
+                D.sc.gk && !exists $C->{D.sc.nk}->{D.sc.gk} && next;
+            }
+            my @is = A.s;
+            if (D.sc.Ifs) {
+                die "A impli";
+                @is = G&scIfs,D.sc.Ifs;
+            }
+            !@is && next;
+            # columas ^ selecti
+            # acgt lump normal as microfilm .001
+            # film replaces if you shave A.I
+            # which should Rustle up/m local code
+            # and float random code, manifolds of effects
+            # able to present ends to each other
+            .
+            # usu. one receiver (Ci) and the rest scheme
+            # may up Iso personalities as sublingoes to decompress inpatterns.
+            
+            if (D.sc.acgt) {
+                my $dont = 1 if exists A.I->{D.t};
+                
+                $dont = 0 if $dont && A.I->{D.t."_dige"} ne D.sc.dige;
+                
+                $dont = G&robeg,$D if !$dont && D.sc.eg;
+                
+                unless ($dont) {
+                    A.I->{D.t} = Rw D.t $A $C $G $T $__D:D;
+                    A.I->{D.t.'_dige'} = D.sc.dige;
+                }
+            }
+            # this ind is all flywheel
+            # it's a kind of unity that wants to be a block of code like this
+            # most tiny ticks
+            # and c
+            s.c.x->{$k}->{$t} = \@is if D.sc.act;
+        }
+        }
+        }
+    
+    #
+    #c adapt to much  mergey       extendo  rubble
+    # do stuff # in fractions
+        #Rw dow $done:s.om.II;
+        #DumpFile('dtwo',i.c.uz.II);
+    exo:
+        for my $x (@Me) {
+        while (my ($k,$tD) = each %$x) {
+        s.c.aim && !s.c.aim->{$k} && next;
+        while (my ($t,$D) = each %$tD) {
+            # head match
                 for my $s (@{Ds.is}) {
                     D.sc.acgt eq 's'||die "nonacgts".wdump $D;
                     exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
@@ -598,80 +666,7 @@ Augen: |
                 delete T.ut;
                 last if T.not || T.whack;
             }
-            .
-            return if T.not;  # will &z, oseve
-            return if delete T.whack;
-        }
-        
-        die "Alo" if T.doel++;
-        # s.cv = $done;
-        # s.ov = $next;
-        G&st,s.mo,[moov=>{Ant=>$s}] if s.mo && s.mo ne $s;
-        G&st,s.m,[alov=>{Ant=>$s}] if s.mo eq $s;
-        # returns what to say to away
     
-    n how =>''=><<'',{l=>'#c',acgt=>'s,iii,x,xrd'}
-        my $C = s.C ||= {};
-        for my $ik (keys %$iii) {
-            my $D = $iii->{$ik};
-            
-            my $dont;
-            
-            if (D.sc.nk && !D.sc.def) {
-                my $nk = D.sc.nk
-                next if !exists $C->{$nk};
-                if (my $gk = D.sc.gk) {
-                    next if !exists $C->{$nk}->{$gk};
-                }
-            }
-            # columas ^
-            # acgt lump normal as microfilm .001
-            # film replaces if you shave A.I
-            # which should Rustle up/m local code
-            # and float random code, manifolds of effects
-            # able to present ends to each other
-            .
-            # usu. one receiver (Ci) and the rest scheme
-            # may up Iso personalities as sublingoes to decompress inpatterns.
-            if (D.sc.acgt) {
-                $dont = 1 if exists A.I->{D.t};
-                
-                $dont = 0 if $dont && A.I->{D.t."_dige"} ne D.sc.dige;
-                
-                $dont = G&robeg,$D if !$dont && D.sc.eg;
-                
-                unless ($dont) {
-                    my $paw = D.t; #join"_",'',I.k,I.cv,D.t;
-                    $paw =~ s/\W//g;
-                    A.I->{D.t} = Rw $paw $A $C $G $T $__D:D;
-                    A.I->{D.t."_dige"} = D.sc.dige;
-                }
-            }
-            # the D.c.s should be perl
-            # most tiny ticks
-            # this ind is all flywheel
-            # it's a kind of unity that wants to be a block of code like this
-            # and c
-            my @is = A.s;
-            @is = I.d&scIfs,D.sc.Ifs if D.sc.Ifs;
-            @is || next;
-            if ($act) {
-                push @$xrd, [I.k,$ik];
-                my $Ds = $x->{I.k}->{$ik} ||= {};
-                Ds.D = $D;
-                Ds.is = \@is;
-                D.sc.its = @is;
-            }
-            # TreeD
-            $s->{I.k}->{I.cv}->{$ik} = $D;
-        }
-    
-    #
-    #c adapt to much  mergey       extendo  rubble
-    # do stuff # in fractions
-        #Rw dow $done:s.om.II;
-        #DumpFile('dtwo',i.c.uz.II);
-
     n fint =>'',<<''
         my $m = A.m;
         m.al->{$s} 
