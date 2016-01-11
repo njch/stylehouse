@@ -435,11 +435,6 @@ Augen: |
         my @z = reverse G&wdef,'S',@Me;
         my $z = $z[0];
         G&st,$z,[al=>{tug=>\@z,mks=>'m'}];
-        #G&ow,$z,al=>@z;
-        #_.m = $z for values %{z.al||{}};
-        # ^ should be one swoop:
-        # interest in dispatching to A where m not us
-        # that this C is kinda lying around clues and the seed itself
         # s.m,mo,n share R
         G&mode,$z;
         $z
@@ -454,6 +449,12 @@ Augen: |
         # s.c.ii iterator, per Ans
         my $ii = G&st,$s,[ii=>{s=>$i,lk=>'usto'}];
         my $sc = ii.c.R.sc;
+        
+        # interest in dispatching to A where m not us
+        # that this C is kinda lying around clues and the seed itself
+        # s.c.ii.c.R.sc is junk iterator
+        
+        s.c.m ||= 1 if s.m eq $s;
         
         my $wan;
         if (s.m eq $s) {
@@ -577,63 +578,50 @@ Augen: |
         #
         
     n tesc =>''=><<'',{acgt=>'K,cv,av',intds=>'#c'}
-        ($K,$cv) = (A.am,$K) if !$cv && $K;
-        $av = 0+("0.".$av) if $av;
-        die "K$K cv$cv" unless $K && $cv;
-        my $c = 0+("0.".$cv);
-        my $Av = $av || A.cv;
-        my $i = Rw collaspII $A;
-        die'difAvcol' if $Av ne ($av || A.cv);
-        #
-        my $ncv;
-        my $re;
-        my $dont;
-        # is for reentrant pins like concoi
-        # different phases of awareness
-        if ($Av < 0.6 || $c >= 0.7) {
-            if ($c >= $Av) {
-                $ncv = $c;
-                $re = 1;
-            }
-            else {
-                $re = 0;
-                $dont = 1;
-                say " deInc $Av - $cv $c";
-            }
-            die "pre bigger" if $cv < $Av;
-        }
-        else {
-            if ($c < $Av) {
-                if ($Av == 0.6) { # scoop up all on entering timezone
-                    $re = 1;
-                    $dont = 1; # or will II fall away
-                }
-                else {
-                    $re = 0;
-                    $dont = 1;
-                }
-            }
-            elsif ($c == $Av) {
-                $re = 1;
-            }
-            elsif ($c > $Av) { # and $c < 0.7, is a next time
-                T.Z->{$c} = 1;
-                $re = 0;
-                $dont = 1;
-            }
-            else {die"nof"}
-        }
-        undef $ncv if $av; # aux/Subtle K
-        my $was = A.cv;
-        $dont || I.d&ex,$i,$K,$cv,$av;
-        A.cv = $ncv if defined $ncv && A.cv == $was;
-        $re;
+        # av,c = 0.av,c   zero pointilise
+        # Av = av || A.cv
+        # sync II
+        # wind to cv until other needs
+        # true/false time function that 1||0 if effecto
+        # reentrant select tree idea, better something else
+        
+        # the ov=8 temporality is good
+        # shoved off ov paths like y.U T crunch from tips to bases,
+        # the shove danglindex so for it is just y specs
+        # so Amo->{A.C} = An  finds y.U pointaboves
+        # any ref y.? Amo knows should Tlapse things out
+        # Tlapse wants to finish innermosts,
+        # its force directed biograph
+        # imports in/on above/after
+        # Amo.T.o.$C.U.$U   means do C before U because U
+        # Amo.T.e.$U.U.$C   means do U after C becuase U
+        # which are entangled forwards-backwards
+        # so the above can ov=8 Z itself when others y.U it
+        # these coney spines of language subjectals
+        # how to sharpen them (verate indexes)
+        # and throw them (pluggin S in for lang acquisition from border, surf, pets roll)
+        #  osc art inter
+        #  like 9.c.u = musthave u things for 9
+        #  .t is thing it is     .c.v may version     .sc.u = {K/cv/t}
+        # 
+        # 
+        # the Teo is like Pile, may seniloop due to surfaceyness
+        # 
+        
+        # things dropping out the osc art wou
+        # getting their reinput sentience in a sentence
+        # sc.u = 'asthis' is an outgoing tow clue/versioning being on a thing
+        # so then in osc u usedtobe ^ 
+        # becomes .u={Kcvt}
+        # the being on a thing, default for u would Kcvt
+        # sc.u = {}
+        # a pi is a versioning being
+        
     n ecs =>'',<<'',{l=>'#c',acgt=>'i,K,cv,av'}
-        my $c = 0+("0.".$cv);
-        my $Av = $av || A.cv;
-        my $sp = $av ? " Flav $av (no A.cv)" : "";
-        .
-        my $talk = "A.talk: $K$sp $Av > $c --- C.t ";
+        # av,c = 0.ilise
+        my $aim;
+        aim->{$K} = 1;
+        
         .
         my $aim = {$K=>1};
         if ($aim->{A.am}) {
