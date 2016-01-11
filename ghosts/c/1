@@ -443,6 +443,7 @@ Augen: |
     mode:
         @Me = G&thro,$s,@Me until G&away,$s,\@Me,@Me
     
+    # lines up .c oscs;
     away:
         my $Me = shift @Me;
         # @Me is stack messages about the Tangent
@@ -496,6 +497,7 @@ Augen: |
         }
         
         # A.cv sync cv index lk
+        # once in its a huge bundle of dont fall out (mind)
         my $i = sc.it || 0;
         if (sc.lk->[$i] ne s.cv) {
             $i++ while sc.lk->[$i+1] < s.cv;
@@ -581,7 +583,7 @@ Augen: |
         G&st,s.m,[alov=>{Ant=>$s}] if s.mo eq $s;
         # returns what to say to away
     
-    # x <- k/cv things if
+    # x <- k/cv things if, makes selections
     how:
         for my $o (@Me) {
         while (my ($k,$tD) = each %$o) {
@@ -630,23 +632,22 @@ Augen: |
         }
         }
     
-    #
-    #c adapt to much  mergey       extendo  rubble
-    # do stuff # in fractions
-        #Rw dow $done:s.om.II;
-        #DumpFile('dtwo',i.c.uz.II);
+    #c
+    # adapt to much  mergey # extendo  rubble # do stuff # in fractions
     exo:
         for my $x (@Me) {
         while (my ($k,$tD) = each %$x) {
         s.c.aim && !s.c.aim->{$k} && next;
-        while (my ($t,$D) = each %$tD) {
+        while (my ($t,$Ds) = each %$tD) {
             # head match
-                for my $s (@{Ds.is}) {
+            my $D = s.c.o->{$k}->{$t} || die "Nohead $k $t";
+            my $A = $s;
+            for my $s (@$Ds) {
                     D.sc.acgt eq 's'||die "nonacgts".wdump $D;
                     exists A.I->{D.t}||die "acgtI D.t not up: ".wdump A.I;
                     .
                     T.D = $D;
-                    I.d&D.t,$s;
+                    G&D.t,$s;
                     .
                     if (my $ut = T.ut) {
                         if (ut.matchTd) {
@@ -667,13 +668,12 @@ Augen: |
                 last if T.not || T.whack;
             }
     
-    n fint =>'',<<''
-        my $m = A.m;
-        m.al->{$s} 
-        #G&ow,$z,al=>@z,$z;
     #c promise 1s for oneself to do
-    # make impon this other surface, whose A.am is 
-    n Z =>'',<<''
+    # make impon this other surface, whose A.am is
+    Ze:
+        s.
+    
+    Z:
         # s.m.al.$person attach/create for N
         # seek ^ and spawn Anlike A.N->A.Cs
         # returning Cs with the .y.A = A
@@ -703,7 +703,41 @@ Augen: |
         # create on A.m
         my (@N) = grep {ref $_} @Me;
         #
-        
+       
+    fint:
+        my $m = A.m;
+        m.al->{$s}
+        #Rw dow $done:s.om.II;
+        #DumpFile('dtwo',i.c.uz.II); # compare al compilings
+ 
+    # simple .$k.$t = C from Cs
+    # queue a push like a n does, substrate fromity from substrate
+    # A would have no c, giving itself as idea
+    # some over would batchify sources on supplied s
+    #  that reaches for store around history baggage selved
+    #  (actuaets history)
+    #  so to create indices of same t, etc
+    n ow=>'',<<''
+        my $k = shift @Me;
+        my $c = s.c || {};
+        my $sc = s.sc || $s;
+        my $d = $sc->{$k}||={};
+        #my $ot = $sc->{"hst_$k"};
+        #($ot,my $to) = ({},$ot) if $ot;
+        my $tw = {};
+        for (@Me) {
+            # could t=>s out and t-<s in, jamming many t
+            my $K = _.t;
+            if (my $al = $tw->{$K}) {
+                die "Already loded a $K ".wdump [ @Me ];
+            }
+            $tw->{$K} = $_;
+            my $o = $d->{$K};
+            $d->{$K} = $_;
+            #$ot->{$K} = $o if $ot && $o ne $_;
+        }
+        # %$ot && send c.w, qs edge of tex
+        # C riplets 
     n tesc =>''=><<'',{acgt=>'K,cv,av',intds=>'#c'}
         # av,c = 0.av,c   zero pointilise
         # Av = av || A.cv
@@ -784,34 +818,6 @@ Augen: |
             }
         }
     
-    # simple .$k.$t = C from Cs
-    # queue a push like a n does, substrate fromity from substrate
-    # A would have no c, giving itself as idea
-    # some over would batchify sources on supplied s
-    #  that reaches for store around history baggage selved
-    #  (actuaets history)
-    #  so to create indices of same t, etc
-    n ow=>'',<<''
-        my $k = shift @Me;
-        my $c = s.c || {};
-        my $sc = s.sc || $s;
-        my $d = $sc->{$k}||={};
-        #my $ot = $sc->{"hst_$k"};
-        #($ot,my $to) = ({},$ot) if $ot;
-        my $tw = {};
-        for (@Me) {
-            # could t=>s out and t-<s in, jamming many t
-            my $K = _.t;
-            if (my $al = $tw->{$K}) {
-                die "Already loded a $K ".wdump [ @Me ];
-            }
-            $tw->{$K} = $_;
-            my $o = $d->{$K};
-            $d->{$K} = $_;
-            #$ot->{$K} = $o if $ot && $o ne $_;
-        }
-        # %$ot && send c.w, qs edge of tex
-        # C riplets 
     
     n ylo =>'',<<''
         my @o = $C;
