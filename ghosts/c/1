@@ -478,6 +478,22 @@ Augen: |
         
         
         
+        my $i = sc.it || 0;
+        if (sc.lk->[$i] ne s.cv) {
+            $i++ while sc.lk->[$i+1] < s.cv;
+            $i-- while sc.lk->[$i] > s.cv && $i > 0;
+        }
+        if (sc.lk->[$i] <= s.cv) {
+            $i++;
+        }
+        sc.it = $i;
+        my $necv = sc.lk->[$i];
+        my $o = sc.unlk->{$necv};
+        
+        saybl wdump 3, [chos=>$necv,$o];
+        
+        exit;
+        
         sc.lker ||= 0;
         my $cv = sc.lk->[sc.lker];
         # A.cv is already to, A.ov is next wanted
