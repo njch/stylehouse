@@ -140,8 +140,20 @@ MourmaZ: | # notes
         # but basically can implant anything
         
         
-        #  a hive of ifs bush on as a pi proviTing for some C the littlest tunings
+        #c  a hive of ifs bush on as a pi proviTing for some C the littlest tunings
         
+                # Teo m/mo traction,
+                # also Travel how pi creates forms to rip up constantly,
+                # break through to new pi or acum pi
+                # is a base twisted from source
+                # s/^(\w+)\$ /my \$$1 =\nn /;
+                # first grab layer should be done by the next functions c.som=$it
+                # the thing to do may emerge, need 4d cradling
+                # how virtamins fly in T, coopt on A.mo,middlemost(J)
+                # 
+                # see if each thing is slightly what we want a proceed cv
+                # for things to be in piles in two strands,
+
         
 Again: |
     n Being
@@ -417,15 +429,6 @@ Augen: |
         # which Zs things into R,
         #  but after they're there & 1 (or skippy insert at if >) do now if ov
         #  returns the Cs 
-        # kind of space that would overlap a little with a ntive,
-        # a R to each C, where A.A is as At.A
-        # the notion is A.C = C, C.y.y = A
-        # from N any {}
-        #   .y = self is A holding A.C
-        #   .y other is C, 1s
-        #       .y.y other t or m, imports
-        #     or say no .y.y, 
-        # aself.mo eq A.mo is a new C
         
         # each R C may %for:N,vis:u, going to A.mo.N where sc.u
         # and it sets itself up for going onto s
@@ -533,34 +536,39 @@ Augen: |
                 map { s.al->{$_} }
                     @{s.allk};
             };
-            $low = lo.sc.sl->[0];
+            my $low = lo.sc.sl->[0];
             my $o = lo.sc.tv->{$low} || die "no tv $low";
+            my $wan;
             for (@{s.allk}) {
                 $wan = $o->{$_} || next;
                 last;
             }
             $wan || die "no $low";
             sayre "sm  s.t going to wan.t  was  @{lo.sc.sl}[0..4]";
+            
+            if ($wan) {
+                sayyl "s.t s.cv - s.ov ! want wan.t s.cv - s.ov";
+                undef $wan if $wan eq $s;
+            }
+            if ($wan) {
+                #say wdump 2, $wan;
+                G&mode,$wan,$_ for "from s.t s.cv s.ov to wan.t $low";
+                return 0;
+                #die "mode s.t to wan.t";
+            }
         }
-        if ($wan) {
-            sayyl "s.t s.cv - s.ov ! want wan.t s.cv - s.ov";
-            undef $wan if $wan eq $s;
-        }
-        if ($wan) {
-            #say wdump 2, $wan;
-            G&mode,$wan,$_ for "from s.t s.cv s.ov to wan.t $low";
-            return 0;
-            #die "mode s.t to wan.t";
-        }
+        
         
         if (s.m && s.m ne $s) {
             my $lo = s.m.c.alov || die;
             my $low = lo.sc.sl->[0];
-            if (s.ov > $low) {
+            my $tv = lo.sc.tv->{$low};
+            if (s.ov > $low && $tv->{s.t} ne $s) {
                 say "mreturn s.t s.talk at s.cv s.ov  vs $low  "
-                    .join" ", sort keys %{lo.sc.tv->{$low}};
+                    .join" ", sort keys %{$tv};
                 return 1;
             }
+            say "s.t s.talk \t\t  s.ov > $low" if s.ov > $low;
             #return 1 if A.ov != 
         }
         
@@ -606,7 +614,7 @@ Augen: |
         }
         
         saybl "Thro s.t s.cv-s.ov    - s.c.ov    s.talk  ";
-        snooze 6000;
+        snooze 60000;
         
         if (s.c.mo == 2) {
             # switch to children forever
@@ -615,6 +623,7 @@ Augen: |
             # for moov
             for (@{s.c.N.sc.N||die"No NscN"}) {
                 # next if s.T.e->{_.C} ...
+                _.c->{$_} = s.c->{$_} for grep {exists s.c->{$_}}qw'osc ov ;
                 G&thro,$_,"_.t~s.c.o";
             }
         }
@@ -624,47 +633,32 @@ Augen: |
             my $ov = s.c.ov||die"noovthro";
             my $o = s.c.o = sc.unlk->{$ov}||die"notlk$ov";
             # comp how if
-            return say "s.t s.ov ov $ov hide" if $ov <= s.ov;
-            return if s.c.aim && !grep { s.c.aim->{$_} } keys %$o;
-            # noise is the ornre
-            # it contributes flips
-            # that feeling in your fins
-            my $C = s.C ||= {};
-            my $T = s.T ||= {};
-            s.c.x = {};
+            my $if = 1;
             
-            G&how,$s,$o;
-            
-            G&exo,$s,s.c.x;
-            
-            # Teo m/mo traction,
-            # also Travel how pi creates forms to rip up constantly,
-            # break through to new pi or acum pi
-            # is a base twisted from source
-            # s/^(\w+)\$ /my \$$1 =\nn /;
-            # first grab layer should be done by the next functions c.som=$it
-            # the thing to do may emerge, need 4d cradling
-            # how virtamins fly in T, coopt on A.mo,middlemost(J)
-            # 
-            
-            T.not && die "cv 0.9 and z, oseve...";
-            s.cv = s.c.ov;
-            s.ov = sc.lk->[sc.it+1] || s.cv;
-            s.ov = s.cv if s.cv > s.ov;
-            
-            
-            # A.cv=0.9 if T.not   # will &z, oseve
-            # A.ov=cv^ if >
-            
-            # see if each thing is slightly what we want a proceed cv
-            # for things to be in piles in two strands,
+            say "s.t s.cv s.ov ov $ov hide?" if $ov <= s.cv;
+            undef $if if s.c.aim && !grep { s.c.aim->{$_} } keys %$o;
+            if ($if) {
+                # noise is the ornre
+                # it contributes flips
+                # that feeling in your fins
+                my $C = s.C ||= {};
+                my $T = s.T ||= {};
+                s.c.x = {};
+
+                G&how,$s,$o;
+
+                G&exo,$s,s.c.x;
+
+                T.not && die "cv 0.9 and z, oseve...";
+                s.cv = s.c.ov;
+                s.ov = sc.lk->[sc.it+1] || s.cv;
+                s.ov = s.cv if s.cv > s.ov;
+            }
         }
-        
-        #die "Alo" if T.doel++ > 55;
-        # s.cv = $done;
-        # s.ov = $next;
+        T.conty++ > 20 && exit;
         if (s.c.n) {
-            G&st,s.mo,moov=>{Ant=>$s}
+            G&st,s.mo,moov=>{Ant=>$s};
+            say ',';
         }
         if (s.c.mo) {
             # s.ov = lowest ^
