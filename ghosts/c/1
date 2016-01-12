@@ -508,7 +508,7 @@ Augen: |
     # make my $sc st ii: %sc ii s:i lk=usto
     away:
         my $Me = shift @Me;
-        
+        s.om || die wdump 3,["No om: ",$s];
         # steal an I
         s.om.II = s.om.J.A.II || die "NojAII ".ki s.om;
         # s.R.II spiral + cv index
@@ -526,34 +526,41 @@ Augen: |
         
         # figure for other al loop, cv wide
         # is a travel
-        my $wan;
-        if (s.c.m) {
+        if ($s eq s.m) {
             my ($lo) = s.c.alov || do {
                 reverse
-                map { G&st,$s,[alov=>{Ant=>$_}] }
+                map { G&st,$s,alov=>{Ant=>$_} }
                 map { s.al->{$_} }
                     @{s.allk};
             };
-            my $low = lo.sc.sl->[0];
+            $low = lo.sc.sl->[0];
             my $o = lo.sc.tv->{$low} || die "no tv $low";
             for (@{s.allk}) {
                 $wan = $o->{$_} || next;
                 last;
             }
             $wan || die "no $low";
-            sayre "sm  s.t going to wan.t";
+            sayre "sm  s.t going to wan.t  was  @{lo.sc.sl}[0..4]";
         }
-        sayyl "s.t s.cv - s.ov ! want wan.t";
-        undef $wan if $wan eq $s;
-        
         if ($wan) {
-            die "mode s.t to wan.t";
+            sayyl "s.t s.cv - s.ov ! want wan.t s.cv - s.ov";
+            undef $wan if $wan eq $s;
+        }
+        if ($wan) {
+            #say wdump 2, $wan;
+            G&mode,$wan,$_ for "from s.t s.cv s.ov to wan.t $low";
+            return 0;
+            #die "mode s.t to wan.t";
         }
         
-        if (s.m) {
+        if (s.m && s.m ne $s) {
             my $lo = s.m.c.alov || die;
             my $low = lo.sc.sl->[0];
-            say " s.t at A.ov  vs $low";
+            if (s.ov > $low) {
+                say "mreturn s.t s.talk at s.cv s.ov  vs $low  "
+                    .join" ", sort keys %{lo.sc.tv->{$low}};
+                return 1;
+            }
             #return 1 if A.ov != 
         }
         
@@ -583,28 +590,33 @@ Augen: |
         s.c.aim ||= {map{$_=>1}I=>s.t};
         
         # stackmess
+        $G::KA->{"$s"} = $s;
         @$Me = ("To $ta s.c.ov");
         # somewhere (C) a by yU folength N inputty (Teo)
         0
     #coot
     thro:
+        return sayre "s.t s.talk  s.cv - s.ov  no re s.c.ov" if s.ov > s.c.ov;
         if (!s.mo && s.N && s.cv >= 0.1) {
             s.c.mo = 2; # back to 1 for N repercolate
             # An/actomise travel relateds: person timedigits* 'N'
             # N is like yU or more a u or a way, isle of Pile
             # then refs to work from in that, N <> grabs source refs C.y.T, fly itself
             _.y.A.c.n = 1 for G&Ze,$s,1,N=>s.N;
-            sayyl "N was for s.t  ".wdump 3, s.c.N;
         }
         
-        saybl "DWop s.t   s.cv   s.ov  - s.c.ov  ";
+        saybl "Thro s.t s.cv-s.ov    - s.c.ov    s.talk  ";
+        snooze 6000;
         
         if (s.c.mo == 2) {
             # switch to children forever
             # give osc/ov
             # many persons throat mAny persons per cv
-            sayre "Mo profce s.t";
-            G&thro,$_,"_.t~s.c.o" for @{s.c.N};
+            # for moov
+            for (@{s.c.N.sc.N||die"No NscN"}) {
+                # next if s.T.e->{_.C} ...
+                G&thro,$_,"_.t~s.c.o";
+            }
         }
         else {
             # Personalities (of/K/code) wind of synth noise stick for sort
@@ -612,6 +624,7 @@ Augen: |
             my $ov = s.c.ov||die"noovthro";
             my $o = s.c.o = sc.unlk->{$ov}||die"notlk$ov";
             # comp how if
+            return say "s.t s.ov ov $ov hide" if $ov <= s.ov;
             return if s.c.aim && !grep { s.c.aim->{$_} } keys %$o;
             # noise is the ornre
             # it contributes flips
@@ -639,6 +652,7 @@ Augen: |
             s.ov = sc.lk->[sc.it+1] || s.cv;
             s.ov = s.cv if s.cv > s.ov;
             
+            
             # A.cv=0.9 if T.not   # will &z, oseve
             # A.ov=cv^ if >
             
@@ -646,11 +660,21 @@ Augen: |
             # for things to be in piles in two strands,
         }
         
-        die "Alo" if T.doel++ > 5;;
+        #die "Alo" if T.doel++ > 55;
         # s.cv = $done;
         # s.ov = $next;
-        G&st,s.mo,[moov=>{Ant=>$s}] if s.mo && s.mo ne $s;
-        G&st,s.m,[alov=>{Ant=>$s}] if s.mo eq $s;
+        if (s.c.n) {
+            G&st,s.mo,moov=>{Ant=>$s}
+        }
+        if (s.c.mo) {
+            # s.ov = lowest ^
+            my $low = s.c.moov.sc.sl->[0];
+            $low || die "s.t mo no low $low";
+            s.cv = s.ov unless s.cv && $low == s.ov;
+            s.ov = $low;
+            G&st,s.m,alov=>{Ant=>$s};
+            say "mo s.t   s.cv -> $low o";
+        }
         
         # returns what to say to away
         ("YTe yep s.cv s.ov");
@@ -772,18 +796,23 @@ Augen: |
             z.y = $z;
             z.c = {};
             z.sc = {};
+            map { z.c->{$_} = s.c->{$_} if s.c->{$_} } qw'aim osc ov o';
             z.C = $C;
+            z.y.A = $z;
+            z.y.cv ||= 0.1;
+            z.talk .= s.c.chid++.": C.y.cv~C.t";
             z.T = {};
-            G&st,z.mo,[$e=>{An=>$s}] if s.mo && s.mo ne $s;
+            G&st,z.mo,$e=>{An=>$z};
+            G&st,z.mo,moov=>{Ant=>$z};
             push @Z, $z;
         }
         # make An for all, same .I, .R
         # $e=N makes R.
-        sayyl "See! ". wdump 4, \@C;
+        #sayyl "See! ". wdump 4, \@C;
         #
         
         # makes .c.N
-        @C;
+        @Z;
     Z:
         # s.m.al.$person attach/create for N
         # seek ^ and spawn Anlike A.N->A.Cs
@@ -951,7 +980,7 @@ Augen: |
             }
         };
         
-        return $off->(1) && say "A C.t s ok $de   "
+        return $off->(1) #&& say "A C.t s ok $de   "
             if $re && $de &&
                 C.c.s eq R.c.s;
         
@@ -969,7 +998,7 @@ Augen: |
         G&sttug,$s if C.c.tug;
         G&stAn,$s if C.c.An;
         
-        return $off->(1) && say "A C.t tw ok $de"
+        return $off->(1) #&& say "A C.t tw ok $de"
             if $re && $de &&
                 G&heq,R.sc.tw,$tw;
         
@@ -1019,7 +1048,7 @@ Augen: |
         }
         if (my $z = C.sc.uz) {
             if (G&heq,R.sc.uz,$z ) {
-                sayre "Same euzk C.t $de";
+                #sayre "Same euzk C.t $de";
                 C.c.uz = R.c.uz;
             }
             else {
@@ -1029,7 +1058,7 @@ Augen: |
         }
         if (my $u = C.sc.usto) {
             if (G&heq,R.sc.usto,$u ) {
-                sayre "Same euk C.t $de";
+                #sayre "Same euk C.t $de";
                 C.c.usto = R.c.usto;
                 C.c.ustolk = R.c.ustolk;
             }
@@ -1088,8 +1117,6 @@ Augen: |
     # grow N ordered C as an An for a.mo
     # that is where we 
     # also inter whaT, changey shared tapes, reel arrays 
-    
-    #c steam
     stAn:
         my $R = C.c.R;
         # when some splits from A.mo=A  (lowovsorts An)
@@ -1110,6 +1137,9 @@ Augen: |
             my $new = !$tw->{$id};
             $tw->{$id} = $n;
             
+            my $de = C.sc.N = R.sc.N || [];
+            push $de, $n if $new;
+            
             my $tt = C.sc.tt = R.sc.tt || {};
             my $old = $tt->{$id};
             $tt->{$id} = $ov;
@@ -1121,6 +1151,7 @@ Augen: |
                 my $o = $tv->{$old};
                 delete $o->{$id};
                 if (!keys %$o) {
+                    my $done;
                     for (0..6) {
                         $old eq $sl->[$_] || next;
                         splice @$sl, $_, 1;
@@ -1139,10 +1170,10 @@ Augen: |
                 if ($vnew) {
                     # must insert o
                     my $i = 0;
-                    $i++ until !@$sl || $sl->[$i] >= $ov;
+                    $i++ until !@$sl || !exists $sl->[$i] || $sl->[$i] >= $ov;
                     @$sl && $sl->[$i] == $ov && die "Thought $i would new $ov ".wdump 3, $sl;
                     splice @$sl, $i, 0, ($ov);
-                    sayre "SL $ov: ".ki $sl;
+                    sayre "n.t n.cv n.ov @@ C.t sl $i";
                 }
             }
             # sc.tw.$id = sc.tv.$ov.$id = $n
