@@ -451,8 +451,8 @@ Augen: |
     n ui =>'',<<''
         my @d = grep {ref eq 'ARRAY'} @Me;
         my $ts = join ' +_ ', map {join ' + ', @$_} @d;
-        return [{t=>$ts,sc=>{u=>$_}}]
-            for grep {$_} G.ui->{$ts};
+        my $D = G.ui->{$ts};
+        return $D if $D;
         G&C,$s,@Me;
     
     # rest to invigorate over the top
@@ -479,8 +479,6 @@ Augen: |
         # attach rambling try this-er
         # and all con screen slinked listens
         
-        
-        
         # adapts apart maps
         my $mup = [u=>{
             ug => 'scof ycv t',
@@ -504,6 +502,8 @@ Augen: |
         G&st,$z,al=>{tug=>\@z,mks=>'m'};
         # s.m,mo,n share R
         G&mode,$z;
+        sayyl " S Modesd";
+        exit;
         $z
     
     mode:
@@ -532,6 +532,8 @@ Augen: |
         # figure for other al loop, cv wide
         # is a travel
         if ($s eq s.m) {
+            _.I = $I for values %{s.al};
+            
             my ($lo) = s.c.alov || do {
                 reverse
                 map { G&st,$s,alov=>{Ant=>$_} }
@@ -546,15 +548,13 @@ Augen: |
                 last;
             }
             $wan || die "no $low";
-            A.V &&
-            sayre "sm  s.t going to wan.t  was  @{lo.sc.sl}[0..4]";
+            #sayre "sm  s.t going to wan.t  was  @{lo.sc.sl}[0..4]";
             
             if ($wan) {
-                A.V &&
-                sayyl "s.t s.cv - s.ov ! want wan.t wan.cv - wan.ov";
                 undef $wan if $wan eq $s;
             }
             if ($wan) {
+                sayyl "s.t s.cv - s.ov ! want wan.t wan.cv - wan.ov";
                 G&mode,$wan,$_ for "from s.t s.cv s.ov to wan.t $low";
                 return 0;
             }
@@ -566,9 +566,8 @@ Augen: |
             my $low = lo.sc.sl->[0];
             my $tv = lo.sc.tv->{$low};
             if (s.ov > $low && $tv->{s.t} ne $s) {
-                A.V &&
-                say "mreturn s.t s.talk at s.cv s.ov  vs $low  "
-                    .join" ", sort keys %{$tv};
+                #say "mreturn s.t s.talk at s.cv s.ov  vs $low  "
+                #    .join" ", sort keys %{$tv};
                 return 1;
             }
             say "s.t s.talk \t\t  s.ov > $low" if s.ov > $low;
@@ -607,7 +606,8 @@ Augen: |
         0
     #c thro
     thro:
-        return sayre "s.t s.talk  s.cv - s.ov  no re s.c.ov" if s.ov > s.c.ov;
+        return sayre "s.t s.talk  s.cv - s.ov  no re s.c.ov"
+            if s.mo ne $s && s.ov > s.c.ov;
         if (!s.mo && s.N && s.cv >= 0.1) {
             s.c.mo = 2; # back to 1 for N repercolate
             # An/actomise travel relateds: person timedigits* 'N'
@@ -617,7 +617,6 @@ Augen: |
             
         }
         
-            A.V &&
         saybl "Thro s.t s.cv-s.ov    - s.c.ov    s.talk  ";
         T.conty++ > 840 && sayre("CONTYREX") && exit;
         #snooze 500;
@@ -642,7 +641,6 @@ Augen: |
             # comp how if
             my $if = 1;
             
-            A.V &&
             say "s.t s.cv s.ov ov $ov hide?" if $ov <= s.cv;
             undef $if if s.c.aim && !grep { s.c.aim->{$_} } keys %$o;
             if ($if) {
@@ -660,23 +658,32 @@ Augen: |
                 T.not && die "cv 0.9 and z, oseve...";
             }
             s.cv = s.c.ov;
-            s.ov = sc.lk->[sc.it+1] || s.cv;
+            my $i = sc.it + 1;
+            s.ov = sc.lk->[$i] || s.cv;
+            my $skip;
+            while (s.c.aim) {
+                s.ov = sc.lk->[$i] || last;
+                last if grep { s.c.aim->{$_} } keys %{sc.unlk->{s.ov}};
+                s.c.ovwi ||= s.ov; # check after
+                $i++;
+                $skip++;
+            }
+            snooze 5000;
+            sayyl "Wound s.t $skip   s.c.ovwi -> s.ov \t\t s.talk" if s.c.ovwi;
+            delete s.c.ovwi;
             s.ov = s.cv if s.cv > s.ov;
         }
         if (s.c.n) {
             G&st,s.mo,moov=>{Ant=>$s};
-            A.V &&
-            say ',';
         }
         if (s.c.mo) {
             # s.ov = lowest ^
             my $low = s.c.moov.sc.sl->[0];
             $low || die "s.t mo no low $low";
-            s.cv = s.ov;# unless s.cv && $low == s.ov;
+            s.cv = s.ov;
             s.ov = $low;
             G&st,s.m,alov=>{Ant=>$s};
-            A.V &&
-            say "mo s.t   s.cv -> $low o";
+            #say "mo s.t   s.cv -> $low o";
         }
         
         # returns what to say to away
@@ -724,7 +731,7 @@ Augen: |
                             }
                             s.I->{D.t} = Rw D.t $A $C $G $T $__D:D;
                             s.I->{D.t.'_dige'} = D.sc.dige;
-                            sayyl "Compile D.t   for C.t  D.y.cv " if D.y.cv != 0.1;
+                            sayyl "Compile D.t   for C.t  D.y.cv ";# if D.y.cv != 0.1;
                         }
                     }
                     # this ind is all flywheel
@@ -739,7 +746,7 @@ Augen: |
     #c adapt to much  mergey # extendo  rubble # do stuff # in fractions
     exo:
         for my $x (@Me) {
-            for my $k (keys %$x) {
+            for my $k (keys %$x) { # cv's K/t
                 my $tD = $x->{$k};
                 s.c.aim && !s.c.aim->{$k} && next;
                 for my $t (keys %$tD) {
@@ -749,17 +756,13 @@ Augen: |
                     my $A = $s;
                     my $C = A.C;
                     my $T = A.T;
-                    for my $as (@$Ds) {
+                    for my $s (@$Ds) {
                         D.sc.acgt eq 's'||die "nonacgts".wdump $D;
                         exists A.I->{D.t}||die "acgtI D.t not up".wdump 3, [ $A, $D ];
                         
-                        #next if D.t eq 'Ci';
-
                         T.D = $D;
-                        if (0&& s.c.ov > 0.11) {
-                            saybl wdump 3,[Def=>$as];
-                        }
-                        G&D.t,$as;
+                        G&D.t,$s;
+                        sayyl " ---- s.t  D.t";
 
                         # T personality slickers, T.68 x ut , 
                         # all produces a slope for how much time you've got
@@ -1141,10 +1144,8 @@ Augen: |
             
             my $ov = n.ov || 0;
             
-            my $tw = C.sc.tw;
-            die "ANalreadytw" if keys %$tw;
-            %$tw = %{R.sc.tw} if R.sc.tw;
-            my $new = !$tw->{$id};
+            my $tw = C.sc.tw = R.sc.tw || {};
+            my $new = !exists $tw->{$id};
             $tw->{$id} = $n;
             
             my $de = C.sc.N = R.sc.N || [];
@@ -1183,7 +1184,7 @@ Augen: |
                     $i++ until !@$sl || !exists $sl->[$i] || $sl->[$i] >= $ov;
                     @$sl && $sl->[$i] == $ov && die "Thought $i would new $ov ".wdump 3, $sl;
                     splice @$sl, $i, 0, ($ov);
-                    sayre "n.t n.cv n.ov @@ C.t sl $i";
+                    sayre "n.t n.cv n.ov @@ C.t sl $i" if $i != 0 && $i != 1;
                 }
             }
             # sc.tw.$id = sc.tv.$ov.$id = $n
