@@ -326,6 +326,7 @@ Dive: |
     #
 Aim: |
     u Again
+    
     #u urw
     # v to: do$ {} # for An spacehash lex $do
     my ($A) =
@@ -345,6 +346,9 @@ Bla: |
     u urw
     J.VV.N = 1;
     
+    # wait for in
+    #J.fti = 2;
+    #Rw Sl;
     
     # Mn s.t -SeeaboutA $s
     Mn(s.t=>-SeeaboutA=>{s=>$s});
@@ -352,19 +356,21 @@ Bla: |
     
     #
 BeiC: |
-    u allact
+    u allvse
+    u C
     n '','','%of:A'
     # how to expand culture, bal lum to glory
+    
     dso 3: %tis
         say "Exkdsi! : ";
     
+    #
     
-    
+
+    n deem =>''=>\'s:dteas',\'d:3,ego,folo:so'
 
 
-
-
-    
+    J.VV.N = 1;
     #
 pi/SeeaboutA: |
     u Again
@@ -374,8 +380,10 @@ pi/SeeaboutA: |
         See about a
     
     # off$ wd =>-pre=>{s=>wdump 1, $s}
-    J.A.d > 3 && return
-    n wd =>-pre=>sub{wdump 1, $s}
+    # Ad&off if 
+    #J.A.d > 3 &&
+    return
+        n wd =>-pre=>wdump 1, $s
     
     Mn($_=>''=>{s=>$s->{$_}}) for sort keys %$s;
     
@@ -1865,34 +1873,31 @@ SlideEa: | # liney schemery
     u allacgts
     
     # fold space til fit
-    n sca =>''=><<''
+    sca:
         $s /= 10 while $s > 1 || $s < -1;
         return $s
     
-    n scyvle =>''=><<''
-        for (qw'in out cv') {
-            if (my $so = C.y->{$_}) {
-                my $i;
-                while (C.y->{$_} <= -1 || C.y->{$_} >= 1) {
-                    C.y->{$_} /= 10;
-                    die "Many i chewing on ".ki C.y if $i++ > 10;
-                }
-            }
+    scyvle:
+        map { my$i;
+            C.y->{$_} /= 10 while
+            (C.y->{$_} <= -1 || C.y->{$_} >= 1)
+            &&
+            (++$i < 10 || die "Many i chewing on $_: ".ki C.y)
         }
+        grep { C.y->{$_} }
+        qw'in out cv'
     
-    n Ci =>12=><<'','%act,code:I 12'
-        !ref $s ? I.d&string,$s
-        :
-        ref $s eq 'ARRAY' ? I.d&array,$s
-        :
-        ref $s eq 'HASH' ? I.d&hash,$s
-        :
-        die "mmtype:$s";
+    Ci 12: %act
+        !$_ ? G&string,$s :
+        'ARRAY'eq$_ ? G&array,$s :
+        'HASH'eq$_ ? G&hash,$s :
+        die "mmtype:$s"
+        for ref $s
     
-    n string =>''=>{s=><<''}
+    string:
         die "string: $s";
     
-    n array =>''=>{s=><<''}
+    array:
         return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\w+$/;
         return I.d&fourstring,$s->[0] if @$s == 1 && !ref $s->[0];
         # should stick In in first and M it? 
@@ -1900,51 +1905,64 @@ SlideEa: | # liney schemery
         unshift @{A.N}, @$s;
         T.not = 1;
     
-    n hash =>''=>{s=><<''}
+    hash:
         return %$C = %$s if exists s.t && s.y && s.c;
         I.d&servehash,$s;
     
-    n reasonlock =>''=>{s=><<''},{code=>'I 18',act=>1}
+    reasonlock 18: %act
         die"reft" if ref C.t;
         if (A.J && (A.J.name eq 'qq' || A.J.most.J eq A.J)) {
             C.c.W = C.t unless C.c || C.sc || C.y;
         }
-        I.d&renc if !ref C.c;
+        I.d&renc if ref C.c ne 'HASH';
         .
         my $yy = C.y;
         C.y = {} if ref C.y ne 'HASH';
         I.d&givy,$yy;
         .
-        I.d&rensc if !ref C.sc;
+        I.d&rensc if ref C.sc ne 'HASH';
         .
         I.d&isC,$C && ref C.sc
             || die "reaso fail".wdump [A.s,$C];
         I.d&scyvle;
     
     #curv=>pi=>see
-    n renc =>''=>{s=><<''}
-        C.c = C.c =~ I.peels ? I.d&peel,C.c
-          : do {
-            A.btw.cwass = 1 if "" eq C.c;
-            A.btw.cwasnd = 1 if !defined C.c;
-              {s => C.c};
-          };
+    renc:
+        (my $s,C.c) = (C.c,{});
+        if (ref $s eq 'REF') {
+            C.c.s = ${$s};
+        }
+        if (ref $s eq 'SCALAR') {
+            $s = $$s;
+            $s = '%'.$s if $s !~ /^%/;
+            $s =~ /I.peels/ || die "scalarnopeel $s";
+        }
+        if (ref $s eq '' && $s =~ /I.peels/) {
+            # peels for now
+            G&xo,C.c,$_ for I.d&peel,$s;
+        }
+        else {
+            A.btw.cwass = 1 if "" eq $s;
+            A.btw.cwasnd = 1 if !defined $s;
+            C.c.s = $s;
+        }
     
-    n rensc =>''=><<''
+    rensc:
+        C.sc = $C.sc if ref C.sc eq 'REF';
         C.sc = C.sc eq '' ? {}
             : C.sc =~ I.peels
             ? I.d&peel,C.sc
             : die "C sc nostr: C.sc   of I.peels  ".ki $C
 
-    n isC =>''=><<''
+    isC:
         return 0 unless ref $s eq 'HASH';
         exists s.t && defined C.t && !ref s.t
         && ref s.y && ref s.c && 9 > keys %$s;
     
-    n isJ =>''=><<''
+    isJ:
         ref $s eq 'HASH' && ref s.bb eq 'HASH';
     
-    n taJe =>''=><<''
+    taJe:
         I.d&isC,$s || I.d&isJ,$s || return;
         if (s.bb) {
             if (I.d&isC,C.c ) {
@@ -1962,7 +1980,7 @@ SlideEa: | # liney schemery
         C.c.W = C.t;
         return 1
     
-    n givy =>''=><<''
+    givy:
         my $y = C.y;
         if (ref $s eq 'ARRAY') {
             for my $yy (@$s) {
@@ -2015,7 +2033,7 @@ C: |
     u allacgts
     # modem sounds etc.
     # dome props, repeatable tests
-    n fourstring =>'',<<''
+    fourstring:
         I.d&MZu,$1 if $s =~ /^\s*#?\s*MZ (.+)$/;
         $s =~ s/^\s+//;
         if ($s =~ /^\s*(#.*)$/) {
@@ -2039,43 +2057,41 @@ C: |
         }
         saybl "4string: $s            ".ki $C if A.V&C;
     
-    n fourreal =>'',<<''
+    fourreal:
         (C.t, C.y) = @$s;
         C.c  = $s->[2] if exists $s->[2];
         C.sc = $s->[3] if exists $s->[3];
         die'@>4'.wdump $s if @$s > 4;
         die"C.t from ".wdump $s if ref C.t; # dives
     
-    n peels =>'',<<'','%subpeel'
+    peels: %subpeel
         qr/^[\{\%]\w+/;
     
-    n peel =>'',<<''
-        $s =~ s/^%// || 
-            $s =~ s/^{// && $s =~ s/}$//
-            || die "unpealable $s";
-        my $c;
+    peel:
+        $s =~ s/^%//;
+        my $c = {};
         for (split ',', $s) {
             my ($k, $v) = split ':', $_, 2;
             $v = 1 if !defined $v;
             $c->{$k} = $v;
         }
-        $c||{}
+        $c
     
     # for getting click together:
-    n c =>'',<<'','%acgt:D'
+    c: %acgt:D
         I.d&inDin,$C,@M;
     
-    n e =>'',<<'','%acgt:D'
+    e: %acgt:D
         my $e = I.d&sces,C.c.e||return();
         I.d&inDin,$e,@M;
     
-    n us =>'',<<'','%acgt:D'
+    us: %acgt:D
         my $e = I.d&sces,C.c.e||return();
         my $us = e.c.us||return();
         push @M, 'NOGK' if @M == 1;
         I.d&inDin,$us,@M;
     
-    n sces =>'',<<''
+    sces:
         my $i = 0;
         while (s.c.e) {
             $s = s.c.e;
@@ -2083,7 +2099,7 @@ C: |
         }
         return $s;
     
-    n inDin =>'',<<'',{acgt=>'s,D'}
+    inDin: %acgt:s D
         return () unless defined $s;
         return $s if $D eq 'C';
         #
@@ -2106,7 +2122,7 @@ C: |
         }
         return $v;
     
-    n interpD =>'',<<'',{acgt=>'nk,gk'}
+    interpD: %acgt:nk gk
         my $defnk = 'c';
         return $nk if ref $nk;
         my $D = {};
@@ -2129,7 +2145,7 @@ C: |
         delete D.c.gk if D.c.gk eq 'NOGK';
         $D
     
-    n Cngk =>'',<<'',{acgt=>'s,D'}
+    Cngk: %acgt:s D
         ref $A || die "nmonref A!";
         A.bangdesk.bang->{Cngek} = sub {
             sayre "was Cngk; ".ki($s)."\nWith: ".ki($D)
@@ -2141,9 +2157,9 @@ C: |
         return 0 if !exists $s->{D.c.nk}->{D.c.gk};
         return [$s->{D.c.nk}->{D.c.gk}];
     
-    #cCccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetc
+    #cCccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetcccCCCCccCCcccCCccccccCCCCCCCCCCCCccCCCCCCCCCCccccccCCCCCCCCCCCCCccccCCCCCCccccCCCCCccetc
     
-    n ip =>'',<<'',{acgt=>'s,c'}
+    ip: %acgt:s c
         my $pass = 1;
         for my $I (keys %$s) {
             !ref $s->{$I} && $s->{$I} ne $c->{$I} && $pass--;
@@ -2161,12 +2177,12 @@ C: |
         }
         $pass == 1
     
-    n xoy =>'',<<'',{acgt=>'s,c'}
-        $c = I.d&xot,{},$c;
-        I.d&xot,$c,$s;
+    xoy: %acgt:s c
+        $c = G&xot,{},$c;
+        G&xot,$c,$s;
         return $s;
     
-    n xot =>'',<<'',{acgt=>'s,c'}
+    xot: %acgt:s c
         ref $c eq 'HASH' && ref $s eq 'HASH' ||
             die "Hash up".wdump 3, [$s,$c];
         while (my($k,$v) = each %$c) {
@@ -2176,7 +2192,15 @@ C: |
         }
         return $s
     
-    n hup =>'',<<''
+    xo: %acgt:s c
+        ref $c eq 'HASH' && ref $s eq 'HASH' ||
+            die "Hash up".wdump 3, [$s,$c];
+        while (my($k,$v) = each %$c) {
+            $s->{$k} = $v;
+        }
+        return $s
+    
+    hup:
         my $CC = {%$s};
         $CC->{$_} = {%{$CC->{$_}}} for grep {ref $CC->{$_} eq 'HASH'} keys %$CC;
         return $CC;

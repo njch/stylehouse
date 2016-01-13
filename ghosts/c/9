@@ -151,20 +151,22 @@ cono: | # is perl Art shader, just re C
     my $wast = C.t;
     C.t =~ s/\W//sg;
     my $ind = "";
+    C.sc.of ||= C.sc.code;
     
     if (C.sc.acgt) {
         # for ACGT+args in acgt, args take whole @_
         C.sc.args ||= join',','A,C,G,T',grep{$_ ne '1'}C.sc.acgt;
-        undef C.sc.code if C.sc.code eq '1';
+        C.sc.of eq '1' && undef C.sc.of;
         # the I that Cs all, it is indifferent to its current
-        C.sc.code ||= "I 1";
+        C.sc.of ||= "I";
     }
+    C.sc.args =~ s/[\+ ]/,/sgm;
     C.sc.got && die ":Slooping";
     
-        if (C.sc.code =~ /\w+ \w+/) {
+        if (C.sc.code =~ /\w+ \w+/) { # LEG
             C.sc.code =~ /^(\w+) (\d+)$/ || die "wtfs code=C.sc.code  ".ki$C;
             my ($K,$cv) = ($1,$2);
-            C.sc.code = $K;
+            C.sc.of = $K;
             $cv = 0+("0.".$cv);
             sayyl "CHangting $K / $cv / C.t   from C.y.cv"
                 if $cv ne C.y.cv && C.y.cv != 0.3;
@@ -173,7 +175,7 @@ cono: | # is perl Art shader, just re C
             
             my $ara = []; # ar ups and demand argsed
             
-            if (C.sc.Td) {
+            if (C.sc.Td) { # onc populates
                 my $Q;
                 Q.path = [split '/', C.sc.Td];
                 die if @{Q.path} < 1;
@@ -266,10 +268,9 @@ cono: | # is perl Art shader, just re C
             else {
                 C.sc.subpeel&&die"nonargs ha subpeel".ki$C
             }
-            C.sc.of = C.sc.code;
             
 ym/conoi: | # is Art shader
-    C.sc.code || return;
+    C.sc.of || C.sc.code || return;
     $C = {%$C}; # hup
     $C->{$_} = {%{$C->{$_}}} for grep {ref $C->{$_} eq 'HASH'} keys %$C;
     C.y = {cv=>C.y} if !ref C.y;
@@ -287,7 +288,7 @@ ym/conoi: | # is Art shader
 
             delete C.c.from; # as 7, from appears on each thing as it leaves there
             # AND
-            $v->{C.sc.code}->{C.y.cv}->{C.t} = $C;
+            $v->{C.sc.of}->{C.y.cv}->{C.t} = $C;
 ym/notnotjs: |
     T.not = 1 unless exists C.sc.js;
 ym/talky: | # make M flat, acum .c.from, atoms wired together like so J.most.$

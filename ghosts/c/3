@@ -221,14 +221,15 @@ Spaci: |
     # distribute display particles
     # could spiral much space away from spine
     
-    n yin =>23,<<''
-        # build wave plot manifold
-        # solar systems
-        y.cv ||= 0.3 if !defined y.cv && !defined y.in;
+    # build wave plot manifold
+    # solar systems
+    # 1 things big, 0.9 ended implies to many
+    yin 23:
+        y.cv ||= 0.1 if !defined y.cv && !defined y.in;
         y.in = y.cv if defined y.cv;
         y.in ||= 0.1;
         y.out = y.in + y.space if defined y.space;
-        y.out ||= 0.9; # up to, then low things big
+        y.out ||= 0.9;
         y.thi ||= 1;
         if (my $mk = y.ert) {
             $mk += y.ert while y.thi > $mk;
@@ -238,8 +239,10 @@ Spaci: |
         y.space *= -1 unless y.space > 0;
         y.aspace = y.space / y.thi;
     
-    n yarN =>26,<<''
-        # twist, lay into segment
+    # twist, lay into segment
+    # y.u. shares av, y. separates
+    # difference pours out of y.bal via y.i in 32
+    yarN 26:
         ref $y eq 'HASH' || die "Notash: ".wdump 2, $C;
         !defined y.u || ref y.u eq 'HASH' || die "Nou : y.u ".wdump 2, $y;
         y.u.v = defined y.cv ? y.cv
@@ -247,8 +250,6 @@ Spaci: |
             : die "no yiny".ki$y;
         y.thi || die "Whythi".ki$C;
         die ":idify" if $y ne C.y;
-        # y.u. shares av, y. separates
-        # difference pours out of y.bal via y.i in 32
         my @lot = map {
             my $C = eval { I.d&xot,{},$C };
             C.y.i = $_-1;
@@ -265,12 +266,12 @@ Spaci: |
             %$C = %$CC;
         }
     
-    n yinvout =>3,<<''
+    yinvout 3:
         y.mu = 1;
     
     # * bend mu since ^
     # render microdots
-    n black =>34,<<''
+    black 34:
         my $was = y.u.v;
         defined $was || die"noAv".ki$C;
         # in:
@@ -286,12 +287,12 @@ Spaci: |
         sayyl "Bend: C.t   $was += $in       y.aspace * y.mu       muav:y.u.muav"
             if A.J.V && y.u.muav && y.u.muav != 1;
     
-    n ent =>37,<<''
+    ent 37:
         $y->{$_} = 0+sprintf('%.6f',$y->{$_}) for qw'cv ov aspace spc';
         C.sc.yspc = y.spc if C.sc.nspc;
         C.sc.ml = (C.y.over * 40)."%" if y.over;
 
-    n pin =>77,<<''
+    pin 77:
         return if delete T.oke;
         my $oJ = A.J;
         my $J = C.y.o && C.y.o.J || $oJ;
