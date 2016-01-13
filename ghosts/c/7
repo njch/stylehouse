@@ -360,6 +360,7 @@ Yosc: | # make lv,at + write stuff on at (connect Art)
         }
     
     n sel =>38=><<''
+        # G@Art,8,6; -> G&t,'Art'...,  access introspective universe
         A.t&Art,8,6;
         at.y = at.y.cv if keys %{at.y} == 1 && exists at.y.cv;
         # ^ to SlideEater decode array of y expressions, xotted together
@@ -367,6 +368,11 @@ Yosc: | # make lv,at + write stuff on at (connect Art)
             at.c->{$up} = delete at.sc->{$up} if exists at.sc->{$up}
         }
         delete at.c.s if at.c.s eq 'pi' && C.t eq 'pi' && C.y.cv == 0.9;
+        if (ref at.c.s && J.mo.J && J.mo.J.at.ux) {
+            my $was = delete at.c.s;
+            at.c.q = "$was";
+        }
+        
 Yod: |
     u allovse
     n '','','%of:Sev'
