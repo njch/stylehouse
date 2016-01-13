@@ -357,10 +357,12 @@ Bla: |
     #
 BeiC: |
     u allvse
-    u C
+    #u C
     u SlideEa
-    n '','','%of:A'
+    
+    n \'%of:A'
     # how to expand culture, bal lum to glory
+    say ":Done!!!!";
     
     dso 3: %tis
         say "Exkdsi! : ";
@@ -368,7 +370,7 @@ BeiC: |
     #
     
 
-    n deem =>''=>\'s:dteas',\'d:3,ego,folo:so'
+    n deem =>''=>'%s:dteas,flop','%d:3,ego,folo:so'
 
 
     J.VV.N = 1;
@@ -1892,11 +1894,14 @@ SlideEa: | # liney schemery
         !$_ ? G&string,$s :
         'ARRAY'eq$_ ? G&array,$s :
         'HASH'eq$_ ? G&hash,$s :
+        'SCALAR'eq$_ ? do {
+        
+        } :
         die "mmtype:$s"
         for ref $s
     
     string:
-        die "string: $s";
+        die "string: $s ".wdump 5, [A.s,A.N];
     
     array:
         return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\w+$/;
