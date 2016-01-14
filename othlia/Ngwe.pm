@@ -14,7 +14,7 @@ my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 my $y = $A->{I}->{$s} || do {
     sayre "Above for $s on $A->{talk} isssssssss $A->{up}->{talk}";
-    $A->{up}->{I}->{$s} || die "No whay named $s on $A->{talk} or $A->{up}->{talk}: ".wdump 2, $A->{I};
+    $A->{up}->{I}->{$s} || die "No whay named $s on $A->{talk} or $A->{up}->{talk}: ".wdump 1, $A;
 };
 say "$A->{talk} h :  $s   < $C->{t}"
     unless $C->{t} =~ /^_/ || !$A->{J} || $A->{J}->{V} < 2;
@@ -98,20 +98,22 @@ my $I = $A->{I};
 my $wast = $C->{t};
 $C->{t} =~ s/\W//sg;
 my $ind = "";
+$C->{sc}->{of} ||= $C->{sc}->{code};
 
 if ($C->{sc}->{acgt}) {
     # for ACGT+args in acgt, args take whole @_
     $C->{sc}->{args} ||= join',','A,C,G,T',grep{$_ ne '1'}$C->{sc}->{acgt};
-    undef $C->{sc}->{code} if $C->{sc}->{code} eq '1';
+    $C->{sc}->{of} eq '1' && undef $C->{sc}->{of};
     # the I that Cs all, it is indifferent to its current
-    $C->{sc}->{code} ||= "I 1";
+    $C->{sc}->{of} ||= "I";
 }
+$C->{sc}->{args} =~ s/[\+ ]/,/sgm;
 $C->{sc}->{got} && die ":Slooping";
 
-    if ($C->{sc}->{code} =~ /\w+ \w+/) {
+    if ($C->{sc}->{code} =~ /\w+ \w+/) { # LEG
         $C->{sc}->{code} =~ /^(\w+) (\d+)$/ || die "wtfs code=$C->{sc}->{code}  ".ki$C;
         my ($K,$cv) = ($1,$2);
-        $C->{sc}->{code} = $K;
+        $C->{sc}->{of} = $K;
         $cv = 0+("0.".$cv);
         sayyl "CHangting $K / $cv / $C->{t}   from $C->{y}->{cv}"
             if $cv ne $C->{y}->{cv} && $C->{y}->{cv} != 0.3;
@@ -120,7 +122,7 @@ $C->{sc}->{got} && die ":Slooping";
 
         my $ara = []; # ar ups and demand argsed
 
-        if ($C->{sc}->{Td}) {
+        if ($C->{sc}->{Td}) { # onc populates
             my $Q;
             $Q->{path} = [split '/', $C->{sc}->{Td}];
             die if @{$Q->{path}} < 1;
@@ -218,7 +220,7 @@ $G->{h}->($A,$C,$G,$T,"parse_babbl",$C->{c}->{s});
 };
 $A->{II} = Load(<<STEVE);
 --- 
-I: 
+1: 
   "0.1": 
     airlock: 
       c: 
@@ -227,9 +229,10 @@ I:
         acgt: s
         args: 1
         bab: ~
-        code: I
+        code: 1
         dige: 5bd9a03b7bf4
         eg: Ngwe
+        of: I
       t: airlock
       "y": 
         cv: '0.1'
@@ -240,9 +243,10 @@ I:
         acgt: s
         args: A,C,G,T,s
         bab: ~
-        code: I
-        dige: f0c3e2d3c6c0
+        code: 1
+        dige: 2dcdb2ffa81b
         eg: Ngwe
+        of: I
       t: h
       "y": 
         cv: '0.1'
@@ -253,9 +257,10 @@ I:
         acgt: s
         args: A,C,G,T,s
         bab: ~
-        code: I
+        code: 1
         dige: 7d5683de0f11
         eg: Ngwe
+        of: I
       t: init
       "y": 
         cv: '0.1'
@@ -266,9 +271,10 @@ I:
         acgt: s
         args: A,C,G,T,s
         bab: ~
-        code: I
+        code: 1
         dige: e18cb9bc2fc6
         eg: Ngwe
+        of: I
       t: w
       "y": 
         cv: '0.1'
@@ -279,9 +285,10 @@ I:
         acgt: s
         args: A,C,G,T,s
         bab: ~
-        code: I
-        dige: d5703f4a22e7
+        code: 1
+        dige: 69edd3fc9067
         eg: Ngwe
+        of: I
       t: won
       "y": 
         cv: '0.1'
