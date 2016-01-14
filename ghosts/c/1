@@ -346,6 +346,7 @@ Bla: |
     u urw
     J.VV.N = 1;
     
+    delete G.forked;
     # wait for in
     #J.fti = 2;
     #Rw Sl;
@@ -362,6 +363,7 @@ BeiC: |
     # have R code, can be
     J.VV.N = 1;
     
+    n pre=>pi=>\'Ism'
     y 2: %tis,eiei
         say "eq a! : ";
     
@@ -377,12 +379,12 @@ pi/SeeaboutA: |
         See about a
     
     # off$ wd =>-pre=>{s=>wdump 1, $s}
-    # Ad&off if 
-    #J.A.d > 3 &&
+    # off if depth > 3, etc somewhere
+    J.A.d > 3 &&
     return
         n wd =>-pre=>wdump 1, $s
     
-    Mn($_=>''=>{s=>$s->{$_}}) for sort keys %$s;
+    Mn($_=>''=>\$s->{$_}) for sort keys %$s;
     
     
     my $A = 
@@ -1890,7 +1892,7 @@ SlideEa: | # liney schemery
         'HASH'eq$r ? G&hash,$s :
         'SCALAR'eq$r ? do {
             C.t ||= '';
-            C.c = $s;
+            C.y = $s;
         } :
         die "mmtype:$r for $s"
     
@@ -1929,14 +1931,9 @@ SlideEa: | # liney schemery
     #curv=>pi=>see
     renc:
         (my $s,C.c) = (C.c,{});
-        if (ref $s eq 'REF') {
+        if (ref $s eq 'REF' || ref $s eq 'SCALAR') {
             C.c.s = $$s;
             return;
-        }
-        if (ref $s eq 'SCALAR') {
-            $s = $$s;
-            $s = '%'.$s if $s !~ /^%/;
-            $s =~ /I.peels/ || die "scalarnopeel $s";
         }
         if (ref $s eq '' && $s =~ /I.peels/) {
             # peels for now
@@ -1954,7 +1951,62 @@ SlideEa: | # liney schemery
             : C.sc =~ I.peels
             ? I.d&peel,C.sc
             : die "C sc nostr: C.sc   of I.peels  ".ki $C
-
+    
+    givy:
+        my $y = C.y;
+        if (ref $s eq 'SCALAR') {
+            $s = $$s;
+            $s = '%'.$s if $s !~ /^%/;
+            $s =~ /I.peels/ || die "scalarnopeel $s";
+            G&xo,C.c,$_ for G&peel,$s;
+        }
+        elsif (ref $s eq 'ARRAY') {
+            for my $yy (@$s) {
+                C.y = {};
+                G&givy,$yy;
+                ref $y || die "notash ".ki $y;
+                G&xot,$y,C.y;
+                C.y = $y;
+            }
+        }
+        elsif (ref $s) {
+            ref $s eq 'HASH' || die "no $s";
+            if (G&taJe,$s ) {
+                my $yy = C.y;
+                C.y = {} if ref C.y ne 'HASH';
+                G&givy,$yy;
+            }
+            elsif ($y ne $s) {
+                G&xot,$y,$s;
+            }
+        }
+        elsif ($s eq '') {
+            my $x = I.blanky ? G&blanky : {};
+            G&xot,C.y,$x if keys %$x;
+        }
+        elsif ($s =~ /^($G::NUM)$/) {
+            y.cv = $1;
+        }
+        elsif ($s =~ /^($G::NUM)-($G::NUM)$/) {
+            y.in = $1;
+            y.out = $2;
+        }
+        elsif ($s =~ /^($G::NUM)-($G::NUM)x($G::NUM)$/) {
+            y.in = $1;
+            y.out = $2;
+            y.thi = $3;
+        }
+        elsif ($s =~ /^-(\w+)$/) {
+            C.c.pi = $1;
+            C.c.s = C.t if !exists C.c.s || A.btw.cwass;
+        }
+        elsif ($s =~ /^([a-zA-Z]+)(?::(.+))?$/) {
+            C.c->{$1} = $2 || C.t;
+        }
+        else {
+            die "C y wtf: $s";
+        }
+    
     isC:
         return 0 unless ref $s eq 'HASH';
         exists s.t && defined C.t && !ref s.t
@@ -1980,55 +2032,6 @@ SlideEa: | # liney schemery
         C.y = {};
         C.c.W = C.t;
         return 1
-    
-    givy:
-        my $y = C.y;
-        if (ref $s eq 'ARRAY') {
-            for my $yy (@$s) {
-                C.y = {};
-                I.d&givy,$yy;
-                ref $y || die "notash ".ki $y;
-                I.d&xot,$y,C.y;
-                C.y = $y;
-            }
-        }
-        elsif (ref $s) {
-            ref $s eq 'HASH' || die "no $s";
-            if (I.d&taJe,$s ) {
-                my $yy = C.y;
-                C.y = {} if ref C.y ne 'HASH';
-                I.d&givy,$yy;
-            }
-            elsif ($y ne $s) {
-                I.d&xot,$y,$s;
-            }
-        }
-        elsif ($s eq '') {
-            my $x = I.blanky ? I.d&blanky : {};
-            I.d&xot,C.y,$x if keys %$x;
-        }
-        elsif ($s =~ /^($G::NUM)$/) {
-            y.cv = $1;
-        }
-        elsif ($s =~ /^($G::NUM)-($G::NUM)$/) {
-            y.in = $1;
-            y.out = $2;
-        }
-        elsif ($s =~ /^($G::NUM)-($G::NUM)x($G::NUM)$/) {
-            y.in = $1;
-            y.out = $2;
-            y.thi = $3;
-        }
-        elsif ($s =~ /^-(\w+)$/) {
-            C.c.pi = $1;
-            C.c.s = C.t if !exists C.c.s || A.btw.cwass;
-        }
-        elsif ($s =~ /^([a-zA-Z]+)(?::(.+))?$/) {
-            C.c->{$1} = $2 || C.t;
-        }
-        else {
-            die "C y wtf: $s";
-        }
     
 C: |
     u allacgts
@@ -2065,7 +2068,7 @@ C: |
         die'@>4'.wdump $s if @$s > 4;
         if (ref C.t eq 'SCALAR') {    
             die "scalaref Ct had Cc".wdump 4,$C if C.c;
-            (C.t,C.c) = ('',$s);
+            (C.t,C.y) = ('',$s);
         }
         die"C.t from ".wdump $s if ref C.t; # dives
     
