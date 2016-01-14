@@ -351,29 +351,23 @@ Bla: |
     #Rw Sl;
     
     # Mn s.t -SeeaboutA $s
-    Mn(s.t=>-SeeaboutA=>{s=>$s});
+    Mn(s.t=>-SeeaboutA=>\$s);
     
     
     #
 BeiC: |
     u allvse
-    #u C
-    u SlideEa
-    
-    n \'%of:A'
+    n \'of:A'
     # how to expand culture, bal lum to glory
-    say ":Done!!!!";
+    # have R code, can be
+    J.VV.N = 1;
     
-    dso 3: %tis
-        say "Exkdsi! : ";
+    y 2: %tis,eiei
+        say "eq a! : ";
     
-    #
-    
-
     n deem =>''=>'%s:dteas,flop','%d:3,ego,folo:so'
 
 
-    J.VV.N = 1;
     #
 pi/SeeaboutA: |
     u Again
@@ -390,7 +384,6 @@ pi/SeeaboutA: |
     
     Mn($_=>''=>{s=>$s->{$_}}) for sort keys %$s;
     
-    my $ic = C.c.ic || return;
     
     my $A = 
     nse 12:
@@ -1891,14 +1884,15 @@ SlideEa: | # liney schemery
         qw'in out cv'
     
     Ci 12: %act
-        !$_ ? G&string,$s :
-        'ARRAY'eq$_ ? G&array,$s :
-        'HASH'eq$_ ? G&hash,$s :
-        'SCALAR'eq$_ ? do {
-        
+        my $r = ref $s;
+        !$r ? G&string,$s :
+        'ARRAY'eq$r ? G&array,$s :
+        'HASH'eq$r ? G&hash,$s :
+        'SCALAR'eq$r ? do {
+            C.t ||= '';
+            C.c = $s;
         } :
-        die "mmtype:$s"
-        for ref $s
+        die "mmtype:$r for $s"
     
     string:
         die "string: $s ".wdump 5, [A.s,A.N];
@@ -1936,7 +1930,8 @@ SlideEa: | # liney schemery
     renc:
         (my $s,C.c) = (C.c,{});
         if (ref $s eq 'REF') {
-            C.c.s = ${$s};
+            C.c.s = $$s;
+            return;
         }
         if (ref $s eq 'SCALAR') {
             $s = $$s;
@@ -2068,6 +2063,10 @@ C: |
         C.c  = $s->[2] if exists $s->[2];
         C.sc = $s->[3] if exists $s->[3];
         die'@>4'.wdump $s if @$s > 4;
+        if (ref C.t eq 'SCALAR') {    
+            die "scalaref Ct had Cc".wdump 4,$C if C.c;
+            (C.t,C.c) = ('',$s);
+        }
         die"C.t from ".wdump $s if ref C.t; # dives
     
     peels: %subpeel
