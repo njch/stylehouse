@@ -363,7 +363,6 @@ BeiC: |
     # have R code, can be
     J.VV.N = 1;
     
-    n pre=>pi=>\'Ism'
     y 2: %tis,eiei
         say "eq a! : ";
     
@@ -1870,21 +1869,6 @@ Bangdesk: |
 SlideEa: | # liney schemery
     u allacgts
     
-    # fold space til fit
-    sca:
-        $s /= 10 while $s > 1 || $s < -1;
-        return $s
-    
-    scyvle:
-        map { my$i;
-            C.y->{$_} /= 10 while
-            (C.y->{$_} <= -1 || C.y->{$_} >= 1)
-            &&
-            (++$i < 10 || die "Many i chewing on $_: ".ki C.y)
-        }
-        grep { C.y->{$_} }
-        qw'in out cv'
-    
     Ci 12: %act
         my $r = ref $s;
         !$r ? G&string,$s :
@@ -1910,6 +1894,41 @@ SlideEa: | # liney schemery
     hash:
         return %$C = %$s if exists s.t && s.y && s.c;
         I.d&servehash,$s;
+    
+    fourstring:
+        I.d&MZu,$1 if $s =~ /^\s*#?\s*MZ (.+)$/;
+        $s =~ s/^\s+//;
+        if ($s =~ /^\s*(#.*)$/) {
+           T.not = 1;
+           T.com = $1;
+        }
+        elsif ($s eq '') {
+           T.not = T.space = 1;
+        }
+        else {
+           my $ci = $s;
+           for my $nk (qw't y c sc') {
+               if ($ci =~ s/^(\S+) *//) { # some t are types of space
+                   my $v = $1;
+                   $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;
+                   # << consumes more lines into $nk, then ...
+                   $v = '' if $v =~ /^(''|"")$/;
+                   $C->{$nk} = $v;
+               }
+           }
+        }
+        saybl "4string: $s            ".ki $C if A.V&C;
+    
+    fourreal:
+        (C.t, C.y) = @$s;
+        C.c  = $s->[2] if exists $s->[2];
+        C.sc = $s->[3] if exists $s->[3];
+        die'@>4'.wdump $s if @$s > 4;
+        if (ref C.t eq 'SCALAR') {    
+            die "scalaref Ct had Cc".wdump 4,$C if C.c;
+            (C.t,C.y) = ('',$s);
+        }
+        die"C.t from ".wdump $s if ref C.t; # dives
     
     reasonlock 18: %act
         die"reft" if ref C.t;
@@ -1937,7 +1956,7 @@ SlideEa: | # liney schemery
         }
         if (ref $s eq '' && $s =~ /I.peels/) {
             # peels for now
-            G&xo,C.c,$_ for I.d&peel,$s;
+            G&xo,C.c,$_ for G&peel,$s;
         }
         else {
             A.btw.cwass = 1 if "" eq $s;
@@ -1949,7 +1968,7 @@ SlideEa: | # liney schemery
         C.sc = '%'.${C.sc} if ref C.sc eq 'SCALAR';
         C.sc = C.sc eq '' ? {}
             : C.sc =~ I.peels
-            ? I.d&peel,C.sc
+            ? G&peel,C.sc
             : die "C sc nostr: C.sc   of I.peels  ".ki $C
     
     givy:
@@ -2040,40 +2059,20 @@ C: |
     u allacgts
     # modem sounds etc.
     # dome props, repeatable tests
-    fourstring:
-        I.d&MZu,$1 if $s =~ /^\s*#?\s*MZ (.+)$/;
-        $s =~ s/^\s+//;
-        if ($s =~ /^\s*(#.*)$/) {
-           T.not = 1;
-           T.com = $1;
-        }
-        elsif ($s eq '') {
-           T.not = T.space = 1;
-        }
-        else {
-           my $ci = $s;
-           for my $nk (qw't y c sc') {
-               if ($ci =~ s/^(\S+) *//) { # some t are types of space
-                   my $v = $1;
-                   $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;
-                   # << consumes more lines into $nk, then ...
-                   $v = '' if $v =~ /^(''|"")$/;
-                   $C->{$nk} = $v;
-               }
-           }
-        }
-        saybl "4string: $s            ".ki $C if A.V&C;
+    # fold space til fit
+    sca:
+        $s /= 10 while $s > 1 || $s < -1;
+        return $s
     
-    fourreal:
-        (C.t, C.y) = @$s;
-        C.c  = $s->[2] if exists $s->[2];
-        C.sc = $s->[3] if exists $s->[3];
-        die'@>4'.wdump $s if @$s > 4;
-        if (ref C.t eq 'SCALAR') {    
-            die "scalaref Ct had Cc".wdump 4,$C if C.c;
-            (C.t,C.y) = ('',$s);
+    scyvle:
+        map { my$i;
+            C.y->{$_} /= 10 while
+            (C.y->{$_} <= -1 || C.y->{$_} >= 1)
+            &&
+            (++$i < 10 || die "Many i chewing on $_: ".ki C.y)
         }
-        die"C.t from ".wdump $s if ref C.t; # dives
+        grep { C.y->{$_} }
+        qw'in out cv'
     
     peels: %subpeel
         qr/^[\{\%]\w+/;
@@ -2090,17 +2089,17 @@ C: |
     
     # for getting click together:
     c: %acgt:D
-        I.d&inDin,$C,@M;
+        G&inDin,$C,@M;
     
     e: %acgt:D
-        my $e = I.d&sces,C.c.e||return();
-        I.d&inDin,$e,@M;
+        my $e = G&sces,C.c.e||return();
+        G&inDin,$e,@M;
     
     us: %acgt:D
-        my $e = I.d&sces,C.c.e||return();
+        my $e = G&sces,C.c.e||return();
         my $us = e.c.us||return();
         push @M, 'NOGK' if @M == 1;
-        I.d&inDin,$us,@M;
+        G&inDin,$us,@M;
     
     sces:
         my $i = 0;
@@ -2110,15 +2109,16 @@ C: |
         }
         return $s;
     
+    # index fancies
     inDin: %acgt:s D
         return () unless defined $s;
         return $s if $D eq 'C';
         #
         shift @M; # s
-        $D = I.d&interpD,@M if !ref $D;
+        $D = G&interpD,@M if !ref $D;
         #
-        my $v = I.d&Cngk,$s,$D;
-        saybl "Got cnkgk: ".wdump 3,[\@M,$D,$v,$s] if A.V&D;
+        my $v = G&Cngk,$s,$D;
+        saybl "Got cnkgk: ".wdump 3,[\@M,$D,$v,$s] if A.VV.D;
         die "Unhandles any: $v: ".ki $D if $v eq '1';
         #
         return () unless $v;
