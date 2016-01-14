@@ -56,14 +56,18 @@ SevWo: |
     
     u allacgts
     
-    n dlin =>''=><<'',{acgt=>'dir,to,it'}
+    dlin: %acgt:dir to it
         my $l = "$dir/$it";
         my $is = -l $l;
         return if $is && readlink($l) eq $to;
         `unlink $l` if $is;
         `cd $dir; ln -s $to $it`;
     
-    n writef =>''=><<'',{acgt=>'f,s,append'}
+    wraf: %acgt:f s noappend
+        $s =~ s/\n?$/\n/s;
+        G&writef,$f,$s,!$noappend
+    
+    writef: %f s append
         (my $d = $f) =~ s/\/[^\/]+?$//;
         unless (-d $d) {
             `mkdir -p $d`;
@@ -78,13 +82,13 @@ SevWo: |
         write_file($f,$wa,$li);
     
     u allovse
-    n '','','%of:O'
+    n \'of:O'
     # conceal the multiJexits
-    n J =>35=><<''
+    J 35:
         delete at.sc.J if C.c.S;
     
     u allvse
-    n '','','%of:Sev'
+    n \'%of:Sev'
     # might wanna carebowl em 2-4 to engage scd/em at all
     n root =>582=><<'',{rg=>'ylv,yvl'}
         return unless A.J.most.J eq A.J || A.J.C.c.Wo;
