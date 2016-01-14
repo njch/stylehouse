@@ -1955,10 +1955,13 @@ SlideEa: | # liney schemery
     givy:
         my $y = C.y;
         if (ref $s eq 'SCALAR') {
+            my $z = $s;
             $s = $$s;
+            saygr " Scalar y deref $s from $z";
             $s = '%'.$s if $s !~ /^%/;
             $s =~ /I.peels/ || die "scalarnopeel $s";
             G&xo,C.c,$_ for G&peel,$s;
+            
         }
         elsif (ref $s eq 'ARRAY') {
             for my $yy (@$s) {
@@ -1970,7 +1973,7 @@ SlideEa: | # liney schemery
             }
         }
         elsif (ref $s) {
-            ref $s eq 'HASH' || die "no $s";
+            ref $s eq 'HASH' || die "no $s  ref=".ref $s;
             if (G&taJe,$s ) {
                 my $yy = C.y;
                 C.y = {} if ref C.y ne 'HASH';
