@@ -6,11 +6,13 @@ Rummage: |
     # as a kind of u that gains meaning as it receives layers of language
     # so behaviour can eat the rest of its specuity
 Run: |
-    my @Me = @ARGV;
-    G.what = shift(@Me) || 'Tarp';
+    for (@ARGV) {
+        my $k = /^\d+$/ ? 'cv' : 't';
+        $G->{$k} = $_;
+    }
     
     Rw $_
-        for grep {G.way->{$_}} map {$_.'_up'} grep {/^W[se]$/} G.what;
+        for grep {G.way->{$_}} map {$_.'_up'} grep {/^W[se]$/} G.t;
     
     Rw wayt $d=0.001 $p=Top;
     
@@ -20,16 +22,19 @@ Top: |
     G.gap = G.lastout - G.now if G.lastout;
     
     my $J;
-    my ($t,$cv,$s) = (Oth=>0.3=>G.what);
-    $J = G.outerspace ||= do {
-        $J = Rw Jto One;
+    my $t = 'Oth';
+    my $cv = 0.3;
+    my $nt = "n$t";
+    $J = G.sc->{$nt} ||= do {
+        $J = Rw Jto $nt;
         my $sc;
-        G.oin = sc.J = Rw Jto $t;
-        Rw jamsc $J $t $cv $s $sc;
-        Rw jamsc $J:G.oin $t $cv $s $sc;
+        G.s = G.oin = sc.J = Rw Jto $t;
+        Rw jamsc $J $t $cv $sc;
+        Rw jamsc $J:G.s $t $cv $sc;
         $J
     };
-    n $t=>$cv=>{J=>$t,vv=>6,s=>$s};
+    
+    n $t,$cv,{J=>$t,vv=>6,s=>G.t}
     
     G.lastout = hitime();
     G.last = G.now;
@@ -40,12 +45,13 @@ Oth: |
     J.A.tid++;
     
     $s eq 'Oth' && die "Find hangout";
-    J.VV.N = 1;
+    
     n $s
     
     n All
+    
     # randonly pour time ^
-    T.nose = 1;
+    T.nose = 1; # J no osc
     
 We: |
     n Modems
