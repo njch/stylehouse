@@ -36,7 +36,7 @@ if (exists $way->{$pin}) {
     delete $way->{$pin} if $set->{de};
     return $o;
 }
-my @path = split /\/|\./, $pin;
+my @path = split /\//, $pin;
 my $h = $way;
 my $last;
 for my $p (@path) {
@@ -54,7 +54,7 @@ if ($last) {
     delete $he->{$pi} if $set->{de};
 }
 return $h if defined $h;
-
+ 
 return undef unless $pin =~ /\*/;
 die "sat rs findy $pin";
 };
@@ -79,6 +79,7 @@ I:
         code: I
         dige: 4629e7c723bc
         eg: Down::Goodat
+        of: I
       t: norp
       "y": 
         cv: '0.1'
@@ -92,6 +93,7 @@ I:
         code: I
         dige: 92bca4ae5de7
         eg: Down::Goodat
+        of: I
       t: pin
       "y": 
         cv: '0.1'
@@ -105,6 +107,7 @@ I:
         code: I
         dige: 52a8b3012945
         eg: Down::Goodat
+        of: I
       t: pon
       "y": 
         cv: '0.1'
@@ -116,8 +119,9 @@ I:
         args: pin,way,set
         bab: ~
         code: I
-        dige: 91e97b0417c3
+        dige: eb1d6545728a
         eg: Down::Goodat
+        of: I
       t: pwin
       "y": 
         cv: '0.1'
@@ -131,6 +135,7 @@ I:
         code: I
         dige: 6a54267d00c0
         eg: Down::Goodat
+        of: I
       t: sorp
       "y": 
         cv: '0.1'

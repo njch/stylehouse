@@ -37,7 +37,7 @@ my @fo;
 unshift @stack, grep { push @fo, $_; $_->{t} =~ 'w' || $_->{t} eq 'h' && $_->{sc}->{call} =~ /^'loop'/
     || @fo > 2 && $fo[-2]->{t} eq 'h' && $fo[-2]->{sc}->{call} =~ /^'exood'/}
     @sum;
-my ($lA,$lh);
+my ($A,$h);
 for (@stack) {
     my $sc = {%{$_->{sc}}};
     my $called = delete $sc->{call};
@@ -54,7 +54,7 @@ for (@stack) {
     my $line = delete $sc->{line};
     my $mayknow = delete $sc->{Aref};
     my $An = $KnowA->{$mayknow} if $mayknow;
-    $lA = $An if $An;
+    $A = $An if $An;
     my $tal = $An->{talk} if $An;
     $_->{c}->{tal} = $tal;
     if ($know->{$_->{t}}->{$_->{sc}->{pack}}) {
@@ -80,22 +80,43 @@ for (@stack) {
     $_->{t} = '?' if $_->{t} eq '__ANON__';
     if ($_->{t} eq 'h') {
         $called =~ /^"(.+?)"/;
-        $lh = $1;
+        $h = $_->{c}->{h} = $1;
     }
     $tal = "$tal via" if $tal && $pack;
     say " ".$ind."$_->{t}\t$file :$line\t\t $called\t\t$tal $pack   ".ki($sc);
     #
     $le = $_;
 }
-if ($lA && $lh) {
-    my $d = $lh."_D";
-    if (my $D = $lA->{I}->{"$d"}) {
-        say "For $D->{t} $D->{y}->{cv}: ".ki $D->{sc};
-        sayyl $D->{c}->{s};
+$A && $h || return;
+
+my $findII = sub {
+    my $A = shift;
+    ref $A->{t} eq 'CODE' ? $A->{J}->{A}->{II} : $A->{II} || die "wtf".wdump 2, $A;
+};
+my $findDt = sub {
+    my ($II,$t) = @_;
+    $II->{I}->{0.1}->{$t} || grep {$_->{t} eq $t} map{ values %$_ }map{ values %$_ }  map{$II->{$_}} grep {!/^(ooI|Ii)$/} keys %$II;
+};
+my ($D,@m) = $findDt->($findII->($A), $h);
+my $l = $stack[-1];
+if (!$D) {
+    return sayre "NoD: $s->{t} $s->{talk}    $h    ".wdump 1, $A;
+}
+else {
+    say "For $D->{t} $D->{y}->{cv}: ".ki $D->{sc};
+    my $line = $l->{sc}->{line};
+    $l->{sc}->{file} =~ /^\(eval/ || die "magcall ".wdump 3, $l;
+    saybl "Call: $l->{sc}->{call}";
+    my @lines = split "\n", $D->{c}->{s};
+    $line--;
+    my $i = 0;
+    for (@lines) {
+        $i == $line ? sayyl $_ :
+        $i > $line - 6 &&
+        $i < $line + 5 ? saygr $_ : 1;
+        $i++;
     }
-    else {
-        sayre "NoD: $lA->{t} $lA->{talk}    $lh";
-    }
+    sayre " !! !!";
 }
 };
 sub sigstackwarn {
@@ -116,7 +137,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 83457165df2d
+        dige: 3330de4302d2
         eg: Bun
         of: I
       t: sigstackend
