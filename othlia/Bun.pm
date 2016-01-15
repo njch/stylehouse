@@ -37,6 +37,7 @@ my @fo;
 unshift @stack, grep { push @fo, $_; $_->{t} =~ 'w' || $_->{t} eq 'h' && $_->{sc}->{call} =~ /^'loop'/
     || @fo > 2 && $fo[-2]->{t} eq 'h' && $fo[-2]->{sc}->{call} =~ /^'exood'/}
     @sum;
+my ($lA,$lh);
 for (@stack) {
     my $sc = {%{$_->{sc}}};
     my $called = delete $sc->{call};
@@ -52,8 +53,9 @@ for (@stack) {
     }
     my $line = delete $sc->{line};
     my $mayknow = delete $sc->{Aref};
-    my $Ano = $KnowA->{$mayknow} if $mayknow;
-    my $tal = $Ano->{talk} if $Ano;
+    my $An = $KnowA->{$mayknow} if $mayknow;
+    $lA = $An if $An;
+    my $tal = $An->{talk} if $An;
     $_->{c}->{tal} = $tal;
     if ($know->{$_->{t}}->{$_->{sc}->{pack}}) {
         $file = "<";
@@ -61,7 +63,7 @@ for (@stack) {
         $_->{sc}->{waspack} = $le->{sc}->{pack};
     }
     if ($le) {
-        undef $tal if $tal eq $le->{c}->{tal};
+        #undef $tal if $tal eq $le->{c}->{tal};
         $ind .= " " if $_->{sc}->{pack} ne $le->{sc}->{pack} &&
             !$le->{sc}->{waspack} || $le->{sc}->{waspack} ne $_->{sc}->{pack};
         undef $file if $file eq $le->{sc}->{pack} || $file eq $le->{sc}->{waspack};
@@ -76,10 +78,24 @@ for (@stack) {
         undef $pack;
     }
     $_->{t} = '?' if $_->{t} eq '__ANON__';
+    if ($_->{t} eq 'h') {
+        $called =~ /^"(.+?)"/;
+        $lh = $1;
+    }
     $tal = "$tal via" if $tal && $pack;
     say " ".$ind."$_->{t}\t$file :$line\t\t $called\t\t$tal $pack   ".ki($sc);
     #
     $le = $_;
+}
+if ($lA && $lh) {
+    my $d = $lh."_D";
+    if (my $D = $lA->{I}->{"$d"}) {
+        say "For $D->{t} $D->{y}->{cv}: ".ki $D->{sc};
+        sayyl $D->{c}->{s};
+    }
+    else {
+        sayre "NoD: $lA->{t} $lA->{talk}    $lh";
+    }
 }
 };
 sub sigstackwarn {
@@ -100,7 +116,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 88e2d9e04827
+        dige: 83457165df2d
         eg: Bun
         of: I
       t: sigstackend

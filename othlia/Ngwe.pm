@@ -119,6 +119,7 @@ $C->{sc}->{got} && die ":Slooping";
             if $cv ne $C->{y}->{cv} && $C->{y}->{cv} != 0.3;
         $C->{y}->{cv} = $cv;
     }
+    $C->{sc}->{code} = $C->{sc}->{of}; # pickyness
 
         my $ara = []; # ar ups and demand argsed
 
@@ -220,7 +221,7 @@ $G->{h}->($A,$C,$G,$T,"parse_babbl",$C->{c}->{s});
 };
 $A->{II} = Load(<<STEVE);
 --- 
-1: 
+I: 
   "0.1": 
     airlock: 
       c: 
@@ -229,7 +230,7 @@ $A->{II} = Load(<<STEVE);
         acgt: s
         args: 1
         bab: ~
-        code: 1
+        code: I
         dige: 5bd9a03b7bf4
         eg: Ngwe
         of: I
@@ -243,7 +244,7 @@ $A->{II} = Load(<<STEVE);
         acgt: s
         args: A,C,G,T,s
         bab: ~
-        code: 1
+        code: I
         dige: 2dcdb2ffa81b
         eg: Ngwe
         of: I
@@ -257,7 +258,7 @@ $A->{II} = Load(<<STEVE);
         acgt: s
         args: A,C,G,T,s
         bab: ~
-        code: 1
+        code: I
         dige: 7d5683de0f11
         eg: Ngwe
         of: I
@@ -271,7 +272,7 @@ $A->{II} = Load(<<STEVE);
         acgt: s
         args: A,C,G,T,s
         bab: ~
-        code: 1
+        code: I
         dige: e18cb9bc2fc6
         eg: Ngwe
         of: I
@@ -285,8 +286,8 @@ $A->{II} = Load(<<STEVE);
         acgt: s
         args: A,C,G,T,s
         bab: ~
-        code: 1
-        dige: 69edd3fc9067
+        code: I
+        dige: 544277d6534b
         eg: Ngwe
         of: I
       t: won
