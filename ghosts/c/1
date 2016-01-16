@@ -348,7 +348,7 @@ Dwig: | # open up wormhole asciis
     
     u allt
     
-    fuss 5: %t:yU
+    fuss 5: %t:yUt:A
         C.sc.fs += 22;
     
     te 4:
@@ -370,7 +370,9 @@ conot: |
         my $p;
         my ($n,$g,$m) = $k =~ /^(t|y|c|sc)?(.+?)?(\d+)?$/;
         $n ||= 'sc';
+        # C.$nk.$gk.$tk
         p.nk = $n;
+        p.tk = $2 if $n eq 'y' && $g =~ s/^([A-Z])(\w+)$/$1/;
         p.gk = $g if defined $g;
         die "merge in? ".ki$is if ref $is;
         # peels inside peels of sc.t
@@ -400,6 +402,7 @@ conot: |
             $p.>$i = $is;
         }
         delete p.gk if !p.gk;
+        delete p.tk if !p.tk;
         $ip.>$k = $p;
     }
 Dt: |
@@ -426,9 +429,9 @@ Dt: |
                 $y = $$y;
                 if (exists y.nk) {
                     $x = $c;
-                    for my $k (grep{defined}y.nk,y.gk) {
-                        $pass--, next EE
-                            if !exists $x.>$k || y.nex;
+                    for my $k (grep{defined}y.nk,y.gk,y.tk) {
+                        $pass--, next EE unless
+                            ref $x eq 'HASH' && exists $x.>$k;
                         $x = $x.>$k;
                     }
                 }
@@ -468,9 +471,10 @@ Dsut: |
     y.in = 6;
     my @des = map{ values %$_ } values %{s.II.De};
     m Modeal=>''=>''=>'%fs:33'
+    @des = grep{_.t=~/fuss/} @des;
     m De=>-ytsc=>[ G&norp,'y/cv',@des ]
 pi/ytsc: |
-    #y.clos = 1;
+    #y.clos = 1; or y.we = grouper
     $s = [$s] if ref $s ne 'ARRAY';
     my $sh = {map{$_,1}qw'of gro acgt args act code dige'};
     my $tot = sub {
@@ -2506,9 +2510,9 @@ T: |
                 $y = $$y;
                 if (exists y.nk) {
                     $x = $c;
-                    for my $k (grep{defined}y.nk,y.gk) {
-                        $pass--, next EE
-                            if !exists $x.>$k || y.nex;
+                    for my $k (grep{defined}y.nk,y.gk,y.tk) {
+                        $pass--, next EE unless
+                            ref $x eq 'HASH' && exists $x.>$k;
                         $x = $x.>$k;
                     }
                 }
