@@ -134,10 +134,9 @@ Meta: |
         my $resu = "life/W/$ressur";
         die "bno JSlines" unless -e $resu;
         if (G.Jsem) {
-            my $q = " var v = \$.ajax('/W/$ressur');"
-                ." var m = v\.responseText".'.split("\n");'
-                ." \$.each(m,function(k,v){ a\.m(v); });";
-            #my $s = read_file($resu);
+            my $q = " \$.ajax('/W/$ressur').done(function(v) {"
+                ." var m = v".'.split("\n");'
+                ." \$.each(m,function(k,v){ a\.m(v); }); });";
             say "Sending $resu via Jsem";
             return G.Jsem->($q);
         }
