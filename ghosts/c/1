@@ -348,7 +348,7 @@ Dwig: | # open up wormhole asciis
     
     u allt
     
-    fusss 5: %t:yU
+    fuss 5: %t:yU
         C.sc.fs += 22;
     
     te 4:
@@ -364,7 +364,8 @@ Dwig: | # open up wormhole asciis
 conot: |
     my $ip = C.sc.ip = {};
     for my $k (split ' ', C.sc.t) {
-        my $is = $2 if $k =~ s/^(\w+):(.+)$/$1/;
+        my $is;
+        $is = $2 if $k =~ s/^(\w+):(.+)$/$1/;
         $is = C.sc.>C$k if exists C.sc.>C$k;
         my $p;
         my ($n,$g,$m) = $k =~ /^(t|y|c|sc)?(.+?)?(\d+)?$/;
@@ -372,7 +373,6 @@ conot: |
         p.nk = $n;
         p.gk = $g if defined $g;
         die "merge in? ".ki$is if ref $is;
-        next if !defined $is;
         # peels inside peels of sc.t
         if ($is =~ /^(\w+):(.+)$/) {
             $is =~ s/(?<!\\)\+/,/g;
