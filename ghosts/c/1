@@ -339,19 +339,20 @@ Dwig: | # open up wormhole asciis
         C.c.sep = ' ';
         C.sc.fs = 30;
     g 7:
-        sayyl "Afmoa";
-        saybl "Soeo ".ki $C;
-        my $put = zs&g,7;
-        say "lo: ".wdump 3, $put;
+        my $put = g&7;
+        say "lo: ".wdump 3, $put; # up to this spirals edge
 
     u allt
     
+    
     te 4:
-        C.sc.hsle ||= '348';
+        C.sc.hs ||= '348';
         C.sc.fs += 20;
-
+    
+    fah 3:
+        C.sc.mw = 33;
+    
     fs 5: %t:fs:>11
-        sayyl "HAVE C.t  ".ki C.sc;
         C.sc.fly = 44444444;
     
     
@@ -397,8 +398,7 @@ conot: |
         $ip.>$k = $p;
     }
 Dt: |
-    #sayre wdump 4, [C.t,C.y.cv,C.sc,vs=>D.sc];
-    
+    my $sc = D.sc;
     my $ip = sub {
         my ($s,$c) = @_;
         my $z;
@@ -409,7 +409,6 @@ Dt: |
             $s = $$s;
             $n = $s;
             s.ip || die "sip no ref";
-            say "real";
             $s = {map{$_=> \s.ip.>$_ }keys %{s.ip}};
         }
         # n.all keeps going after a pass--
@@ -422,19 +421,16 @@ Dt: |
                 $y = $$y;
                 if (exists y.nk) {
                     $x = $c;
-                    sayyl wdump 5, [x.sc,$y];
                     for my $k (grep{defined}y.nk,y.gk) {
-                        say " on $k";
-                        $pass--, next EE if 
-                            !exists $x.>$k || y.nex;
+                        $pass--, next EE
+                            if !exists $x.>$k || y.nex;
                         $x = $x.>$k;
-                        say "To $x";
                     }
                 }
                 my $wa = $pass;
                 !defined $x || $pass-- if y.ndef;
                 defined $x || $pass-- if y.def;
-                y.is ne $x || $pass-- if exists y.is;
+                y.is eq $x || $pass-- if exists y.is;
                 y.not ne $x || $pass-- if exists y.not;
                 y.in->{$x} || $pass-- if y.in;
                 !y.nin->{$x} || $pass-- if y.nin;
@@ -445,9 +441,6 @@ Dt: |
                 $x =~ y.re || $pass-- if exists y.re;
                 $pass = $pass < $wa ? $wa : $pass-1
                     if y.neg;
-                
-                
-                sayyl "Fail: $x of ".wdump 3, $y;
             }
             elsif ($y ne $c.>$k) {
                 $pass--;
@@ -455,15 +448,16 @@ Dt: |
         }
         $pass == 1
     };
-    my $sc = D.sc;
     ref sc.ip eq 'HASH' || die "NOIP ".ki $D;
-    return 0 if !$ip->(\$sc,$C);
-    
+    return 0 if !G&ip,\$sc,$C;
+    #return 0 if !$ip->(\$sc,$C);
     1
 Esuy: |
     u urw
     my @des = map{ values %$_ } values %{s.II.De};
     m De=>-ytsc=>[ G&norp,'y/cv',@des ]
+    
+    m s.M
     
     m s=>-ytsc=>s.M=>'%hs:347,fs:12'
 pi/ytsc: |
@@ -486,24 +480,29 @@ X: |
     u Augen
     u Bubble
     u Dwig
-    my $o = $A;
     $A =
     a:
         1
     
-    my $z = G&S,De=>[te=>{g=>'do',s=>"Seo"}];
+    m te=>''=>{g=>'do',s=>"Seo"}
+    m te=>''=>{g=>'do',s=>"Seo lutio blanchagji  fdkoo"}
+    m fah=>''=>{g=>'do',s=>"Serrrrrro"}
     
+    my $z = G&S,De=>$M;
     
-    $G::KA->{"$A"} = $A = $z; 
+    $G::KA->{"$A"} = $z; 
     
-    #my $s = {se=>3,foiu=>5,ro=>3};
+    @$M=();
+    m $_=>''=>\$z.>$_ for sort keys %$z;
+    
+    my $z = G&S,De=>$M;
+    
     #Mn($_=>''=>\$s->{$_}) for sort keys %$s;
     
     # then M n sees whe yA and loops back creativity to
     #say "SA for M: ".wdump 3,[grep /\w/, 
     #sort keys %{z.al.A.I}];
     
-    $A = $o;
     n Esuy=>W=>\$z
     n s=>[-pre=>3]=> "Wep ".wdump 4, ["woop"  ]
     
@@ -1202,7 +1201,8 @@ Augen: |
                         
                         T.D = $D;
                         G&D.t,$s;
-                        sayyl " ---- s.t  D.y.cv~D.t" if D.y.cv > 0.1;
+                        sayyl " ---- s.t  D.y.cv~D.t"
+                            if D.y.cv > 0.18 && D.t ne 'CoM';
 
                         # T personality slickers, T.68 x ut , 
                         # all produces a slope for how much time you've got
@@ -2333,18 +2333,24 @@ SlideEa: | # liney schemery
     isJ:
         ref $s eq 'HASH' && ref s.bb eq 'HASH';
     
+    # will put Js in s and Cs in e
+    # knows enough by A.J speaking
+    # its about expression
+    # n Remote=>$Jehalf=>$Cof
+    # n Ghost=>\$Definite_e
+    # they might like certain e, s
+    # e&yU accesses .y.U on the e particle,
+    # barfs if e is not C enough
+    # e.c.us is us
     taJe:
-        I.d&isC,$s || I.d&isJ,$s || return;
-        if (s.bb) {
-            if (I.d&isC,C.c ) {
-                C.c = {e=>C.c};
-            }
+        my $r = $s = $$s if ref $s eq 'REF';
+        $r || G&isC,$s || G&isJ,$s || return;
+        if (!$r && s.bb) {
+            C.c = {e=>C.c} if G&isC,C.c;
             C.c.s = $s;
         }
         else {
-            if (I.d&isJ,C.c ) {
-                C.c = {s=>C.c};
-            }
+            C.c = {s=>C.c} if G&isJ,C.c;
             C.c.e = $s;
         }
         C.y = {};
@@ -2472,21 +2478,46 @@ T: |
     ip: %acgt:s c
         my $z;
         $s = G&peel,$$s if ref $s eq 'SCALAR';
+        my $n;
+        if (ref $s eq 'REF') {
+            # do s.do
+            $s = $$s;
+            $n = $s;
+            s.ip || die "sip no ref";
+            $s = {map{$_=> \s.ip.>$_ }keys %{s.ip}};
+        }
+        # n.all keeps going after a pass--
         my $pass = 1;
-        for my $I (keys %$s) {
-            my $y = $s->{$I};
-            my $x = $c->{$I};
+        EE: for my $k (keys %$s) {
+            $pass == 1 || n.all || return 0;
+            my $y = $s.>$k;
+            my $x = $c.>$k;
             if (ref $y eq 'REF') {
                 $y = $$y;
+                if (exists y.nk) {
+                    $x = $c;
+                    for my $k (grep{defined}y.nk,y.gk) {
+                        $pass--, next EE
+                            if !exists $x.>$k || y.nex;
+                        $x = $x.>$k;
+                    }
+                }
+                my $wa = $pass;
                 !defined $x || $pass-- if y.ndef;
                 defined $x || $pass-- if y.def;
+                y.is eq $x || $pass-- if exists y.is;
                 y.not ne $x || $pass-- if exists y.not;
                 y.in->{$x} || $pass-- if y.in;
                 !y.nin->{$x} || $pass-- if y.nin;
-                $x > y.gt || $pass-- if y.gt;
-                $x < y.lt || $pass-- if y.lt;
+                $x > y.gt || $pass-- if exists y.gt;
+                $x < y.lt || $pass-- if exists y.lt;
+                $x >= y.gteq || $pass-- if exists y.gteq;
+                $x <= y.lteq || $pass-- if exists y.lteq;
+                $x =~ y.re || $pass-- if exists y.re;
+                $pass = $pass < $wa ? $wa : $pass-1
+                    if y.neg;
             }
-            elsif ($y ne $c->{$I}) {
+            elsif ($y ne $c.>$k) {
                 $pass--;
             }
         }
