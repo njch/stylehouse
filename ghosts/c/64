@@ -43,7 +43,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: | # sneak library update
-    my @for = qw'Ngwe Bun Goodat'; #    KnowTime    Shelf        
+    my @for = qw'Bun GBabz'; #    KnowTime    Shelf        
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -275,7 +275,7 @@ Bun: | # stack exits
         unshift @stack, grep { push @fo, $_; _.t =~ 'w' || _.t eq 'h' && _.sc.call =~ /^'loop'/
             || @fo > 2 && $fo[-2]->{t} eq 'h' && $fo[-2]->{sc}->{call} =~ /^'exood'/}
             @sum;
-        my ($A,$h);
+        my ($h,$A);
         for (@stack) {
             my $sc = {%{_.sc}};
             my $called = delete sc.call;
@@ -292,7 +292,6 @@ Bun: | # stack exits
             my $line = delete sc.line;
             my $mayknow = delete sc.Aref;
             my $An = $KnowA->{$mayknow} if $mayknow;
-            $A = $An if $An;
             my $tal = An.talk if $An;
             _.c.tal = $tal;
             if ($know->{_.t}->{_.sc.pack}) {
@@ -316,9 +315,13 @@ Bun: | # stack exits
                 undef $pack;
             }
             _.t = '?' if _.t eq '__ANON__';
-            if (_.t eq 'h') {
+            
+            $A = $An if $An;
+            if (_.t =~ /^(h|w)$/) {
+                my $k = $1;
                 $called =~ /^"(.+?)"/;
-                $h = _.c.h = $1;
+                _.c->{$k} = $1;
+                $h = $1 if $k eq 'h';
             }
             $tal = "$tal via" if $tal && $pack;
             say " ".$ind."_.t\t$file :$line\t\t $called\t\t$tal $pack   ".ki($sc);
@@ -326,26 +329,32 @@ Bun: | # stack exits
             $le = $_;
         }
         $A && $h || return;
-        
-        my $findII = sub {
-            my $A = shift;
-            ref A.t eq 'CODE' ? A.J.A.II : A.II || die "wtf".wdump 2, $A;
-        };
-        my $findDt = sub {
-            my ($II,$t) = @_;
-            II.I->{0.1}->{$t} || grep {_.t eq $t} map{ values %$_ }map{ values %$_ }  map{$II->{$_}} grep {!/^(ooI|Ii)$/} keys %$II;
-        };
-        my ($D,@m) = $findDt->($findII->($A), $h);
         my $l = $stack[-1];
+        $l = $_ for grep { _.c.w } @stack[-4..-1];
+        my $D = l.c.w ? $l : do {
+            my $findII = sub {
+                my $A = shift;
+                ref A.t eq 'CODE' ? A.J.A.II : A.II || die "wtf".wdump 2, $A;
+            };
+            my $findDt = sub {
+                my ($II,$t) = @_;
+                II.I->{0.1}->{$t} || 
+                grep {_.t eq $t} map{ values %$_ }map{ values %$_ } 
+                    map{$II->{$_}} grep {!/^(ooI|Ii)$/} keys %$II
+            };
+            my ($D,@m) = $findDt->($findII->($A), $h);
+            $D
+        };
         if (!$D) {
             return sayre "NoD: s.t s.talk    $h    ".wdump 1, $A;
         }
         else {
             say "For D.t D.y.cv: ".ki D.sc;
-            my $line = l.sc.line;
-            l.sc.file =~ /^\(eval/ || die "magcall ".wdump 3, $l;
             saybl "Call: l.sc.call";
-            my @lines = split "\n", D.c.s;
+            my $line = l.sc.line;
+            my $wali = "w/way";
+            my @lines = l.sc.file =~ /^\(eval/ ? split "\n", D.c.s
+                : l.c.w ? `cat $wali/l.c.w` : "???";
             $line--;
             my $i = 0;
             for (@lines) {
@@ -601,7 +610,7 @@ GBabz: |
         my $p;
         p.alive = qr/\$[\w]*[\w\->\{\}]+/;
         p.dotha = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
-        p.oing = qr/p.alive|p.dotha|[-\w]{8,}/;
+        p.oing = qr/\w*p.alive|p.dotha|[-\w]{8,}/;
         p.oint = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
         p.mwall = qr/(?:= |if |unless |^\s*)/;
         p.sur = qr/ if| unless| for| when|,?\s*$|;\s*/;

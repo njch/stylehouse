@@ -12,7 +12,7 @@ my $I = $A->{I};
 my $p;
 $p->{alive} = qr/\$[\w]*[\w\->\{\}]+/;
 $p->{dotha} = qr/[A-Za-z_]\w{0,3}(?:\.[\w-]*\w+)+/;
-$p->{oing} = qr/$p->{alive}|$p->{dotha}|[-\w]{8,}/;
+$p->{oing} = qr/\w*$p->{alive}|$p->{dotha}|[-\w]{8,}/;
 $p->{oint} = qr/[\w\$\/\->\{\}\*]*[\w\$\/\->\.\}\*]+/;
 $p->{mwall} = qr/(?:= |if |unless |^\s*)/;
 $p->{sur} = qr/ if| unless| for| when|,?\s*$|;\s*/;
@@ -110,7 +110,7 @@ for my $l (split "\n", $s) {
         $s = '$'.$s if $on !~ m{\.};
         $s
     /smge;
-    # $sc>$k -> $sc->{$k}
+    # $sc->{"$k"} -> $sc->{$k}
     $s =~ s/($p->{oing})((?:\.>$p->{oing})+)/
         join '->', $1, map {'{"'.$_.'"}'}
         grep {$_} split m{\.>}, $2;
@@ -190,7 +190,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: e489cdec53d0
+        dige: 153c29755879
         eg: GBabz
         of: I
       t: bitsof_babble
@@ -204,7 +204,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 627184148aa0
+        dige: '8951e1502788'
         eg: GBabz
         of: I
       t: parse_babbl

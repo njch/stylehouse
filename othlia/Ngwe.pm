@@ -123,6 +123,9 @@ $C->{sc}->{got} && die ":Slooping";
 
         my $ara = []; # ar ups and demand argsed
 
+        exists $C->{sc}->{t} &&
+        $G->{w}->($A,$C,$G,$T,"conot",C=>$C);
+
         if ($C->{sc}->{Td}) { # onc populates
             my $Q;
             $Q->{path} = [split '/', $C->{sc}->{Td}];
@@ -287,7 +290,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 544277d6534b
+        dige: b30785c24a6d
         eg: Ngwe
         of: I
       t: won
