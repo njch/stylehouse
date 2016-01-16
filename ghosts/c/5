@@ -8,6 +8,10 @@ Rummage: |
 Run: |
     for (@ARGV) {
         my $k = /^\d+$/ ? 'cv' : 't';
+        if (/^(.+):(.+)$/) {
+            G.c.>$1 = $2;
+            next;
+        }
         $G->{$k} = $_;
     }
     

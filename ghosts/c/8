@@ -67,7 +67,7 @@ SevWo: |
         $s =~ s/\n?$/\n/s;
         G&writef,$f,$s,!$noappend
     
-    writef: %f s append
+    writef: %acgt:f s append
         (my $d = $f) =~ s/\/[^\/]+?$//;
         unless (-d $d) {
             `mkdir -p $d`;
@@ -131,7 +131,16 @@ Meta: |
     n ressur =>3=><<'',{cg=>'J,em'}
         saybl "Ressurrecting $ressur ...";
         die "zomp $ressur" if $ressur =~ /\W/;
-        die "bno JSlines" unless -e "life/W/$ressur";
+        my $resu = "life/W/$ressur";
+        die "bno JSlines" unless -e $resu;
+        if (G.Jsem) {
+            my $q = " var v = \$.ajax('/W/$ressur');"
+                ." var m = v\.responseText".'.split("\n");'
+                ." \$.each(m,function(k,v){ a\.m(v); });";
+            #my $s = read_file($resu);
+            say "Sending $resu via Jsem";
+            return G.Jsem->($q);
+        }
         `cd life; ln -s ../W/$ressur J/em.id\.c`;
         my $catch = sjson {y=>J=>id=>em.id};
         I.d&writef,"life/J\.s",$catch,1;
@@ -345,6 +354,8 @@ Sl: |
 Be: |
     my @and = G.cv < 3 ? 'K/eel' : 'K/Eel';
     G.IIII = [map{'G/T/'.$_}qw'H/Boat H/Rest Chang',@and];
+    G.c.pre &&
+    n G.c.pre
     Rw Sl;
 waitme: |
     use POSIX ':sys_wait_h';
