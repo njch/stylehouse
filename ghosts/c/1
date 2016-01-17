@@ -339,29 +339,98 @@ Dwig: | # open up wormhole asciis
         #C.sc.fs = 30;
         C.sc.k = C.t;
         C.c.pi = 'iC';
-    0&&
+    
     g 7:
         my $put = g&7;
         say "lo: ".wdump 3, $put; # up to this spirals edge
 
     yU 3:
-        C.sc.hs = '645'
+        C&hs = '645'
     
     u allt
     
     fuss 5: %t:yUt:A
-        C.sc.fs += 22;
+        C&fs += 22;
     
-    te 4:
-        C.sc.hs ||= '348';
-        C.sc.fs += 20;
+    te 5:
+        C&hs ||= '348';
+        C&fs += 20;
     
-    fah 32:
-        C.sc.mw = 33;
+    fah 5:
+        C&mw = 33;
     
-    fs 51: %t:fs:>44
-        C.sc.fly = 44444444;
-        
+    fs 5: %t:fs:>44
+        C&fly = 44444444;
+    
+    # mesh of flop to pis and interim howtos
+    I 512:
+        c&de = 'lives';
+        c&leng = 1;
+    II 51:
+        c&is = 'Kcvt';
+    al 52:
+        c&is = 'tw';
+    N 53:
+        my $n = c&s;
+        my $x;$x = sub {
+            my $n = shift;
+            return ref($n)||$n if ref $n ne 'ARRAY';
+            '[ '.join(',',map{$x->($_)}@$n).' ]'
+        };
+        my $p = $x->($n);
+        $p =~ s/(HASH,HASH(?:,HASH)+)/"HASHx".scalar(split ',', $1)/eg;
+        c&is = 'input';
+        c&nos = $p;
+        C&wb = 1;
+    A 44:
+        $s = C.c.s;
+        c&is = ref s.t eq 'CODE' ? "old A" : "A s.t s.cv~s.ov";
+        c&des = join ' ', grep{$_} s.m eq $s && "m", s.mo eq $s && 'mo', s.mo && s.mo ne $s && 'n';
+        c&nos = 1;
+    R 45:
+        $s = C.c.s;
+        c&nos = join' ',sort keys %$s;#wdump 2, $s;
+        #join"    \n",map{"$_: ".join" ",sort keys %{$s->{$_}->{sc} }} sort keys %$s;
+        my $M = c&M ||= [];
+        push @$M, [$_=>-RC=>{was=>'tw',sho=>'sc',s=>$s.>$_ },'%fs:6']
+            for sort keys %$s;
+    
+    
+pi/tw: |
+    n te=>1=>":C.t"=>'%hs:794'
+    n scs=>2=>join(" ",sort keys %{s.sc})=>'%hs:344,fs:7'
+pi/iC: |
+    n k=>2=>\$_,'%hs:384,decor,ab,ml:-3' for C.sc.k;
+    my $m = J.mo.J;
+    my $h = (++m.lip)."45";
+    m.lip = 0 if m.lip >= 9;
+    
+    if (my $de = c&de || c&is) {
+        n is=>22=>$de,'%fs:8'.(c&is&&",hs:197")
+    }
+    else {
+    
+    
+    }
+    c&i < 4 && c&is eq 'tw' &&
+    n tw=>23=>join(' ',
+    c&des .= ' '.($s->{$_}->{t}||"$_") for sort keys %$s;
+    c&des &&
+    n des=>23=>c&des,'%fs:4'
+    
+    c&nos ||
+    n json =>31=>ref($s).": $s"=>'%wb:1,fs:4,mw:10,bg:384,hs:'.$h
+    if (c&nos ne '1') {
+        n json =>32=>c&nos=>'%wb:1,fs:7,mw:10,bg:384,hs:'.$h
+    }
+    if (c&leng) {
+        my $l = ref $s eq 'ARRAY' ? @$s : ref $s eq 'HASH' ? keys %$s : slim(30,"WTf $s");
+        n len=>7=>"~$l",'%fs:5,hs:478'
+    }
+    y.in=4;
+    c&M &&
+    m c&M;
+    C.sc.mw = 7;
 conot: | # expand t->ip
     my $ip = C.sc.ip = {};
     for my $k (split ' ', C.sc.t) {
@@ -463,10 +532,11 @@ Dt: |
     1
 Esuy: |
     u urw
-    n Dsut=>\$s
-    my $m = [@{s.M}[0..6]];
+    #n Dsut=>\$s
+    my $m = [@{s.M}];#[0..6]];
     m $m
     #m s=>-ytsc=>$m=>'%hs:347,fs:12'
+    J.VV.N = 1;
 Dsut: |
     u urw
     y.in = 6;
@@ -794,11 +864,6 @@ pi/SeeaboutA: |
     # ordered whathave M
     my $kt = z.R.II.sc.uz.II;
     say wdump 5, [ map{[_.t=>_.M]} map{z.al->{$_}} @{z.allk} ];
-    
-pi/iC: |
-    n k=>2=>{s=>$_},'%hs:384,decor' for C.sc.k;
-    n t=>2=>{s=>C.t},'%fs:20,blr:2';
-    n json =>[-pre=>3]=>ki(C.sc)=>'%wb:1,fs:4,mw:10,bg:384'
     
 Swee: | # push commands
     u allvse

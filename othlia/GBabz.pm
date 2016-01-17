@@ -98,6 +98,10 @@ for my $l (split "\n", $s) {
     $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
     $s =~ s/I\.d\&($p->{oint})/G\&$1/g;
     
+    # $C->{sc}->{hs} = 388 # $C->{sc}.>hs
+    $s =~ s/\bC&(\w+)\b/C\.sc\.$1/g;
+    $s =~ s/\bc&(\w+)\b/C\.c\.$1/g;
+
     # also $G->{h}->($A,$C,$G,$T,"e","so") -> $G->{h}->($A,$C,$G,$T,"e","so"...)  generalised name pickup, spiral slumping
     $s =~ s/ ((?!G)\w+)\&($p->{oint})/ G\&$1,"$2"/g;
     # lma quack $not->('tag');? from $G->{h}->($A,$C,$G,$T,"pui",$s)
@@ -204,7 +208,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: '8951e1502788'
+        dige: 5172a2988599
         eg: GBabz
         of: I
       t: parse_babbl
