@@ -368,9 +368,36 @@ Dwig: | # open up wormhole asciis
         c&leng = 1;
     II 51:
         c&is = 'Kcvt';
+        c&to = 'G';
+        # c&i = 6;
+        c&Rs = 1;
     al 52:
         c&is = 'tw';
-    N 53:
+        c&to = 'A';
+        c&Rs = 1;
+    N 53: %array
+        c&is = 'tape';
+    A 44: %hash:C
+        $s = C.c.s;
+        c&is = ref s.t eq 'CODE' ? "old A" : "A s.t s.cv~s.ov";
+        c&to = 'A';
+        c&de = join ' ', grep{$_} s.m eq $s && "m", s.mo eq $s && 'mo', s.mo && s.mo ne $s && 'n';
+    R 45: %hash:t:C
+        $s = C.c.s;
+        c&is = 'tw';
+        c&to = 'R';
+        
+    
+    tw 62: %t:is:^
+        c&de ||= join' ',map{ref $_ eq 'HASH' ? _.t : "?$_"}
+            map{$s.>$_ }sort keys %$s;
+    Kcvt 612: %t:is:^
+        c&de ||= "{{{D}}}";
+    
+pi/tw: |
+    n te=>1=>":C.t"=>'%hs:794'
+    n scs=>2=>join(" ",sort keys %{s.sc})=>'%hs:344,fs:7'
+pi/tape: |
         my $n = c&s;
         my $x;$x = sub {
             my $n = shift;
@@ -379,62 +406,46 @@ Dwig: | # open up wormhole asciis
         };
         my $p = $x->($n);
         $p =~ s/(HASH,HASH(?:,HASH)+)/"HASHx".scalar(split ',', $1)/eg;
-        c&is = 'input';
-        c&nos = $p;
-        C&wb = 1;
-    A 44:
-        $s = C.c.s;
-        c&is = ref s.t eq 'CODE' ? "old A" : "A s.t s.cv~s.ov";
-        c&des = join ' ', grep{$_} s.m eq $s && "m", s.mo eq $s && 'mo', s.mo && s.mo ne $s && 'n';
-        c&nos = 1;
-    R 45:
-        $s = C.c.s;
-        c&nos = join' ',sort keys %$s;#wdump 2, $s;
-        #join"    \n",map{"$_: ".join" ",sort keys %{$s->{$_}->{sc} }} sort keys %$s;
-        my $M = c&M ||= [];
-        push @$M, [$_=>-RC=>{was=>'tw',sho=>'sc',s=>$s.>$_ },'%fs:6']
-            for sort keys %$s;
-    
-    
-pi/tw: |
-    n te=>1=>":C.t"=>'%hs:794'
-    n scs=>2=>join(" ",sort keys %{s.sc})=>'%hs:344,fs:7'
+        n tape=>-pre=>$p=>'%hs:746'
+pi/Kcvt: |
+    n t=>''=>"De 612:";
+    n De=>-pre=>wdump 3, s.De->{0.612};
 pi/iC: |
     n k=>2=>\$_,'%hs:384,decor,ab,ml:-3' for C.sc.k;
     my $m = J.mo.J;
     my $h = (++m.lip)."45";
     m.lip = 0 if m.lip >= 9;
     
-    if (my $de = c&de || c&is) {
+    my $de;
+    if ($de = c&is || c&de) {
         n is=>22=>$de,'%fs:8'.(c&is&&",hs:197")
     }
-    else {
-    
-    
+    elsif (c&i < 4 && !c&nos) {
+        n json =>31=>ref($s).": $s"=>'%wb:1,fs:4,mw:10,bg:384,hs:'.$h
     }
-    c&i < 4 && c&is eq 'tw' &&
-    n tw=>23=>join(' ',
-    c&des .= ' '.($s->{$_}->{t}||"$_") for sort keys %$s;
-    c&des &&
-    n des=>23=>c&des,'%fs:4'
     
-    c&nos ||
-    n json =>31=>ref($s).": $s"=>'%wb:1,fs:4,mw:10,bg:384,hs:'.$h
-    if (c&nos ne '1') {
-        n json =>32=>c&nos=>'%wb:1,fs:7,mw:10,bg:384,hs:'.$h
+    if (c&i < 4) {
+        c&de && c&de ne $de &&
+        n des=>23=>c&de,'%fs:4,ws'
     }
+    
     if (c&leng) {
         my $l = ref $s eq 'ARRAY' ? @$s : ref $s eq 'HASH' ? keys %$s : slim(30,"WTf $s");
         n len=>7=>"~$l",'%fs:5,hs:478'
     }
     y.in=4;
+    return unless c&i > 2;
+    
+    c&is && c&is !~ /\s/ &&
+    m C.t,3,{pi=>c&is,s=>$s}
+    
     c&M &&
-    m c&M;
-    C.sc.mw = 7;
+    m c&M
 conot: | # expand t->ip
     my $ip = C.sc.ip = {};
     for my $k (split ' ', C.sc.t) {
         my $is;
+        $k =~ s/^(\w+):\^$/"$1:sc".C.t/e;
         $is = $2 if $k =~ s/^(\w+):(.+)$/$1/;
         $is = C.sc.>C$k if exists C.sc.>C$k;
         my $p;
@@ -532,8 +543,9 @@ Dt: |
     1
 Esuy: |
     u urw
-    #n Dsut=>\$s
-    my $m = [@{s.M}];#[0..6]];
+    n Dsut=>\$s
+    
+    my $m = [@{s.M}[0..8]];
     m $m
     #m s=>-ytsc=>$m=>'%hs:347,fs:12'
     J.VV.N = 1;
@@ -542,7 +554,7 @@ Dsut: |
     y.in = 6;
     my @des = map{ values %$_ } values %{s.II.De};
     m Modeal=>''=>''=>'%fs:33'
-    @des = grep{_.t=~/fuss/} @des;
+    @des = grep{_.t=~/Kcvt/} @des;
     m De=>-ytsc=>[ G&norp,'y/cv',@des ]
 pi/ytsc: |
     #y.clos = 1; or y.we = grouper
@@ -1078,6 +1090,8 @@ Augen: |
         
         
         if (s.m && s.m ne $s) {
+            # nonm wanders back when other alov is lower
+            # remember to-fro
             my $lo = s.m.c.alov || die;
             my $low = lo.sc.sl->[0];
             my $tv = lo.sc.tv->{$low};
@@ -1217,7 +1231,7 @@ Augen: |
                         !exists $C->{D.sc.nk} && next;
                         D.sc.gk && !exists $C->{D.sc.nk}->{D.sc.gk} && next;
                     }
-                    my @is = s.s;
+                    my @is = (ref D.y ? D.y.cv : D.y) < 0.2 ? s.s : s.C.c.s;
                     if (D.sc.t) {
                         return unless
                             Rw Dt $D $C $s;
@@ -1237,11 +1251,7 @@ Augen: |
                         # and float random code, manifolds of effects
                         # able to present ends to each other
                         my $dont = 1 if exists s.I->{D.t};
-
                         $dont = 0 if $dont && s.I->{D.t."_dige"} ne D.sc.dige;
-
-                        # need I?
-                        $dont = G&robeg,$D if !$dont && D.sc.eg;
 
                         unless ($dont) {
                             if (!ref D.y) {
@@ -1264,6 +1274,9 @@ Augen: |
         }
     
     #c adapt to much  mergey # extendo  rubble # do stuff # in fractions
+    # T personality slickers, T.68 x ut , 
+    # all produces a slope for how much time you've got
+    # outwave T: schools of many fish (cv=ov silentnot upcv if !@is)
     exo:
         for my $x (@Me) {
             for my $k (keys %$x) { # cv's K/t
@@ -1282,11 +1295,7 @@ Augen: |
                         
                         T.D = $D;
                         G&D.t,$s;
-                        sayyl " ---- s.t  D.y.cv~D.t"
-                            if D.y.cv > 0.18 && D.t ne 'CoM';
 
-                        # T personality slickers, T.68 x ut , 
-                        # all produces a slope for how much time you've got
                         if (my $ut = T.ut) {
                             if (ut.matchTd) {
                                 my $d = s.d || die "confuse";
@@ -1296,7 +1305,6 @@ Augen: |
                             }
                             else { die"utrowhat ".wdump 2, $ut }
                         }
-                        # outwave: schools of many fish (cv=ov silentnot upcv if !@is)
                         if (T.Z) {
                             die "A.t 's D.y.cv~D.t used TZ for C.y.cv~C.t ".wdump 3, T.Z;
                         }
@@ -2259,7 +2267,7 @@ SlideEa: | # liney schemery
         die "mmtype:$r for $s"
     
     string:
-        die "string: $s ".wdump 5, [A.s,A.N];
+        die "string: $s ".wdump 5, [A.N];
     
     array:
         return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\w+$/;
