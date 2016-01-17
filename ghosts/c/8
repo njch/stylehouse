@@ -80,6 +80,12 @@ SevWo: |
         my $wa = {};
         wa.append = 1 if $append;
         write_file($f,$wa,$li);
+        return length $li;
+    
+    ajam:
+        " \$.ajax('$s').done(function(v) {"
+            ." var m = v".'.split("\n");'
+            ." \$.each(m,function(k,v){ a\.m(v); }); });";
     
     u allovse
     n \'of:O'
@@ -134,9 +140,7 @@ Meta: |
         my $resu = "life/W/$ressur";
         die "bno JSlines" unless -e $resu;
         if (G.Jsem) {
-            my $q = " \$.ajax('/W/$ressur').done(function(v) {"
-                ." var m = v".'.split("\n");'
-                ." \$.each(m,function(k,v){ a\.m(v); }); });";
+            my $q = G&ajam,$resu;
             say "Sending $resu via Jsem";
             return G.Jsem->($q);
         }
@@ -173,10 +177,19 @@ Wuts: |
     n speak =>48=><<'','%cg:em'
         return if G.Jlone;
         .
+        my $jf = "life/J/em.id\.c";
+        my $l = I.d&writef,$jf,em.lines;
         if (G.Jsem) {
-            G.Jsem->($em);
+            if ($l > 4000) {
+                sayre "Big em.is.M: $l";
+                my $q = G&ajam,$jf;
+                sayyl "Sending in $q";
+                G.Jsem->($q);
+            }
+            else {
+                G.Jsem->($em);
+            }
         }
-        I.d&writef,"life/J/em.id\.c",em.lines;
         .
         I.d&writef,"life/J\.s",sjson({y=>'J',id=>em.id}),1;
     
