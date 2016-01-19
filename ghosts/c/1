@@ -274,6 +274,10 @@ Being: | # cones with N, J # input coding, severab, sectory compressions
         # when some splits from A.mo=A  (lowovsorts An)
         # or as al possibles also al lowcvs A.ovs 
         # R lives in mo.c.$t, c differ all A
+        # can use R to find ways to ways, those kinds would be setup by the m
+        # m has most space input, a pool of magnetics to the outside, each one
+        # also the same thing within, just as A.I should return the sub nearest us
+        # we have glues to exchange on a glue exchange channel
         die wdump 3, $C;
         if (my $n = C.c.mk) {
             C.c.nos = 1;
@@ -337,7 +341,7 @@ Dwig: | # open up wormhole asciis
     s 3:
         C.c.sep = ' ';
         #C.sc.fs = 30;
-        C.sc.k = C.t;
+        C.c.k = C.t;
         C.c.pi = 'iC';
     
     g 7:
@@ -351,18 +355,9 @@ Dwig: | # open up wormhole asciis
     
     fuss 5: %t:yUt:A
         C&fs += 22;
-    
-    te 5:
-        C&hs ||= '348';
-        C&fs += 20;
-    
-    fah 5:
-        C&mw = 33;
-    
-    fs 5: %t:fs:>44
-        C&fly = 44444444;
-    
+    # space hole ^
     # mesh of flop to pis and interim howtos
+    # and power relations applied to Ans
     I 512:
         c&de = 'lives';
         c&leng = 1;
@@ -375,77 +370,141 @@ Dwig: | # open up wormhole asciis
         c&is = 'tw';
         c&to = 'A';
         c&Rs = 1;
-    N 53: %array
+    allk 55: %array
         c&is = 'tape';
+        c&Rs = 'al';
+        c&i = 4;
+    M 53: %array
+        c&is = 'tape';
+        c&i = 4;
+    N 54: %array
+        c&is = 'tape';
+        c&i = 4;
     A 44: %hash:C
-        $s = C.c.s;
-        c&is = ref s.t eq 'CODE' ? "old A" : "A s.t s.cv~s.ov";
-        c&to = 'A';
-        c&de = join ' ', grep{$_} s.m eq $s && "m", s.mo eq $s && 'mo', s.mo && s.mo ne $s && 'n';
-    R 45: %hash:t:C
-        $s = C.c.s;
+        c&is = 'A';
+    C 456: %hash:C
+        c&is = 'C';
+        my @has = qw't y c sc';
+        for (@has) {
+            if (my $x = $s.>$_ ){
+                if ($_ eq 't' ? defined $x && !ref $x : ref $x) {
+                    c&de .= $_;
+                }
+                else {
+                    c&er .= "!?$_";
+                }
+            }
+            else {
+                c&er .= "!$_ ";
+            }
+        }
+        c&de = c&er ? ki $s : "s.y.cv\t s.t";
+        
+    y 4543:
+        c&is = C.y.U && C.y.U.c.s eq $s ? 'elf' : 'Cy';
+        
+    mon 45: %hash:A,t:yUt:A t:~^(m|mo|om|n)$
+        c&is = 'A';
+        
+    c 445: %hash:t:C
         c&is = 'tw';
         c&to = 'R';
         
-    
-    tw 62: %t:is:^
-        c&de ||= join' ',map{ref $_ eq 'HASH' ? _.t : "?$_"}
-            map{$s.>$_ }sort keys %$s;
-    Kcvt 612: %t:is:^
+    R 45: %hash:t:C
+        c&is = 'tw';
+        c&to = 'R';
+        
+    A 623: %t:cis:^
+        c&is = ref s.t eq 'CODE' ? "old A" : "A s.t s.cv~s.ov";
+        c&de = join ' ', grep{$_} 
+            s.m eq $s && "m", 
+            s.mo eq $s && 'mo', 
+            s.mo && s.mo ne $s && 'n';
+        c&to ||= 'A';
+        
+    # tw implies C-ish inner, may also tiny .c
+    tw 62: %t:cis:^
+        c&de ||= join' ',map{ my($k,$v) = @$_;
+            ref $v eq 'HASH' ? v.t : "$k:$v"
+        } map{[$_=>$s.>$_]}sort keys %$s;
+    0&&
+    Kcvt 612: %t:cis:^
         c&de ||= "{{{D}}}";
-    
 pi/tw: |
     n te=>1=>":C.t"=>'%hs:794'
-    n scs=>2=>join(" ",sort keys %{s.sc})=>'%hs:344,fs:7'
+    n De=>-pre=>wdump 2, $s
 pi/tape: |
         my $n = c&s;
         my $x;$x = sub {
             my $n = shift;
-            return ref($n)||$n if ref $n ne 'ARRAY';
-            '[ '.join(',',map{$x->($_)}@$n).' ]'
+            my $y = shift || 1;
+            if (ref $n ne 'ARRAY') {
+                return ref($n)||$n if ref $n ne 'HASH' || !defined n.t;
+                return "n.t";
+            }
+            '[ '.slim((160 / $y) + 10,join(',',map{$x->($_,$y+1)}@$n)).' ]'
         };
         my $p = $x->($n);
         $p =~ s/(HASH,HASH(?:,HASH)+)/"HASHx".scalar(split ',', $1)/eg;
-        n tape=>-pre=>$p=>'%hs:746'
+        $p = wdump 3, $n if c&i > 5;
+        n tape=>''=>$p=>'%hs:746,fs:5'
 pi/Kcvt: |
     n t=>''=>"De 612:";
-    n De=>-pre=>wdump 3, s.De->{0.612};
+    n De=>-pre=>wdump 3, s.De->{0.456};
 pi/iC: |
-    n k=>2=>\$_,'%hs:384,decor,ab,ml:-3' for C.sc.k;
+    n k=>2=>\$_,'%hs:384,decor,ab,ml:-3' for C.c.k;
+    # to be gently let off as above M is re-sensitised 
+    # should be able to focus on changed things
     my $m = J.mo.J;
-    my $h = (++m.lip)."45";
+    C&hs = (++m.lip)."45";
     m.lip = 0 if m.lip >= 9;
     
+    # is wire to self
+    c&oi .= '$' if C.y.U && $s eq C.y.U.c.s;
+    c&oi &&
+    n oi=>21=>c&oi,'%hs:367,fw:7,decor'
+    
+    # stuff to hang on the rim
     my $de;
     if ($de = c&is || c&de) {
         n is=>22=>$de,'%fs:8'.(c&is&&",hs:197")
     }
     elsif (c&i < 4 && !c&nos) {
-        n json =>31=>ref($s).": $s"=>'%wb:1,fs:4,mw:10,bg:384,hs:'.$h
+        my $s = ref $s ? ref $s : "$s";
+        $s = slim(80,$s);
+        n json =>31=>$s,'%wb:1,fs:4,mw:10,bg:384'
     }
     
+    # stuff in the middle until...
     if (c&i < 4) {
         c&de && c&de ne $de &&
-        n des=>23=>c&de,'%fs:4,ws'
+        n des=>23=>c&de,'%fs:7,ws'
     }
     
+    # injuries, travel as primitives
+    c&er &&
+    n er=>34=>c&er,'%hs:097,fs:3,fw:7,decor'
+    
+    # pooling cap
     if (c&leng) {
         my $l = ref $s eq 'ARRAY' ? @$s : ref $s eq 'HASH' ? keys %$s : slim(30,"WTf $s");
-        n len=>7=>"~$l",'%fs:5,hs:478'
+        n len=>89=>"~$l",'%fs:5,hs:478'
     }
     y.in=4;
     return unless c&i > 2;
     
+    # doing
     c&is && c&is !~ /\s/ &&
-    m C.t,3,{pi=>c&is,s=>$s}
+    m C.t,3,{pi=>c&is,s=>$s,i=>c&i}
     
+    # more doing, bamboo, maybies (always spawning)
     c&M &&
     m c&M
 conot: | # expand t->ip
     my $ip = C.sc.ip = {};
     for my $k (split ' ', C.sc.t) {
         my $is;
-        $k =~ s/^(\w+):\^$/"$1:sc".C.t/e;
+        $k =~ s/^(\w+):\^$/"$1:".C.sc.Ct/e;
         $is = $2 if $k =~ s/^(\w+):(.+)$/$1/;
         $is = C.sc.>C$k if exists C.sc.>C$k;
         my $p;
@@ -543,9 +602,10 @@ Dt: |
     1
 Esuy: |
     u urw
-    n Dsut=>\$s
+    #n Dsut=>\$s
     
-    my $m = [@{s.M}[0..8]];
+    my $m = [@{s.M}];
+    shift @$m for 1..6;
     m $m
     #m s=>-ytsc=>$m=>'%hs:347,fs:12'
     J.VV.N = 1;
@@ -554,7 +614,7 @@ Dsut: |
     y.in = 6;
     my @des = map{ values %$_ } values %{s.II.De};
     m Modeal=>''=>''=>'%fs:33'
-    @des = grep{_.t=~/Kcvt/} @des;
+    @des = grep{_.t=~/mon/} @des;
     m De=>-ytsc=>[ G&norp,'y/cv',@des ]
 pi/ytsc: |
     #y.clos = 1; or y.we = grouper
@@ -585,7 +645,7 @@ X: |
     m te=>''=>{g=>'do',s=>"Seo lutio blanchagji  fdkoo"}
     m fah=>''=>{g=>'do',s=>"Serrrrrro"}
     
-    my $z = G&S,De=>$M;
+    my $z = G&S,De=>[@$M];
     
     $G::KA->{"$A"} = $z; 
     
@@ -593,7 +653,8 @@ X: |
     my $n =
     m A=>''=>\$z
     m $_=>{U=>n.ont.C}=>\$z.>$_ for sort keys %$z;
-    my $z = G&S,De=>$M;
+    
+    my $z = G&S,De=>[@$M];
     
     #Mn($_=>''=>\$s->{$_}) for sort keys %$s;
     # then M n sees whe yA and loops back creativity to
@@ -1250,6 +1311,8 @@ Augen: |
                         # which should Rustle up/m local code
                         # and float random code, manifolds of effects
                         # able to present ends to each other
+                        # soft-here
+                        # could do lots of I swapping
                         my $dont = 1 if exists s.I->{D.t};
                         $dont = 0 if $dont && s.I->{D.t."_dige"} ne D.sc.dige;
 
@@ -1260,7 +1323,7 @@ Augen: |
                             }
                             s.I->{D.t} = Rw D.t $A $C $G $T $__D:D;
                             s.I->{D.t.'_dige'} = D.sc.dige;
-                            sayyl "Compile D.t   for C.t  D.y.cv ";# if D.y.cv != 0.1;
+                            #sayyl "Compile D.t   for C.t  D.y.cv ";# if D.y.cv != 0.1;
                         }
                     }
                     s.I->{D.t."_D"} = $D;

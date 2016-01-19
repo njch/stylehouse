@@ -117,11 +117,13 @@ Stripes: |
         [empc => qw'line height'],
         
         [empc => 'margin' =>[qw'left right top bottom']],
+        [empc => 'padding' =>[qw'left right top bottom']],
         [empc => 'ma^rgin'],
         [empc => [qw'mi^n max']=>[qw'width height']],
         [empc => [qw'lef^t ri^ght top^ bo^ttom']],
         [empc => [qw'left^ right^ top^ bottom^']],
         [empc => [qw'width^ height^']],
+        [empc => [qw'wi^dth he^ght']],
         
         ['' => 'over^flow'],
         ['' => 'float^'],
@@ -213,25 +215,43 @@ forerstir: |
 Oscgrin: |
     u allacgts
     
-    n mksc =>''=><<''
+    scaly:
+        my $sc = pop @Me;
+        my $l = shift @Me;
+        $l ||= 15;
+        $sc ||= {};
+        $sc = G&peel,$sc if !ref $sc;
+        sc.fs ||= 9;
+        my $d = $l - length($s);
+        $d /= ($l/3.14159);    
+        sc.fs += $d;
+        sc.width = int(6+$l/2.13169) if $d < -0.6;
+        sc.fs = 3 if sc.fs < 3;
+        sc.fs = 17 if sc.fs > 17;
+        $s,$sc
+    
+    ron:
+        0.0001 * int(10000*$s)
+
+    mksc:
         my $t = I.d&mos,$s;
         I.d&xot,C.sc,$t;
         
     # language expansion
-    n mos =>''=><<''
+    mos:
         my @t = split ',',$s;
         for (@t) {
             my ($k, $v) = split ':', $_;
             $T.>$k = $v;
         }
     
-    n meat =>''=><<'',{acgt=>'k,v'}
+    meat: %acgt:k v
         my $f = $v;
         my $mv = C.sc->{$k};
         $f = I.d&mean,$f,$mv;
         C.sc->{$k} = $f;
 
-    n mean =>''=><<'',{acgt=>'to,fro,mix'}
+    mean: %acgt:to fro mix
         $mix ||= 0.5;
         my $yu = $fro - $to;
         $yu = $yu * $mix;
@@ -239,7 +259,7 @@ Oscgrin: |
         $fro
     
     # it
-    n cole =>''=><<''
+    cole:
         my $h;
         (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
             if $s =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $s";
@@ -258,7 +278,7 @@ Oscgrin: |
         }
     
     # ray lih, unhassley
-    n hsle =>''=><<''
+    hsle:
         my @m;
         for ($s) {
             @m = split ' ', $_;
@@ -281,18 +301,18 @@ Oscgrin: |
         "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
     
     # decide space unit TODO init soon
-    n empc =>''=><<''
+    empc:
         $s .= 'em' if $s !~ /(%|em|px)/;
         $s =~ s/^-?0em$/0%/;
         $s
     
-    n plus=>''=><<''
+    plus:
         s.v + s.et
     
-    n defsa=>''=><<''
+    defsa:
         s.v || s.et
     
-    n ori =>''=><<''
+    ori:
         @{s.et} > 2 && die "Many et for ori s.v: @{s.et}";
         my ($t,$f) = @{s.et};
         return s.v =~ /[1ay]/ ? $t : $f

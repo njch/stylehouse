@@ -162,7 +162,8 @@ ReoCur: | # inner bracken resolve (for randoms)
         my $host;
         if (C.c.root) {
             $host = C.sc.anch || 'TeCurve';
-            return sayre "topleve C.t is self" if $host eq C.t;
+            return $host eq 'TeCurve' || sayre "topleve C.t is self"
+                if $host eq C.t;
             return saygr "top C.t is blank anch, C.sc.geo" if $host eq '1';
             my ($cur) = map {_.nj}
             n $host =>$C
@@ -374,7 +375,7 @@ GeoSlur: |
     
     n J =>3214=><<'',{rg=>'J,Y,V,yat',l=>'wait here'}
         my $here = C.y.here;
-        $here || return sayre "NO HERE C.y.k";
+        $here || return "0.9\tpi" eq C.y.k || sayre "NO HERE C.y.k";
         return sayyl "C.y.k  has e geo: C.sc.geo" if C.sc.geo;
         .
         my $geo = I.d&here2geo,$here;

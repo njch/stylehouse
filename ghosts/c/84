@@ -187,7 +187,7 @@ Pile: |
     #J.VV.N = 1;
     y.ert = 20;
     
-    Mn("w/K"=>-Join);
+    Mn("w/u"=>-Join);
 pi/Join: |
     C.sc.dos = 'pileJup';
     y.ert = 32;
@@ -424,15 +424,15 @@ trowil: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
     my @ne = $wt;
     my $i;
     while (@ne) {
-        $i++ > 166 && die "$s join wanders for $i from ".@li." lines, maybe circular?";
+        $i++ > 600 && die "$s join wanders for $i from ".@li." lines, maybe circular?";
         my @m = @ne;
         @ne = ();
         for $wt (@m) {
-            for my $k (keys %$wt) {
+            for my $k (sort keys %$wt) {
                 my $t = $tw->{$k};
                 if (t.n) {
                     my $n = $wt->{$k};
-                    $n->{$_} = {} for keys %{t.n};
+                    $n->{$_} = {} for sort keys %{t.n};
                     push @ne, $n;
                 }
                 else {
