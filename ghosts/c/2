@@ -778,6 +778,7 @@ spIII: |
     }
     join "\n",grep{defined}@say;
 sumX: | #v topleve & size descript, maps C into N if
+    ar.N ||= ar.M = [];
     my @k = grep{$_ ne 'Ii' && $_ ne 'ooI'}sort keys %$X;
     my @ll = map{$X->{$_}}@k;
     my @l;
@@ -786,7 +787,7 @@ sumX: | #v topleve & size descript, maps C into N if
         push @l, scalar @ll;
     }
     ar.N && push @{ar.N}, @ll;
-    join(", ",@k).": ".join(" - ",@l);
+    ar.M ? ar.M : join(", ",@k).": ".join(" - ",@l);
     
 Xisle: | # return X,NofX from isle + W
     my ($t,$isle) = reverse @{ar.m};

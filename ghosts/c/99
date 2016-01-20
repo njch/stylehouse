@@ -1,147 +1,191 @@
 This: |
-    u Traweil
+    J.VV.N = 1;
+    y.at.coil = "meashourp";
     u allact
-    and:
+    and: %meashourp:delopida
         G&peel,'off'
     you:
         G&peel,'go'
     n More
+delopida: |
+    D.sc.allthe = join ',', map{_.t} @$N;
 More: |
-    u Traweil
     u allacgts
+    n Pugwei
     del:
         C.sc.soon--;
     you:
         C.sc.you = 1 + $s;
-    n \'W:Moos' 
-    #,isle:Ops'
+    n \'W:Moos,isle:VV'
 Moos: |
-    u Traweil
+    J.VV.N = 1;
     u allacgts
-    delo:
+    daloe:
         C.t + 4;
 Tp: | # execution, comes with depth unlimits
     u Traweil
     n \'W:This,isle:V'
-pietrW: |
-    # sense retriever, was a pi away
+    sayre "And out" for 1..4;
+Pugwei: |
+    u allacgts
     
-    my $isle = C.c.isle || J.mo.J.at.isle;
-    $isle || die "No isledea !? J.name of J.mo.J.name has; ".ki J.mo.J.at;
-    my $f = "w/$isle/$s";
-    y.at.isle = $isle;
-    say "trW; A.J.name - J.name";
-    my $moj = J.mo.J;
-    moj.at.isle || die "NO isle above? moj.name";
-    my $Jd = "w/moj.at.isle/J/moj.name";
-    `mkdir -p $Jd` if !-d $Jd;
-    my $clue;
-    if (J.at.isle ne moj.at.isle) {
-        say "moj.name (moj.at.isle)   $s has src over in J.at.isle";
-        $clue = "$Jd/${s}_src_$isle";
-        say "Gunna leave clue at: $clue";
-        `touch $clue`;
-    }
-    my $jf = "$Jd/$s";
-    my $traveli;
-    for ($jf) {
-        next unless -s $_;
-        $traveli = read_file($_);
-        say "Travel from $_: $traveli";
-    }
-    if (!$traveli && -f $f) {
-        say "Found $f !";
-        n $f =>3,$s,{X=>LoadFile($f)}
-        `touch $jf` && sayre "Xuper $f" if !-f $jf;
-    }
-    else {
-        say "Making  $s !";
-        die "Cannot diff src with travelineedy $s" if $clue;
-        n $s=>W=>
-        `cat /dev/null > $jf`;
-    }
-    saybl "Donel  $jf";
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    shouldWe:
+        my $tr = 1;
+        my $i = T.isle;
+        c&isle && C.t || die "Cno isle/t ".ki $C;
+        
+        my $f = G&pgile,c&isle,C.t;
+        my $j = G&
+        
+        
 Traweil: | # uses localeo
     u allacgts
     # ye
     # wants to be a left-right by now, regarding the isles and meta (stop, src)
+    J.VV.N = 1;
     shouldWe:
         my $tr = 1; # yes
         my $i = T.isle;
-        c&isle && C.t || die "Cno isle/t ".ki $C;
-        my $f = 'w/'.c&isle.'/'.C.t;
-        my $pisle = i.stop ? c&isle : s.c.isle;
-        my $j = 'w/'.$pisle.'/J/'.s.t;
-        `mkdir -p $j` if !-d $j;
-        $j .= '/'.C.t;
-        G&fmakund,$j,$i;
-        i.f = $f;
-        i.j = $j;
-        if (-f $j) {
-            $tr = -s $j ? read_file($j) : 0;
-            say "Joint $j weighs $tr";
+        $i && c&isle && C.t || die "Cno isle/t ".ki $C;
+        
+        i.f = 'w/'.c&isle.'/'.C.t;
+        unless (i.stop) {
+            i.j = 'w/'.s.c.isle.'/J/'.s.t;
+            `mkdir -p i.j` if !-d i.j;
+            i.j .= '/'.C.t;
+            G&fmakund,$i;
         }
-        if (!-f $f) {
+        
+        if (i.j && -f i.j) {
+            $tr = -s i.j ? read_file(i.j) : 0;
+            say "Joint i.j weighs $tr";
+        }
+        if (!-f i.f) {
             $tr = 1;
-            say "Joint $j must make $f";
+            say "Joint i.j must make i.f";
         }
-        die "Cannot diff src $pisle/s.t -> c&isle/C.t" if $tr && i.src;
+        die "Cannot diff src s.c.isle/s.t -> c&isle/C.t" if $tr && i.src;
         $tr
     
     # flat reiter T log, $s = .../J/parent, @Me = {src:$isle}
     # C.t_src_$isle, on the parent join to the child
     fmakund:
-        my @l = map { join '_', $s, @$_ }
-            map { my $o = $_; map { [$_=>$o.>$_ ] } keys %$o } @Me;
+        my @l = map { join '_', s.j, $_, $s.>$_ } grep /../, keys %$s;
         s/_1$// for @l;
+        push @l, s.j;
         my $l = {map{$_=>1}@l};
-        for (glob "$s*") {
+        for (glob "s.j*") {
             next if delete $l.>$_;
-            sayre "RM $_";
+            warn "want to RM $_";
             #unlink $_;
         }
-        `touch $_` for @l; # meta bits
+        #saybl "Info\n".ki $s;
+        `touch $_` for @l;
+    
+    jound:
+        say "Found! s.f";
+        `touch s.j` if !-f s.j;
+    fli:
+        LoadFile(s.f);
+    fown:
+        my $f = s.f;
+        $f =~ s/^w\/// || die "CAnot down out of w/: $f";
+        # drops ooI, scrubs Ii: (saves file)
+        my $X = C.sc.X || die "get X ".ki$C;
+        Rw down $f $s:X;
+    joined:
+        return if s.stop;
+        `cat /dev/null > s.j`;
+        saybl ki $s;
     
     u allvse
     
-    #Top: 
-        #n \'W:This,isle:V'
-    #V:
-        # what top wants to know about doing V
     n \'of:Mo'
-    # This.c.isle adds More.c.isle:
+    # This.c.isle <-> More.c.isle:
     W 3215:
         my $ab = A.J.C;
         c&isle ||= ab.c.isle || die "Noisle top? ".wdump 2, $ab;
+        my $i = T.isle ||= {};
+        ab.c.iZle.>C.t = $i;
         
-        T.isle.stop = 1 if !ab.c.isle && c&isle; # ab only involking
+        i.stop = 1 if !ab.c.isle && c&isle; # ab only involking
         
-        T.isle.src = c&isle if ab.c.isle && c&isle ne ab.c.isle;
+        i.src = c&isle if ab.c.isle && c&isle ne ab.c.isle;
         
         my $tr = G&shouldWe,$ab;
-        delete c&J if !$tr;
-        # ^ or c&ov = 0.8, so it can fall in, general W only mean
-        # ov=8 will resume, to give This'W correct link to More'W all the time
+        #$tr eq G&phouldWe,$ab || die "fs said $tr, pg didnt";
+        
+        $tr || delete(c&J), delete(C&J);
+        $tr && sayre "C.t travels";
     
+    # ^ or c&ov = 0.8, so it can fall in, general W only mean
+    # ov=8 will resume, to give This'W correct link to More'W all the time
     
-    # J stuff skipped, W level, real W users incur setup then
+    J 63: %code:J
+        u Traweil
     
-    #n \'of:Me'
+        
+    #c to be spires continuing,
+    # 
+    # st should know about making new D for us,
+    #we 8 everyWing already, know where to isle it
+    # This'W should look normal
+    
+    # Every'W should just point to Other'W (+ version, maybe), requiring it 8 somewhere
+    # humming clients must attach other trees (they would kMow how)
+    # probably embedding in time, universals to bend it together
+    
+    # exist for a point
+    # connects Wscaping/versioning
+    #for moving any o 7 out
+    #and hitching at the 2 onto another
+    ## retreieves header
+    #how it is currently held (symp isle, makes aware as you like)
+    # the isle/This'W is indexed whole/Wc as opposed to Wsc
+    # for the thing applying at a distance, little updates way-cpu asap
+
+    # so W underneath sprawls & tidies, convopool
+    # isle hoisted off flattens all the time, possible meta:
+    #   the bunch of Wags hoisted into one, clients can dive isle for update
+    #   if nothing else gets built in the aggregation
+    
     # here in the osc meta wander region,
-    # having willed
-    J.VV.N = 1;
+    # having willed, having it one way or another
+    
     scW 74:
         if (my $J = C.sc.J) {
             # make N the recoverable inners if J,
+            die wdump 3, $C if !ref $J;
             my ($Y,$V) = map{ J.El.>$_ } Pre=>'Duv';
             my @lv = map { V.rv.do.>$_ } sort keys %{V.rv.do};
             my ($root,@C) = map{_.C} V.rv, @lv;
             C.c.N = [map{
-                my $C = G&hup,$_;
+                my $D = G&hup,$_;
                 # make normal
-                delete $C.>$_ for qw'J Y V';
-                $C
+                delete D.c.>$_ for qw'J Y V';
+                sayre "D.t came out of osc with X: ".ki D.sc.X if D.sc.X;
+                $D
             }@C];
             say "C.t how has N";
         }
@@ -149,76 +193,78 @@ Traweil: | # uses localeo
             # or just point, get W outer/root/rv/C, versioneddie
             # then that can acquire inners later or isle away
             #   (noticing if isle v < W v, maybe)
-            die "Re,member W ^^^ lig8htly  ".ki $C;
+            say "Re,member W: C.t ".ki C.c;
         }
-        #exist for a point
-        # connects Wscaping/versioning
-        #for moving any o 7 out
-        #and hitching at the 2 onto another
-        ## retreieves header
-        #how it is currently held (symp isle, makes aware as you like)
-        # the isle/This'W is indexed whole/Wc as opposed to Wsc
-        # for the thing applying at a distance, little updates way-cpu asap
-        
-        # so W underneath sprawls & tidies, convopool
-        # isle hoisted off flattens all the time, possible meta:
-        #   the bunch of Wags hoisted into one, clients can dive isle for update
-        #   if nothing else gets built in the aggregation
     
-    #c the art shader as a post osc index builder
+    # the art shader as a post osc index builder
     # here making code more perl etc.
-    
     isle 747:
         my $sco = $isle =~ /^j/ ? {js=>'ym/jscoi'} : {code=>'ym/conoi'};
+        my $i = T.isle;
         
-        C.c.N || die "C.t no N";
+        if (C.c.N) { # we are awake inside
         sayyl " C.t   ist ".ki C.c;
         saygr " C.t               ".ki C.sc;
         
-        my $tw = {};
+        my $src = [];
         for my $D (@{C.c.N}) {
-            $D = G&hup,$D;
+            D.y = D.y.cv;
             for (grep{ D.sc.>$_ }keys %$sco) {
                 my $coder = $sco.>$_;
                 my $v = {};
                 Rw $coder $C:D $v;
+                
                 D.sc.X && die "D.t al; $_";
                 D.sc.X = $v;
             }
-            sayre "No hoist D.t" if D.sc.noXup;
-            D.sc.X && D.sc.W && die "dfoubl".ki $D;
-            say "C.t   -=-->  D.t  === ".ki D.c;
-            saygr "                ".ki D.sc;
+            D.sc.X && D.sc.W && sayre "DscW already had X: ".ki $D;
+            if (my $n = D.sc.W) {
+                D.t eq $n || die "yuou";
+                my $is = C.c.iZle.>$n || die "No $n on iZle: ".ki C.c;
+                is.f && is.j || die "Noise ".ki $is;
+                
+                my $X = G&fli,$is;
+                # land join
+                G&jound,$is;
+                
+                # wants to be post-spiral-together for our C 
+                # knowing which src - now here=C.t is missing
+                my $N = Rw sumX $X;
+                _.c.from = join'/',grep{defined} D.t, _.c.from
+                    for @$N;
+                
+                D.sc.X = $X;
+            }
+            D.sc.noXup && sayre("No hoist D.t") && next;
+            my $k = "D.t vers";
+            push @$src, [$k,D.sc.X];
         }
         
-        # continues encoding/indexing *
-        # @N = encode grep{!.W} 
-        # matched things
-        # C.c.isle slightly defines how to encode Cings 
-        #   it could ensure incoming are compatible with index
-        #   
-        # C is things 
-        #my $N = [@{C.c.N}];
-        # [t=>''=>{W=>t}] .. to feed &st with 
-        
-            # sc.coil = $stage, aNy sc.$stage = $function
-        # this function pulls in many of itselfs from W ^
-        # to be spires continuing,
-        # ignores on sc.noXup, eg Xiles' content, 
-        # 
-        # st should know about making new D for us,
-        #  ignored (sc.noXup) (Xiles' othering intrograb)
-        
-        
-        if (my $stage = C.sc.coil) {
+        my $II = C.sc.X ||= {};
+        Rw spII $A $II $src;
         }
         
+        if (!C.c.N) {
+            C.sc.X && die "!N ended up with X.".ki$C;
+            C.sc.X = G&fli,$i;
+        }
+        my $X = C.sc.X;
+        my $J = C.c.J;
+        if (ref $J) {
+            if (my $o = J.at.coil) {
+                my $N = Rw sumX $X;
+                for my $D (grep{ _.sc.>$o }@$N) {
+                    my $way = D.sc.>$o;
+                    saybl "C.t Coils D.t via $way";
+                    Rw $way $D $N;
+                }
+            }
+        }
+        else {
+        }
         
-        #we 8 everyWing already, know where to isle it
-        # This'W should look normal
-    
-    
-    # Every'W should just point to Other'W (+ version, maybe), requiring it 8 somewhere
-    # humming clients must attach other trees (they would kMow how)
-    # probably embedding in time, universals to bend it together
+        G&fown,$i;
+        
+        G&joined,$i;
+        
 
