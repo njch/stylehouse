@@ -2,23 +2,24 @@ This: |
     u Traweil
     u allact
     and:
-        off
+        G&peel,'off'
     you:
-        go
+        G&peel,'go'
     n More
 More: |
     u Traweil
     u allacgts
     del:
-        soon
+        C.sc.soon--;
     you:
-        moot
-    #n \'W:Moos,isle:Ops'
+        C.sc.you = 1 + $s;
+    n \'W:Moos' 
+    #,isle:Ops'
 Moos: |
     u Traweil
     u allacgts
     delo:
-        3
+        C.t + 4;
 Tp: | # execution, comes with depth unlimits
     u Traweil
     n \'W:This,isle:V'
@@ -132,15 +133,23 @@ Traweil: | # uses localeo
     J.VV.N = 1;
     scW 74:
         if (my $J = C.sc.J) {
+            # make N the recoverable inners if J,
             my ($Y,$V) = map{ J.El.>$_ } Pre=>'Duv';
-            my @lv = map { _.y.k || die "C from Yvs has no yk: ".ki $_;
-                V.lv.>_.y.k } @{Y.vs};
-            my @C = map{_.C} @lv;
-            die wdump 3,[@C];
-            C.c.z = [];
+            my @lv = map { V.rv.do.>$_ } sort keys %{V.rv.do};
+            my ($root,@C) = map{_.C} V.rv, @lv;
+            C.c.N = [map{
+                my $C = G&hup,$_;
+                # make normal
+                delete $C.>$_ for qw'J Y V';
+                $C
+            }@C];
+            say "C.t how has N";
         }
         else {
-            die "Re,member W   ".ki $C;
+            # or just point, get W outer/root/rv/C, versioneddie
+            # then that can acquire inners later or isle away
+            #   (noticing if isle v < W v, maybe)
+            die "Re,member W ^^^ lig8htly  ".ki $C;
         }
         #exist for a point
         # connects Wscaping/versioning
@@ -156,17 +165,38 @@ Traweil: | # uses localeo
         #   the bunch of Wags hoisted into one, clients can dive isle for update
         #   if nothing else gets built in the aggregation
     
-    # the art shader as a post osc index builder
+    #c the art shader as a post osc index builder
     # here making code more perl etc.
     
     isle 747:
+        my $sco = $isle =~ /^j/ ? {js=>'ym/jscoi'} : {code=>'ym/conoi'};
+        
+        C.c.N || die "C.t no N";
+        sayyl " C.t   ist ".ki C.c;
+        saygr " C.t               ".ki C.sc;
+        
+        my $tw = {};
+        for my $D (@{C.c.N}) {
+            $D = G&hup,$D;
+            for (grep{ D.sc.>$_ }keys %$sco) {
+                my $coder = $sco.>$_;
+                my $v = {};
+                Rw $coder $C:D $v;
+                D.sc.X && die "D.t al; $_";
+                D.sc.X = $v;
+            }
+            sayre "No hoist D.t" if D.sc.noXup;
+            D.sc.X && D.sc.W && die "dfoubl".ki $D;
+            say "C.t   -=-->  D.t  === ".ki D.c;
+            saygr "                ".ki D.sc;
+        }
+        
         # continues encoding/indexing *
         # @N = encode grep{!.W} 
         # matched things
         # C.c.isle slightly defines how to encode Cings 
         #   it could ensure incoming are compatible with index
         #   
-        sayyl "suckisle ".ki $C;
         # C is things 
         #my $N = [@{C.c.N}];
         # [t=>''=>{W=>t}] .. to feed &st with 
