@@ -1,3 +1,223 @@
+JJ: |
+    u urw
+    
+    J.ev.th ||= 'middle';
+    J.ev.li ||= 'climbo';
+    J.ev.bo ||= 'bodos';
+    
+    y.at.ux = 1;
+    y.at.oWl = 1;
+    y.at.ws = 1;
+    y.at.hs = '893';
+    y.in = 0.03;
+    y.out = 6;
+    #J.VV.N = 1;
+    y.ert = 20;
+    
+    Mn("V"=>-Joien);
+    
+trowal: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
+    my $tw = {};
+    my $et = {};
+    for my $f (@$N) {
+        my $t = f.t || f.wt;
+        $et.>$t && die "f.t twice!".wdump 3,[$f,$t ];
+        $et.>$t = $f;
+        my $l = f.l || sayre("No l on f.t") && next;
+        $tw->{$l}->{n}->{$t} = 1;
+        $tw->{$t}->{u}->{$l} = 1;
+    }
+    $tw->{$_}->{e} = $et->{$_} for keys %$et;
+    my $wt = {};
+    $wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
+    keys %$wt || die "No top level! Circular?";
+    my @ne = $wt;
+    my $i;
+    while (@ne) {
+        $i++ > 600 && die "join wanders for $i from lines, maybe circular?";
+        my @m = @ne;
+        @ne = ();
+        for $wt (@m) {
+            for my $k (sort keys %$wt) {
+                my $t = $tw->{$k};
+                if (t.n) {
+                    my $n = $wt->{$k};
+                    $n->{$_} = {} for sort keys %{t.n};
+                    push @ne, $n;
+                }
+                else {
+                    #
+                }
+            }
+        }
+    }
+    J.mo.jes.tower = $tw;
+    J.mo.jes.trowl = $wt;
+pi/Joien: |
+    u UpPg
+    
+    C.sc.dos = 'pileJup';
+    y.ert = 32;
+    n Join=>0.0001=>$s,'%decor,hs:388'
+    
+    $A = 
+    neo:
+        far
+    my $N = [ G&qh,<<'',($s)x4 ];
+        select t.l,t.t,t.isle as tisle,
+          g.t as gt,
+          w.t as wt,
+          --g.ts as gts,
+          w.isle,w.c::text,
+          --w.ts as wts,
+          t.c::text as tc, t.sc::text as tsc,
+        extract(epoch from g.ts - w.ts) as inter 
+        from t left join w using (t) left join g using (t)
+        where t.isle = ? or w.isle = ?
+       union
+        select t.l,t.t,t.isle as tisle,
+          g.t as gt,
+          w.t as wt,
+          --g.ts as gts,
+          w.isle,w.c::text,
+          --w.ts as wts,
+          t.c::text as tc, t.sc::text as tsc,
+        extract(epoch from g.ts - w.ts) as inter 
+        from w left join t using (t) left join g using (t)
+        where t.isle = ? or w.isle = ?
+    
+    for (@$N) {
+        #m eo=>-pre=>wdump $_
+    }
+    #return;
+
+    
+    
+    my $jes = J.mo.jes = $J;
+    
+    # should Atime(2) from a globby ls + this J pins
+    
+    # geese, way later: mtime f.t < way/$
+    
+        Rw trowal $J $N;
+        Mn('JIOI'=>-gejo=>{}=>'%dis');
+
+notlel: |
+    return;
+    my $jf;
+    my ($li,$rd,$geese,$dir);
+    my $tow = jes.tower || die "no tower";
+    my $wt = jes.trowl || die "no trowl";
+    my $tal;$tal = sub {
+        my ($d,$wt) = @_;
+        map {
+            my $v = $wt->{$_};
+            my @M;
+            push @M, [$_=>''=>{s=>$_,ind=>$d}];
+            push @M, $tal->($d+1, $v) if keys %$v;
+            @M
+        } sort keys %$wt;
+    };
+    my $N = do { #G&NM
+        my $M = [];
+        my $N = [$tal->(0,$wt)];
+        Mn($N);
+        $M;
+    };
+    
+    my $was = {};
+    for (@$N) {
+        my $s = $tow->{_.t}->{e} || next;
+        _.c.isley = s.src if s.src;
+        'src' ne join(' ', sort keys %$s) &&
+            sayre "elvis noise: ".ki $s;
+    }
+    for (@$N) {
+        my $f = _.c.isley ? "$rd/_.c.isley/_.t" : "$dir/_.t";
+        if (delete($li->{$f}) || $was->{$f} || _.c.isley) {
+            -f $f || die "NO isley C.t thiong $f" if _.c.isley;
+            _.c.s = $f;
+            _.sc.ml = _.c.ind * 3;
+            if ($geese->($f)) {
+                _.c.pi = 'gee';
+            }
+            else {
+                _.c.pi = 'bl';
+            }
+            if (my $aw = $was->{$f}) {
+                if (aw.c.ind <= _.c.ind) {
+                    _.c.pi = 'gefore';
+                }
+                else {
+                    aw.c.pi = 'gefore';
+                    $was->{$f} = $_;
+                }
+            }
+            elsif (_.c.isley) {
+                _.c.pi = 'gefore';
+            }
+            else {
+                $was->{$f} = $_;
+            }
+            _.sc.id = $f;
+            _.sc.hs = '255';
+        }
+        else {
+            
+            _.sc.hs = '339';
+        }
+        _.sc.dis = 1;
+    }
+    
+    my $i;
+    _.sc.id .= 'geef'.$i++ for grep { _.c.pi eq 'gefore' } @$N;
+    my $la;
+    for (1..3) {
+        for (@$N) {
+            _.c.dropi++ if _.c.pi eq 'gefore' && $la && la.c.pi eq 'gefore'
+                && la.c.ind != _.c.ind;
+            $la = $_;
+        }
+        @$N = grep{ keys %$_ } grep { !_.c.dropi } @$N;
+    }
+    my $ee = jes.teeps = {};
+    my $un = {};
+    my @ins = grep {_.c.pi ne 'gefore'} @$N;
+    $ee->{_.t} = $_ for @ins;
+    $un->{_.t}++ for @ins;
+    my @to = grep { $un->{$_} > 1 } keys %$un;
+    sayre wdump [ "things showed up too many;", @to] if @to;
+    
+    Mn($N);
+    
+    keys %$li &&
+        Mn(unc=>''=>"Uncounted: $_\n",'%ws,dis')
+            for sort keys %$li;
+    
+    n o=>62=>"s҉",'%fs:60,blr:1,opa:3';
+    # and so
+pi/gejo: | # the dog leg trowl sketch, optional
+    y.at.hs = '388';
+    y.at.mt = '5';
+    y.at.fs = '9';
+    y.at.lh = '0.9em';
+    #y.at.geo = 'a100 0 0.1 0.2';
+    n gate=>2=>"\n.\n.\n.\n.\n.\n.\nGasm: $s\n\n";
+    #$s =~ /\/J$/ || die "nogate: $s";
+    my $wt = J.mo.jes.trowl;
+    my $tal;$tal = sub {
+        my ($d,$wt) = @_;
+        join"\n",map{
+            ind(join("",("  ") x $d), $_)
+        }map {
+            "$_".(!keys %{$wt->{$_}} ? "" : do {
+                ":\n".$tal->($d+1, $wt->{$_});
+            });
+        }sort keys %$wt;
+    };
+    my $s = $tal->(0,$wt);
+    Mn(eo=>''=>"\n$s");
+    
 This: |
     J.VV.N = 1;
     y.at.coil = "meashourp";
@@ -7,14 +227,17 @@ This: |
     you:
         G&peel,'go'
     n More
+    
 delopida: |
     D.sc.allthe = join ',', map{_.t} @$N;
 More: |
     u allacgts
     del:
         C.sc.soon--;
+    
     you:
         C.sc.you = 1 + $s;
+        
     n \'W:Moos,isle:VV'
 Moos: |
     J.VV.N = 1;
@@ -28,13 +251,20 @@ Tp: | # execution, comes with depth unlimits
     
 Muoos: |
     n Moos
+Inter: |
+    u UpPg;
+    $A =
+    doof:
+        if
+    my $d = G&qp,<<'',sjson({some=>1}),'More';
+        update t set c = ? where t = ?
 Pugwei: |
     u allacgts
     n UpPg
     
     Pugweidb:
-        G&tyable,W=>'isle,ts';
-        G&tyable,T=>'isle,l,ts';
+        G&tyable,W=>'isle,ts:timestamptz';
+        G&tyable,T=>'isle,l,ts:timestamptz';
     
     orb:
         use List::MoreUtils 'zip';
@@ -83,19 +313,14 @@ Pugwei: |
         G&orb,\$_,\@ins,@Me for "insert into $s";
     
     putW:
-        s.ts = do {
-            my $t = G&qh,<<'';
-                select now() as s
-            say "Selected t.s as now for ".ki $s;
-            t.s
-        };
+        s.ts = G&qh,<<'' ->{s};
+            select now() as s
         G&replace,W=>'isle,t','ts',$s;
     
     # notes states from $s = T.isle, ball of data to join join
     puTsj:
         my $j = s.j||die"noj".ki$s;
         my $o = G&xonly,j.sc,$s,grep/../,keys%$s;
-        #saybl "Diff: ".wdump 3,[s.j,{OLDSC=>$o}];
         G&replace,T=>'isle,l,t',s.j;
     
     xonly: %acgt:s c
@@ -107,7 +332,7 @@ Pugwei: |
         $o
     
     xery: %acgt:s c
-        my $tt = {map{ref $_ ? %$_ : $_,$_ }@Me};
+        my $tt = {map{ref $_ ? %$_ : ($_,$_) }@Me};
         while (my($f,$t) = each %$tt) {
             if (!exists $c.>$f ) {
                 delete $s.>$t
@@ -127,6 +352,11 @@ Pugwei: |
             i.j = G&geT,s.c.isle,s.t,C.t;
             G&puTsj,$i;
         }
+        else {
+            say "Top level: s.t -> C.t (c&isle)";
+            return 1;
+        }
+        saybl "j: ".wdump 3, i.j;
         if (0 && !i.j.y) {
             $tr = 1;
             say "pJoint noy: ".ki i.j;
@@ -242,7 +472,7 @@ Traweil: | # uses localeo
     n \'of:Mo'
     # This.c.isle <-> More.c.isle:
     W 3215:
-        G.glomp++ || G&Pugweidb;
+        #G.glomp++ || G&Pugweidb;
         
         my $ab = A.J.C;
         c&isle ||= ab.c.isle || die "Noisle top? ".wdump 3,[$C, $ab];
