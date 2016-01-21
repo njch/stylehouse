@@ -208,6 +208,7 @@ gothat: | # script's most (main::) A, verbatim insert for got ^
     G.A = $A;
     A.talk = "G";
     A.mo = $A;
+    our $G = $G;
     our $KA = {};
     $G::KA->{"$A"} = $A;
     my $C = {};
@@ -242,6 +243,7 @@ Bun: | # stack exits
         my ($s) = @_;
         return if $s =~ /Deep recursion on subroutine/
             || $s =~ /masks earlier declaration in same/;
+        G.I.sigstackend->();
         warn "Warndg: $s";
         
     sigstackend: %args

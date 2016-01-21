@@ -33,8 +33,8 @@ Pugwei: |
     n UpPg
     
     Pugweidb:
-        G&tyable,W=>'isle';
-        G&tyable,T=>'isle,l';
+        G&tyable,W=>'isle,ts';
+        G&tyable,T=>'isle,l,ts';
     
     orb:
         use List::MoreUtils 'zip';
@@ -83,7 +83,13 @@ Pugwei: |
         G&orb,\$_,\@ins,@Me for "insert into $s";
     
     putW:
-        G&replace,W=>'isle,t',$s;
+        s.ts = do {
+            my $t = G&qh,<<'';
+                select now() as s
+            say "Selected t.s as now for ".ki $s;
+            t.s
+        };
+        G&replace,W=>'isle,t','ts',$s;
     
     # notes states from $s = T.isle, ball of data to join join
     puTsj:
@@ -150,7 +156,6 @@ Pugwei: |
         
     
     fli:
-        sayyl "AHVEO";
         my $f = s.f.c.yam || die "Yanotcyam ".ki s.f;
         LoadFile('w/'.$f);
     
