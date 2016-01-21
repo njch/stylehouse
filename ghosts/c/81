@@ -510,8 +510,9 @@ UpPg: |
     
     n tyable =>'',<<''
         $s ||= 'names';
-        my @col = ('t','y real','c json','sc json', @Me);
-        my $colum = join', ',map{s/:/ /;/ /?$_:"$_ text"}@col;
+        my @col = map{split','} @Me;
+        push @col, 't','y real','c json','sc json';
+        my $colum = join', ',map{s/:/ /;/ /?$_:"$_ text"} @col;
         my $q = "create table if not exists $s ($colum)";
         say "Create: $q from".wdump 2, [$s,@Me] ;
         G&qp,$q
