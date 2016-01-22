@@ -25,7 +25,7 @@ Ble: |
     
     sayyl "Y\n\n\n\n\n";
     
-    n Ghost
+    n So
     
     
     # fork to , runtimes
@@ -97,7 +97,6 @@ pi/Ghost: |
     Atime(2)||return say "Same J.name";
     my $Y = LoadFile($s);
     my @l = sort keys %$Y;
-    @l = grep{$_} @l[0..5];
     for (@l) {
         # should be on sev somewhere, impose new ts by s change, maintain this W
         my $s = $Y.>$_;
@@ -136,18 +135,22 @@ CimPg: | # C.c diff imposes C.c from Jiter
         my $j = G&qh,<<'',sc.t;
             select * from G where t = ?
         
+        my $e = $j;
         my $i = {};
         $i.>$_ = $sc.>$_ for keys %$sc;
         if (my $p = c.perch) {
             while (my ($k,$v) = each %$p) {
                 # same ts is no s change, etc.
-                $i.>$k = $j.>$k if $j.>$v eq $i.>$v
+                $i.>$k = $j.>$k if $j.>$v eq $i.>$v;
+                say "Wasnoch $k" if sc.t =~ /This/ && $j.>$v eq $i.>$v;
             }
         }
         return if G&heq,$j,$i;
         
-        G&qp,<<'',i.t;
-            delete from G where t = ?
+        $e ? 
+        G&qp,<<'',i.s,i.ts,i.t
+            update g set s = ?, ts = ? where t = ?
+        :
         G&qp,<<'',i.t,i.s,i.ts;
             insert into G (t,s,ts) values (?,?,?)
     

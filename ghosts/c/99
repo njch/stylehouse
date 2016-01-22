@@ -1,3 +1,7 @@
+Ger: |
+    
+    Rw wayt $d=44 $p=Ger;
+    
 JJ: |
     u urw
     
@@ -14,6 +18,7 @@ JJ: |
     #J.VV.N = 1;
     y.ert = 20;
     
+    #G.oin.A.tid += 3;
     Mn("V"=>-Joien);
     
 trowal: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
@@ -21,7 +26,6 @@ trowal: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
     my $et = {};
     for my $f (@$N) {
         my $t = f.t || f.wt;
-        $et.>$t && die "f.t twice!".wdump 3,[$f,$t ];
         $et.>$t = $f;
         my $l = f.l || sayre("No l on f.t") && next;
         $tw->{$l}->{n}->{$t} = 1;
@@ -67,11 +71,10 @@ pi/Joien: |
         select t.l,t.t,t.isle as tisle,
           g.t as gt,
           w.t as wt,
-          --g.ts as gts,
-          w.isle,w.c::text,
-          --w.ts as wts,
+          w.isle, w.c::text,
           t.c::text as tc, t.sc::text as tsc,
-        extract(epoch from g.ts - w.ts) as inter 
+        extract(epoch from g.ts) as gts,
+        extract(epoch from w.ts) as wts
         from t left join w using (t) left join g using (t)
         where t.isle = ? or w.isle = ?
        union
@@ -82,30 +85,18 @@ pi/Joien: |
           w.isle,w.c::text,
           --w.ts as wts,
           t.c::text as tc, t.sc::text as tsc,
-        extract(epoch from g.ts - w.ts) as inter 
+        extract(epoch from g.ts) as gts,
+        extract(epoch from w.ts) as wts
         from w left join t using (t) left join g using (t)
         where t.isle = ? or w.isle = ?
     
-    for (@$N) {
-        #m eo=>-pre=>wdump $_
-    }
-    #return;
-
-    
-    
     my $jes = J.mo.jes = $J;
+    Rw trowal $J $N;
+    Mn('JIOI'=>-gejo=>{}=>'%dis');
     
-    # should Atime(2) from a globby ls + this J pins
-    
-    # geese, way later: mtime f.t < way/$
-    
-        Rw trowal $J $N;
-        Mn('JIOI'=>-gejo=>{}=>'%dis');
-
+    Rw notlel;
 notlel: |
-    return;
-    my $jf;
-    my ($li,$rd,$geese,$dir);
+    my $jes = J.mo.jes;
     my $tow = jes.tower || die "no tower";
     my $wt = jes.trowl || die "no trowl";
     my $tal;$tal = sub {
@@ -124,78 +115,59 @@ notlel: |
         Mn($N);
         $M;
     };
-    
-    my $was = {};
-    for (@$N) {
-        my $s = $tow->{_.t}->{e} || next;
-        _.c.isley = s.src if s.src;
-        'src' ne join(' ', sort keys %$s) &&
-            sayre "elvis noise: ".ki $s;
-    }
-    for (@$N) {
-        my $f = _.c.isley ? "$rd/_.c.isley/_.t" : "$dir/_.t";
-        if (delete($li->{$f}) || $was->{$f} || _.c.isley) {
-            -f $f || die "NO isley C.t thiong $f" if _.c.isley;
-            _.c.s = $f;
-            _.sc.ml = _.c.ind * 3;
-            if ($geese->($f)) {
-                _.c.pi = 'gee';
-            }
-            else {
-                _.c.pi = 'bl';
-            }
-            if (my $aw = $was->{$f}) {
-                if (aw.c.ind <= _.c.ind) {
-                    _.c.pi = 'gefore';
-                }
-                else {
-                    aw.c.pi = 'gefore';
-                    $was->{$f} = $_;
-                }
-            }
-            elsif (_.c.isley) {
-                _.c.pi = 'gefore';
-            }
-            else {
-                $was->{$f} = $_;
-            }
-            _.sc.id = $f;
-            _.sc.hs = '255';
-        }
-        else {
-            
-            _.sc.hs = '339';
-        }
-        _.sc.dis = 1;
-    }
-    
-    my $i;
-    _.sc.id .= 'geef'.$i++ for grep { _.c.pi eq 'gefore' } @$N;
-    my $la;
-    for (1..3) {
-        for (@$N) {
-            _.c.dropi++ if _.c.pi eq 'gefore' && $la && la.c.pi eq 'gefore'
-                && la.c.ind != _.c.ind;
-            $la = $_;
-        }
-        @$N = grep{ keys %$_ } grep { !_.c.dropi } @$N;
-    }
-    my $ee = jes.teeps = {};
-    my $un = {};
-    my @ins = grep {_.c.pi ne 'gefore'} @$N;
-    $ee->{_.t} = $_ for @ins;
-    $un->{_.t}++ for @ins;
-    my @to = grep { $un->{$_} > 1 } keys %$un;
-    sayre wdump [ "things showed up too many;", @to] if @to;
+    _.c.s = $tow->{_.t}->{e} || die "_.t no have tow" for @$N;
+    _.c.pi = 'tgw' for @$N;
+    _.sc.dis = 1 for @$N;
+    _.sc.ml = _.c.ind * 3 for @$N;
     
     Mn($N);
     
-    keys %$li &&
-        Mn(unc=>''=>"Uncounted: $_\n",'%ws,dis')
-            for sort keys %$li;
-    
     n o=>62=>"s҉",'%fs:60,blr:1,opa:3';
     # and so
+pi/tgw: |
+    my $f = Rw indbefore $C;
+    
+    n t=>1=>C.t,'%fs:14,hs:389'
+    my $sa = sub {
+        my $d = shift;
+        $d = Rw samv $d;
+        $d;
+    };
+    
+    my $o; # todo tell if we n...
+    if ($f && s.wts > f.wts) { 
+        # to the above W
+        n to => 2=>"f.wt",'%fs:6,hs:238'
+        n tof => 21=>" ^".$sa->(s.wts - f.wts)
+        $o=1;
+    }
+    
+    if (s.gts > s.wts) {
+        # to the ghost of our W
+        n tog => 3=>" G ".$sa->(s.wts - s.gts)
+        $o=1;
+    }
+    if (!$o) {
+        n t=>1=>{}=>'%fs:8,hs:228'
+    }
+    
+    if (!s.gts) {
+        n nog=>32=>" !G",'%hs:757'
+    }
+    if (!s.wts) {
+        n now=>22=>" !W",'%hs:457'
+    }
+    
+indbefore: |
+    my $i = C.y.i - 1;
+    my $fo;
+    until (defined $fo && fo.c.ind + 1 == C.c.ind) {
+        $fo = C.y.bal->[$i--];
+        last if !$fo;
+    }
+    
+    my $f = fo.c.s;
+    $f
 pi/gejo: | # the dog leg trowl sketch, optional
     y.at.hs = '388';
     y.at.mt = '5';
@@ -222,8 +194,16 @@ This: |
     J.VV.N = 1;
     y.at.coil = "meashourp";
     u allact
+    # bang!
+    # new
+    
+    
+    
+    
+    
     and: %meashourp:delopida
         G&peel,'off'
+    
     you:
         G&peel,'go'
     n More
@@ -234,21 +214,29 @@ More: |
     u allacgts
     del:
         C.sc.soon--;
-    
     you:
         C.sc.you = 1 + $s;
+        # etc
+        # !
         
     n \'W:Moos,isle:VV'
 Moos: |
     J.VV.N = 1;
     u allacgts
+    
+    
     daloe:
         C.t + 4;
 Tp: | # execution, comes with depth unlimits
     u Traweil
-    n \'W:Moos,isle:VV'
-    n \'W:This,isle:V'
+    #n \'W:Moos,isle:VV'
     
+    n \'W:Ear,isle:V'
+    
+Thiso: |
+    n Tides
+    
+    n Bun
 Muoos: |
     n Moos
 Inter: |
@@ -263,8 +251,8 @@ Pugwei: |
     n UpPg
     
     Pugweidb:
-        G&tyable,W=>'isle,ts:timestamptz';
-        G&tyable,T=>'isle,l,ts:timestamptz';
+        #G&tyable,W=>'isle,ts:timestamptz';
+        #G&tyable,T=>'isle,l,ts:timestamptz';
     
     orb:
         use List::MoreUtils 'zip';
@@ -342,6 +330,7 @@ Pugwei: |
             }
         }
     
+    #c foun
     shouldWe:
         my $tr = 1;
         my $i = T.isle;
@@ -472,7 +461,7 @@ Traweil: | # uses localeo
     n \'of:Mo'
     # This.c.isle <-> More.c.isle:
     W 3215:
-        #G.glomp++ || G&Pugweidb;
+        G.glomp++ || G&Pugweidb;
         
         my $ab = A.J.C;
         c&isle ||= ab.c.isle || die "Noisle top? ".wdump 3,[$C, $ab];
@@ -577,7 +566,7 @@ Traweil: | # uses localeo
                 is.f && is.j || die "Noise ".ki $is;
                 
                 my $X = G&fli,$is;
-                # land join
+                # land Toin but not W
                 G&jound,$is;
                 
                 # wants to be post-spiral-together for our C 
@@ -615,8 +604,9 @@ Traweil: | # uses localeo
         }
         else {
         }
-        
-        G&fown,$i;
+        if (C.c.N) {
+            G&fown,$i;
+        }
         
         G&joined,$i;
         
