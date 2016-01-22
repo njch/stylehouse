@@ -28,11 +28,14 @@ Sefission: |
     #  - way $k digs into w/digway/$kish
     #    - new file written & diffed and move in/over w/way/$kish
     
+    
     my $glomet = sub {
         my $f = shift;
         my $mt = (stat $f)[9];
         my $fi = $f;
         $fi =~ s/\//-/g;
+        
+        
         my $wf = "w/wf/$fi";
         my $mft = (stat $wf)[9] if -f $wf;
         $mt > $mft
@@ -43,6 +46,7 @@ Sefission: |
         $f =~ /\/[12]\d\d$/ && next;
         $glomet->($f) || next;
         # part of glo ^
+        say "See $f";
         Mn($f=>-glo=>{}=>'%dis');
     }
     Mn(found=>''=>"found ".@li);
