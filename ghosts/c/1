@@ -221,6 +221,32 @@ Eel: | # most wild (furthest from Wild, goes in circle)
     n C
     n Spaci
     n KnowTime
+Feel: | # wpp
+    n Eel
+    n Doi
+Doi: |
+    u allacgts
+    
+    comac:
+        my @s = split ',',$s;
+        my $tw = {map{$_=>1}@s};
+        for (split ',', @Me) {
+            if (/^-(.+)$/) {
+                delete $tw.>$1
+            }
+            else {
+                my $s = $_;
+                @s = grep { $_ ne $s } @s if $tw.>$s;
+                push @s, $s;
+                $tw.>$s = 1;
+            }
+        }
+        join ',', grep { $tw.>$_ } @s;
+    fp: %acgt:p h
+        # take C.>$p-ointer, replace with G&$h,@Me;
+    po:
+        # post ghost
+        
 Again: |
     n Being
     n Arms
@@ -452,6 +478,9 @@ Bubble: | # upto st way
         my $o = G&S,$s,C=>[$s],R=>$t,[@Me];
         $o;
 Augen: |
+    n Rod
+    n Cone
+    n Man
     u allacgts
     
     # make an al loop-t, many cones together  #
@@ -935,7 +964,7 @@ Augen: |
     
     
     
-    n st =>'',<<'','%com:#c
+    n st =>'',<<'','%com:#c'
         my ($C) = G&tC,@Me;
         C.c.re ||= 1;
         
