@@ -244,7 +244,7 @@ Thiso: |
     n Bun
 Muoos: |
     n Moos
-Inter: |
+Inter: | # the ALL notifier of Plugs
     u UpPg;
     $A =
     doof:
@@ -253,6 +253,71 @@ Inter: |
         update t set c = ? where t = ?
 Pugwei: |
     u allacgts
+    n Plugs
+    
+    shouldWe:
+        my $tr = 1;
+        my $i = T.isle;
+        $i && c&isle && C.t || die "Cno isle/t ".ki $C;
+        
+        i.f = G&getW,c&isle,C.t;
+        unless (i.stop) {
+            i.j = G&geT,s.c.isle,s.t,C.t;
+            G&puTsj,$i;
+        }
+        else {
+            say "Top level: s.t -> C.t (c&isle)";
+            return 1;
+        }
+        saybl "j: ".wdump 3, i.j;
+        if (0 && !i.j.y) {
+            $tr = 1;
+            say "pJoint noy: ".ki i.j;
+        }
+        elsif (keys %{i.j.c}) {
+            $tr = 1;
+            say "pJoint weighs: ".ki i.j;
+        }
+        else {
+            $tr = 0;
+            say "pJ easy ".ki i.j;
+        }
+        if (!i.f || !keys %{i.f.c}) {
+            $tr = 1;
+            say "pJoint ".ki(i.j)." must make ".ki i.f;
+        }
+        elsif (!-f 'w/'.i.f.c.yam) {
+            $tr = 1;
+            say "pJoint i.f.c.yam MISSING, make it";
+        }
+        $tr
+    
+    jound:
+        say "Found! ".ki s.f;
+        s.j.y = 0.1;
+        G&puTsj,$s;
+        
+    
+    fli:
+        my $f = s.f.c.yam || die "Yanotcyam ".ki s.f;
+        LoadFile('w/'.$f);
+    
+    fown:
+        s.f.isle && s.f.t || die "fown: ".wdump 3, s.f;
+        my $f = s.f.c.yam ||= s.f.isle.'/'.s.f.t;
+        my $X = C.sc.X || die "get X ".ki$C;
+        G&xery,s.f.sc,$X,{Ii=>'i'};
+        # drops ooI, scrubs Ii: (saves file)
+        Rw down $f $s:X;
+        G&putW,s.f;
+        
+    joined:
+        return if s.stop;
+        saybl "Drains c: ".ki s.j.c;
+        s.j.c = {};
+        G&puTsj,$s;
+    
+Plugs: | # make TGW processes, 9d into by isle/something like schemas
     n UpPg
     
     Pugweidb:
@@ -335,69 +400,6 @@ Pugwei: |
             }
         }
     
-    #c foun
-    shouldWe:
-        my $tr = 1;
-        my $i = T.isle;
-        $i && c&isle && C.t || die "Cno isle/t ".ki $C;
-        
-        i.f = G&getW,c&isle,C.t;
-        unless (i.stop) {
-            i.j = G&geT,s.c.isle,s.t,C.t;
-            G&puTsj,$i;
-        }
-        else {
-            say "Top level: s.t -> C.t (c&isle)";
-            return 1;
-        }
-        saybl "j: ".wdump 3, i.j;
-        if (0 && !i.j.y) {
-            $tr = 1;
-            say "pJoint noy: ".ki i.j;
-        }
-        elsif (keys %{i.j.c}) {
-            $tr = 1;
-            say "pJoint weighs: ".ki i.j;
-        }
-        else {
-            $tr = 0;
-            say "pJ easy ".ki i.j;
-        }
-        if (!i.f || !keys %{i.f.c}) {
-            $tr = 1;
-            say "pJoint ".ki(i.j)." must make ".ki i.f;
-        }
-        elsif (!-f 'w/'.i.f.c.yam) {
-            $tr = 1;
-            say "pJoint i.f.c.yam MISSING, make it";
-        }
-        $tr
-    
-    jound:
-        say "Found! ".ki s.f;
-        s.j.y = 0.1;
-        G&puTsj,$s;
-        
-    
-    fli:
-        my $f = s.f.c.yam || die "Yanotcyam ".ki s.f;
-        LoadFile('w/'.$f);
-    
-    fown:
-        s.f.isle && s.f.t || die "fown: ".wdump 3, s.f;
-        my $f = s.f.c.yam ||= s.f.isle.'/'.s.f.t;
-        my $X = C.sc.X || die "get X ".ki$C;
-        G&xery,s.f.sc,$X,{Ii=>'i'};
-        # drops ooI, scrubs Ii: (saves file)
-        Rw down $f $s:X;
-        G&putW,s.f;
-        
-    joined:
-        return if s.stop;
-        saybl "Drains c: ".ki s.j.c;
-        s.j.c = {};
-        G&puTsj,$s;
-    
 DiskTravel: |
     u allacgts
     
@@ -478,9 +480,6 @@ Traweil: | # uses localeo
         i.src = c&isle if ab.c.isle && c&isle ne ab.c.isle;
         
         my $tr = G&shouldWe,$ab;
-        #my $vs = G&pg_shouldWe,$ab;
-        #$tr eq $vs || sayre "fs said $tr, pg didnt\n";
-        #$tr ||= $vs;
         
         $tr || delete(c&J), delete(C&J);
         $tr && sayre "C.t travels";
