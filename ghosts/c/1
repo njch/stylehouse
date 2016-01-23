@@ -408,6 +408,7 @@ Bubble: | # upto st way
         }
         z.N = \@Me;
         $z
+    
     ecv:
         $s /= 10 while $s >= 1 || $s <= -1;
         $s
@@ -481,6 +482,7 @@ Augen: |
     n Rod
     n Cone
     n Man
+Rod: |
     u allacgts
     
     # make an al loop-t, many cones together  #
@@ -489,6 +491,7 @@ Augen: |
     # tex figure of each ones om, goes off and vamps them up if s.u or so
     # u being c and sc opposites, an into I recipe or contents
     # create a new A.mo (loop gatherer) with same A.om (I implier)
+    
     S:
         unshift @Me, $s if !ref $s;
         # s is theg, z is the m, all is mo, then Ans <-> mos
@@ -503,9 +506,115 @@ Augen: |
     mode:
         @Me = G&thro,$s,@Me until G&away,$s,\@Me,@Me
     
-    # lines up .c oscs;
-    # make my $sc st ii: %sc ii s:i lk=usto
-    away:
+    st: %com:#c
+        my ($C) = G&tC,@Me;
+        # spiral from this whitehole:
+        #   II=>\s.mo=>'%in:K cv t,to:cv K t'
+        # redunt, selects by personality enough... make A.c.aim.? instead of A.Iso.$
+        # and aim is selected as a tw heq to rebuild the sorted together personality
+        # 
+        C.c.re ||= 1;
+        
+        # C may already have R, hardwiring clue
+        # or an R to diff this to, already in the environment or would-be
+        # the other this v becomes to lk, An...
+        C.c.An ||= C.c.Ant if C.c.Ant;
+        C.c.cR ||= 1 if C.c.An || C.c.lk;
+        my $R = C.c.R ||= do {
+            if (C.c.cR) {
+                # A.c is corner on the mn stretch
+                s.c->{C.t} ||= {};
+            }
+            else {
+                s.R->{C.t} ||= {};
+            }
+        };
+        .
+        # '' looks at $s, surfs II
+        # syncopate times
+        C.c.in = ['',split/[ ,]/,C.c.in] if C.c.in && !ref C.c.in;
+        C.c.to =    [split/[ ,]/,C.c.to] if C.c.to && !ref C.c.to;
+        my $de = C.c.in->[C.c.de];
+        my $re = C.c.re <= C.c.de;
+        C.c.is = $de;
+        C.c.is = 'C' if C.c.in && !defined $de;
+        C.sc ||= {};
+        
+        # the only mechani, passback if awake
+        my $off = sub {
+            for ('usto', 'uz') {
+                C.c->{$_} = R.c->{$_} if $_[0] && exists R.c->{$_};
+                C.y.U.sc->{$_}->{C.t} = C.c->{$_} if exists C.c->{$_};
+            }
+        };
+        
+        return $off->(1) #&& say "A C.t s ok $de   "
+            if $re && $de &&
+                C.c.s eq R.c.s;
+        
+        my $tw = C.sc.tw = {};
+        if (defined $de) {
+            $tw->{$_} = C.c.s->{$_} for !$de ? C.t : keys %{C.c.s};
+            if (C.c.is eq 'K') {
+                # clues to whittledness for less intact webs
+                delete tw.ooI;
+                delete tw.Ii;
+            }
+        }
+        
+        G&stlk,$s if C.c.lk;
+        G&sttug,$s if C.c.tug;
+        G&stAn,$s if C.c.An;
+        G&stmk,$s if C.c.mk;
+        
+        return $off->(1) #&& say "A C.t tw ok $de"
+            if $re && $de &&
+                G&heq,R.sc.tw,$tw;
+        
+        $tw = {} if C.c.notw;
+        
+        # bits to revamp for group or
+        # then whattoselect
+        for my $k (sort keys %$tw) {
+            my $c = G&hup,$C;
+            delete c.sc.usto;
+            delete c.c.usto;
+            delete c.c.uz;
+            delete c.sc.uz;
+            c.t = $k;
+            if (C.c.is) {
+                c.sc->{C.c.is} = $k if C.c.is;
+                # move raft from top.sc.i into C.c.us
+                # c.c.us = c.c.us->{$k} ||= {};
+            }
+            c.c eq C.c && die "Soplf";
+            c.c.R = R.sc.th->{$k} ||= {};
+            c.c.de++;
+            c.c.s = $tw->{$k};
+            c.y.U = $C;
+            c.y.T = $C;
+            G&st,$s,$c;
+        }
+        
+        G&stdoc,$s if C.c.is eq 'C';
+        G&stuz,$s if C.c.uz;
+        G&stusto,$s if C.c.usto;
+        
+        $off->();
+        C.sc.th = R.sc.th;
+        if (!C.c.de && !C.c.nos) {
+            # top .c ends on s.R.II.c (.us = s.II)
+            # and how us must change, be pumped upwards
+            $s->{C.t} = C.c.uz->{C.t};
+        }
+        %$R = %$C;
+        $C
+    
+Cone: | # away
+    u allacgts
+    away: %com:#c
+        # lines up .c oscs;
+        # make my $sc st ii: %sc ii s:i lk=usto
         my $Me = shift @Me;
         s.om || die wdump 3,["No om: ",$s];
         # steal an I
@@ -600,8 +709,8 @@ Augen: |
         @$Me = ("To $ta s.c.ov");
         # somewhere (C) a by yU folength N inputty (Teo)
         0
-    #c thro
-    thro:
+    
+    thro: %com:#c
         return sayre "s.t s.talk  s.cv - s.ov  no re s.c.ov"
             if s.mo ne $s && s.ov > s.c.ov;
         if (!s.mo && s.N && s.cv >= 0.1) {
@@ -684,8 +793,7 @@ Augen: |
         # returns what to say to away
         ("YTe yep s.cv s.ov");
     
-    #c how of things if, makes selections & compilings
-    how:
+    how: %com:#c how of things if, makes selections & compilings
         for my $o (@Me) {
             for my $k (keys %$o) {
                 my $tD = $o->{$k};
@@ -741,11 +849,11 @@ Augen: |
             }
         }
     
-    #c adapt to much  mergey # extendo  rubble # do stuff # in fractions
-    # T personality slickers, T.68 x ut , 
-    # all produces a slope for how much time you've got
-    # outwave T: schools of many fish (cv=ov silentnot upcv if !@is)
-    exo:
+    exo: %com:#c
+        # adapt to much  mergey # extendo  rubble # do stuff # in fractions
+        # T personality slickers, T.68 x ut , 
+        # all produces a slope for how much time you've got
+        # outwave T: schools of many fish (cv=ov silentnot upcv if !@is)
         for my $x (@Me) {
             for my $k (keys %$x) { # cv's K/t
                 my $tD = $x->{$k};
@@ -763,16 +871,9 @@ Augen: |
                         
                         T.D = $D;
                         G&D.t,$s;
+                        
+                        G&Tut if T.ut;
 
-                        if (my $ut = T.ut) {
-                            if (ut.matchTd) {
-                                my $d = s.d || die "confuse";
-                                d.od.s.T.q->{d.e.k} ||= $d;
-                                d.od.s.T.m->{d.e.k} ||= $d
-                                    unless delete T.noTd;
-                            }
-                            else { die"utrowhat ".wdump 2, $ut }
-                        }
                         if (T.Z) {
                             die "A.t 's D.y.cv~D.t used TZ for C.y.cv~C.t ".wdump 3, T.Z;
                         }
@@ -788,7 +889,8 @@ Augen: |
             }
         }
     
-    #c promise 1s for oneself to do
+Man: | # promise 1s for oneself to do
+    u allacgts
     # make impon this other surface, whose A.am is
     Ze:
         # al/cv,ov/isle N[]
@@ -861,43 +963,8 @@ Augen: |
         # create on A.m
         my (@N) = grep {ref $_} @Me;
         #
-       
-    fint:
-        my $m = A.m;
-        m.al->{$s}
-        #Rw dow $done:s.om.II;
-        #DumpFile('dtwo',i.c.uz.II); # compare al compilings
- 
-    # simple .$k.$t = C from Cs
-    # queue a push like a n does, substrate fromity from substrate
-    # A would have no c, giving itself as idea
-    # some over would batchify sources on supplied s
-    #  that reaches for store around history baggage selved
-    #  (actuaets history)
-    #  so to create indices of same t, etc
-    ow:
-        my $k = shift @Me;
-        my $c = s.c || {};
-        my $sc = s.sc || $s;
-        my $d = $sc->{$k}||={};
-        #my $ot = $sc->{"hst_$k"};
-        #($ot,my $to) = ({},$ot) if $ot;
-        my $tw = {};
-        for (@Me) {
-            # could t=>s out and t-<s in, jamming many t
-            my $K = _.t;
-            if (my $al = $tw->{$K}) {
-                die "Already loded a $K ".wdump [ @Me ];
-            }
-            $tw->{$K} = $_;
-            my $o = $d->{$K};
-            $d->{$K} = $_;
-            #$ot->{$K} = $o if $ot && $o ne $_;
-        }
-        # %$ot && send c.w, qs edge of tex
-        # C riplets 
-    #c prongy return difference mash, index copy
-    n supe =>'',<<'' 
+    
+    supe: %com: #c prongy return difference mashi
         my $l = shift @Me;
         $l--;
         while (@Me) {
@@ -914,7 +981,6 @@ Augen: |
                 }
             }
         }
-    
     
     n ylo =>'',<<''
         my @o = $C;
@@ -964,145 +1030,7 @@ Augen: |
     
     
     
-    n st =>'',<<'','%com:#c'
-        my ($C) = G&tC,@Me;
-        C.c.re ||= 1;
-        
-        # C may already have R, hardwiring clue
-        # or an R to diff this to, already in the environment or would-be
-        # the other this v becomes to lk, An...
-        C.c.An ||= C.c.Ant if C.c.Ant;
-        C.c.cR ||= 1 if C.c.An || C.c.lk;
-        my $R = C.c.R ||= do {
-            if (C.c.cR) {
-                # A.c is corner on the mn stretch
-                s.c->{C.t} ||= {};
-            }
-            else {
-                s.R->{C.t} ||= {};
-            }
-        };
-        .
-        # '' looks at $s, surfs II
-        # syncopate times
-        C.c.in = ['',split/[ ,]/,C.c.in] if C.c.in && !ref C.c.in;
-        C.c.to =     [split/[ ,]/,C.c.to] if C.c.to && !ref C.c.to;
-        my $de = C.c.in->[C.c.de];
-        my $re = C.c.re <= C.c.de;
-        C.c.is = $de;
-        C.c.is = 'C' if C.c.in && !defined $de;
-        C.sc ||= {};
-        
-        # the only mechani, passback if awake
-        my $off = sub {
-            for ('usto', 'uz') {
-                C.c->{$_} = R.c->{$_} if $_[0] && exists R.c->{$_};
-                C.y.U.sc->{$_}->{C.t} = C.c->{$_} if exists C.c->{$_};
-            }
-        };
-        
-        return $off->(1) #&& say "A C.t s ok $de   "
-            if $re && $de &&
-                C.c.s eq R.c.s;
-        
-        my $tw = C.sc.tw = {};
-        if (defined $de) {
-            $tw->{$_} = C.c.s->{$_} for !$de ? C.t : keys %{C.c.s};
-            if (C.c.is eq 'K') {
-                # clues to whittledness for less intact webs
-                delete tw.ooI;
-                delete tw.Ii;
-            }
-        }
-        
-        G&stlk,$s if C.c.lk;
-        G&sttug,$s if C.c.tug;
-        G&stAn,$s if C.c.An;
-        G&stmk,$s if C.c.mk;
-        
-        return $off->(1) #&& say "A C.t tw ok $de"
-            if $re && $de &&
-                G&heq,R.sc.tw,$tw;
-        
-        $tw = {} if C.c.notw;
-        
-        # bits to revamp for group or
-        # then whattoselect
-        for my $k (sort keys %$tw) {
-            my $c = G&hup,$C;
-            delete c.sc.usto;
-            delete c.c.usto;
-            delete c.c.uz;
-            delete c.sc.uz;
-            c.t = $k;
-            if (C.c.is) {
-                c.sc->{C.c.is} = $k if C.c.is;
-                # move raft from top.sc.i into C.c.us
-                # c.c.us = c.c.us->{$k} ||= {};
-            }
-            c.c eq C.c && die "Soplf";
-            c.c.R = R.sc.th->{$k} ||= {};
-            c.c.de++;
-            c.c.s = $tw->{$k};
-            c.y.U = $C;
-            G&st,$s,$c;
-        }
-        if (C.c.is eq 'C') {
-            if (C.c.in) {
-                # %{C.c.us} = %{C.c.s}; # embrace c/sc
-                #C.y.U.c.us->{C.t} = C.c.s;
-                C.c.uz = C.c.s; # pass entropy
-            }
-            if (my $to = C.c.to) {
-                my @k = grep {defined} map { C.sc->{$_} } @$to;
-                die "@k not for ".ki$to if @k != @$to;
-                my $x = C.c.usto ||= {};
-                while (@k) {
-                    my $k = shift @k;
-                    if (@k) {
-                        $x = $x->{$k} ||= {};
-                    }
-                    else {
-                        $x->{$k} = C.c.s;
-                    }
-                }
-            }
-        }
-        if (my $z = C.sc.uz) {
-            if (G&heq,R.sc.uz,$z ) {
-                #sayre "Same euzk C.t $de";
-                C.c.uz = R.c.uz;
-            }
-            else {
-                my $to = C.c.uz = {};
-                G&supe,$to,1,$z;
-            }
-        }
-        if (my $u = C.sc.usto) {
-            if (G&heq,R.sc.usto,$u ) {
-                #sayre "Same euk C.t $de";
-                C.c.usto = R.c.usto;
-                C.c.ustolk = R.c.ustolk;
-            }
-            else {
-                my $to = C.c.usto = {};
-                G&supe,$to,3,$_ for values %$u;
-                C.c.ustolk = [sort keys %$to];
-            }
-        }
-        $off->();
-        C.sc.th = R.sc.th;
-        if (!C.c.de && !C.c.nos) {
-            # top .c ends on s.R.II.c (.us = s.II)
-            # and how us must change, be pumped upwards
-            $s->{C.t} = C.c.uz->{C.t};
-        }
-        %$R = %$C;
-        $C
-    
-    #c steamed R
-    # eg ii, lk holds itervals, A.c.$R
-    stlk:
+    stlk: %com:#c
         my $R = C.c.R;
         if (my $i = C.c.lk) {
             C.c.nos = 1;
@@ -1116,7 +1044,7 @@ Augen: |
         }
     
     # one time _.t => _ and input ordered _.t *lk onto s.*
-    sttug:
+    sttug: %com:#c
         my $R = C.c.R;
         if (my $u = C.c.tug) {
             C.c.nos = 1;
@@ -1139,7 +1067,7 @@ Augen: |
     # grow N ordered C as an An for a.mo
     # that is where we 
     # also inter whaT, changey shared tapes, reel arrays 
-    stAn:
+    stAn: %com:#c
         my $R = C.c.R;
         # when some splits from A.mo=A  (lowovsorts An)
         # or as al possibles also al lowcvs A.ovs 
@@ -1200,6 +1128,50 @@ Augen: |
             # sc.tw.$id = sc.tv.$ov.$id = $n
             # sc.sl[0] = lowest $ov, etc
         }
+    stuz: %com:#c
+        if (my $z = C.sc.uz) {
+            if (G&heq,R.sc.uz,$z ) {
+                #sayre "Same euzk C.t $de";
+                C.c.uz = R.c.uz;
+            }
+            else {
+                my $to = C.c.uz = {};
+                G&supe,$to,1,$z;
+            }
+        }
+    stusto:
+        if (my $u = C.sc.usto) {;
+            if (G&heq,R.sc.usto,$u ) {
+                #sayre "Same euk C.t $de";
+                C.c.usto = R.c.usto;
+                C.c.ustolk = R.c.ustolk;
+            }
+            else {
+                my $to = C.c.usto = {};
+                G&supe,$to,3,$_ for values %$u;
+                C.c.ustolk = [sort keys %$to];
+            }
+        }
+    stdoc:
+            if (C.c.in) {
+                # %{C.c.us} = %{C.c.s}; # embrace c/sc
+                #C.y.U.c.us->{C.t} = C.c.s;
+                C.c.uz = C.c.s; # pass entropy
+            }
+            if (my $to = C.c.to) {
+                my @k = grep {defined} map { C.sc->{$_} } @$to;
+                die "@k not for ".ki$to if @k != @$to;
+                my $x = C.c.usto ||= {};
+                while (@k) {
+                    my $k = shift @k;
+                    if (@k) {
+                        $x = $x->{$k} ||= {};
+                    }
+                    else {
+                        $x->{$k} = C.c.s;
+                    }
+                }
+            }
 Indular: | # wain wain
     # not allcode since uCons blank qq cone & then thing
     n Bangdesk
