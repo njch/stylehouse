@@ -1,0 +1,88 @@
+
+Life: |
+    u allvse
+    n \'of:M'
+    
+    ycv 12: %def
+        C.y.cv = G&ecv,$cv||0.1;
+    pi 321:
+        undef $pi if $pi eq '1';
+        C.sc.pi = $pi||'guess';
+        C.c.J = 'pi';
+        C.c.p = A.J;
+    W 321:
+        C.c.J = $W;
+        C.c.p = A.J.y.s;
+    J 322:
+        my $J = G&g,'J';
+        C.c.J = C.sc.J = $J if $J;
+    
+
+Anthro: | # open up wormhole asciis
+    u allvse
+    n \'of:u'
+    
+    cs 2:
+        C.c.sep = ' ';
+    sep 21:
+        my @b = map{{c=>{s=>$_}}} split $sep, C.c.s;
+        T.Z.2 = G&ri,[@b];
+        T.Z.9 = 2; # changes to 6 root.cv = V.cvs + 0.1 once 0.6
+        # A must hide slither per J, u shines through
+    cs 22:
+        C.c.u = C.c.s;
+    u 23:
+        C.c.W = C.c.u;
+        A.Iso.M = 1;
+    
+    u 7:
+        # name bring
+        
+Geeeee: |
+    # how makes, pass down to Life
+Or: |
+    G&wraf,'proc/start',"$$: perl got 4 Be";
+Dlam: |
+    sayyl "Sadmi Hereop $$";
+    Rw iolam;
+    sayyl "Sadmi Hereop $$";
+    my $cb = sub { say "Dlam"; exit };
+    Rw timer $d=2 $cb;
+    u urw
+    
+    n Tarp
+    dis 3: %fs:222,hs:3293
+        SSssssssSSSSSSSSSSssssssSSSSSSSSsssss
+iolam: |
+    G.cv ||= 3;
+    G.pid ||= $$;
+    my $proc = 'proc';
+    my $n = "$proc/G.cv";
+    `mkdir $n` if !-d $n;
+    my $pid = $$;
+    my $safe = sub { die unless $_[0]=~/^proc/\d+\.\w+$/; shift };
+    my $hand;
+    if (!-t STDOUT) {
+        for (qw'in out err') {
+            my $k = $_;
+            my @o = grep{-f"$_/G.pid\.$k"}$proc,$n;
+            @o||next;
+            @o<=1||die"onso@o";
+            
+            my $wh = /in/ ? \*STDIN : /out/ ? \*STDOUT
+                : /err/ ? \*STDERR : die'whatch';
+            my $i = /in/ ? '<' : '>';
+            close($wh) || die "clope $_  @o: $!";
+            
+            # origin moves into cv also
+            my $mv = G.pid == $$;
+            G.pid = $$;
+            my $now = $safe->("$n/G.pid\.$k");
+            $mv ? map{`mv $_ $now`} grep $safe, @o
+                : `touch $now`;
+            
+            open($wh,$i,$now) || die "bni $now: $!";
+        }
+    }
+    die "Is G.t $net";
+    
