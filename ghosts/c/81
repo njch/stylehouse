@@ -49,6 +49,16 @@ Doop: |
     J 63342:
         sayre "Here is J! ".ki $C;
 Travel: |
+    my @hosts = qw'v s';
+    my $here = $1 if `hostname` =~ /^(\S+)/;
+    $here || die "no hre: ".`hostname`;
+    my ($there) = grep {$_ ne $here} @hosts;
+    my $date = `ssh $there date`;
+    chomp $date;
+    say "Their: $date";
+    saybl "Over:  ".`date`;
+    `sudo date --set '$date'`;
+    
     # T type explains how things joined, what the target is
     # G pulls live T for you, G origins vs G wanderers
     #   u for example is w/u/J,etc
@@ -57,7 +67,7 @@ Travel: |
     # 
     # theres a travel to connect the way you run back to the origins
     # by spiralling W backchannel, like isle
-    the T Cs 
+    # the T Cs 
     # G              W
     # 
     
@@ -593,6 +603,7 @@ Tarp: |
     y.at.oWl = 1;
     J.VV.N = 1;
     y.ope = 1;
+    y.at.dis = 0;
     #
     for (J.slow ? 1 : (1,2,3,4)) {
     

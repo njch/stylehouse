@@ -1,5 +1,5 @@
 
-Life: |
+Life: | # piWJ
     u allvse
     n \'of:M'
     
@@ -17,8 +17,7 @@ Life: |
         my $J = G&g,'J';
         C.c.J = C.sc.J = $J if $J;
     
-
-Anthro: | # open up wormhole asciis
+Anthro: | # u selfing
     u allvse
     n \'of:u'
     
@@ -39,14 +38,19 @@ Anthro: | # open up wormhole asciis
         # name bring
         
 Geeeee: |
+    #
+    
     # how makes, pass down to Life
 Or: |
-    G&wraf,'proc/start',"$$: perl got 4 Be";
+    G&wraf,'proc/start',$_ 
+    
+    
+        for "$$: perl got 4 Be pre:Sen s:Dlam";
 Dlam: |
     sayyl "Sadmi Hereop $$";
     Rw iolam;
     sayyl "Sadmi Hereop $$";
-    my $cb = sub { say "Dlam"; exit };
+    my $cb = sub { say "Dlam"; kill 'KILL', $$ };
     Rw timer $d=2 $cb;
     u urw
     
@@ -60,12 +64,16 @@ iolam: |
     my $n = "$proc/G.cv";
     `mkdir $n` if !-d $n;
     my $pid = $$;
-    my $safe = sub { die unless $_[0]=~/^proc/\d+\.\w+$/; shift };
+    my $safe = sub {
+        my $s = shift;
+        $s =~ /^proc\/(\d+\/)?\d+\.\w+$/ || die "unsafe: $s";
+        $s
+    };
     my $hand;
     if (!-t STDOUT) {
         for (qw'in out err') {
             my $k = $_;
-            my @o = grep{-f"$_/G.pid\.$k"}$proc,$n;
+            my @o = grep{-f $_}map{"$_/G.pid\.$k"}$proc,$n;
             @o||next;
             @o<=1||die"onso@o";
             
@@ -84,6 +92,6 @@ iolam: |
             open($wh,$i,$now) || die "bni $now: $!";
         }
     }
-    die "Is G.t $net";
+    say "Is G.t $pid";
     
 
