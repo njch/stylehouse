@@ -12,7 +12,7 @@ eval shift
 sub h {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
-my $y = $A->{I}->{$s} || do {
+my $y = $A->{I}->{$s} || $A->{om} && $A->{om}->{I}->{$s} || do {
     sayre "Above for $s on $A->{talk} isssssssss $A->{up}->{talk}";
     $A->{up}->{I}->{$s} || die "No whay named $s on $A->{talk} or $A->{up}->{talk}: ".wdump 1, $A;
 };
@@ -248,7 +248,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 2dcdb2ffa81b
+        dige: 4f7d264bcd45
         eg: Ngwe
         of: I
       t: h
