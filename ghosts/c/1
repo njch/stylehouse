@@ -394,9 +394,6 @@ Bubble: | # upto st way
         # we are playing the survivors
         # everything in its right place
         # 
-    ri:
-        my $z = G&At,In=>2,[@Me];
-        G&$s,$z;
     C:
         my $z = G&At,$s,@Me;
         sayyl "Extract Cs from A: ". wdump 3, $s;
@@ -422,6 +419,8 @@ Bubble: | # upto st way
             @s = ();
         }
         @z;
+    
+    # ref$s||atom receives t? cv? ov?, N=[refs]
     Aw:
         my $z = ref $s ? $s : do { unshift @Me, $s; G&atom };
         my @to = qw't cv ov';
@@ -435,11 +434,6 @@ Bubble: | # upto st way
         z.N = \@Me;
         $z
     
-    ecv:
-        $s /= 10 while $s >= 1 || $s <= -1;
-        $s
-    acv:
-        ($s =~ /^.*?([1-9])/)[0]
     atom:
         my $z = {A=>$A};
         z.om = A.om || $A; # last most I together - Any can upgrade itself network
@@ -448,6 +442,12 @@ Bubble: | # upto st way
         # z.y self vis non C hash
         z.y = $z;
         $z;
+    
+    ecv:
+        $s /= 10 while $s >= 1 || $s <= -1;
+        $s
+    acv:
+        ($s =~ /^.*?([1-9])/)[0]
 
     # attain wholifier
     # fairly trans parent A.II al readier
@@ -545,6 +545,7 @@ Rod: |
         # or an R to diff this to, already in the environment or would-be
         # the other this v becomes to lk, An...
         C.c.An ||= C.c.Ant if C.c.Ant;
+        # things that separate per 
         C.c.cR ||= 1 if C.c.An || C.c.lk;
         my $R = C.c.R ||= do {
             if (C.c.cR) {
@@ -618,13 +619,13 @@ Rod: |
             c.c.de++;
             c.c.s = $tw->{$k};
             c.y.U = $C;
-            c.y.T = $C;
+            c.y.T ||= $C;
             G&st,$s,$c;
         }
         
         G&stdoc,$s if C.c.is eq 'C';
-        G&stuz,$s if C.c.uz;
-        G&stusto,$s if C.c.usto;
+        G&stuz,$s if C.sc.uz;
+        G&stusto,$s if C.sc.usto;
         
         $off->();
         C.sc.th = R.sc.th;
@@ -1064,7 +1065,7 @@ Man: | # promise 1s for oneself to do
             C.sc.s = $u;
             C.sc.lk = u.c->{$i.'lk'};
             C.sc.unlk = u.c->{$i};
-            ref C.sc.lk eq 'ARRAY' || die "no lk array";
+            ref C.sc.lk eq 'ARRAY' || die "no lk array".wdump 3, $C;
             ref C.sc.unlk eq 'HASH' || die "no unlk hash";
             %{C.sc} = (%{R.sc},%{C.sc}) if C.sc.lk eq R.sc.lk;
         }
@@ -1155,6 +1156,7 @@ Man: | # promise 1s for oneself to do
             # sc.sl[0] = lowest $ov, etc
         }
     stuz: %com:#c
+        my $R = C.c.R;
         if (my $z = C.sc.uz) {
             if (G&heq,R.sc.uz,$z ) {
                 #sayre "Same euzk C.t $de";
@@ -1166,6 +1168,7 @@ Man: | # promise 1s for oneself to do
             }
         }
     stusto:
+        my $R = C.c.R;
         if (my $u = C.sc.usto) {;
             if (G&heq,R.sc.usto,$u ) {
                 #sayre "Same euk C.t $de";

@@ -21,31 +21,53 @@ Sipes: |
     n stylers
     n stylext
     n stylepap
-Chang: |
+Chang: | # 
     y.at.isle = 'u';
     y.at.coil = 'tldo'; # does indeax
     Rw ocling;
     
     n Stitchy
-    n Stripey
-    
-Stitchy: |
-    n Statch
-    n Strope
-    n Oscgrin
-Stripey: |
     n Stripes
+    n Oscgrin
     
-Statch: | # conceal the Style I jumble with scgkindexed gks
+Stitchy: | # osc end Styles
     u allsvse
-    n '','','%of:Art'
-    n muchofany =>3=><<'','%nv,tldo:scgkindex'
+    
+    # partition style indexes since so many bits
+    # into a few waves... joined at the top
+    muchofany 3: %nv,tldo:scgkindex,code:Art
         for my $k (keys %{T.D.sc.scindex||{}}) {
             exists C.sc->{$k} || next;
             A.Subtle.Styles = 1;
             A.t&Styles,6,1;
             return;
         }
+    
+    # can slice whatever out of such a space
+    # and symmetricated u-nderstanding dispatched to other side
+    
+    u allacgts
+    # uses an I cap, the sc satays with any filing
+    stri: %acgt:D s
+        my $v = C.sc->{D.sc.gk};
+        if (D.sc.flex) {
+            for my $st (@{D.sc.flex}) {
+                for my $k (sort keys %$st) {
+                    my $vv = $st->{$k};
+                    my $e;
+                    e.v = $v;
+                    e.et = $vv;
+                    $v = I.d&$k,$e;
+                    !length $v && sayre "$k dfrom D.t didn't... $v from e.v";
+                }
+            }
+        }
+        else {
+            my $k = D.sc.filt;
+            return unless $k;
+            $v = I.d&$k,$v;
+        }
+        C.sc->{D.sc.gk} = $v;
     
 Swomp: | # the Chang for js
     n s=>'',<<''
@@ -82,30 +104,6 @@ Swomp: | # the Chang for js
             C.sc.css[ve][ss] = o;
             delete C.sc.css[k];
         });
-Strope: | # Art form Styles do, Styles o indexed by compression phase, symmetricated scindex dispatched
-    u allacgts
-    # uses an I cap, the sc satays with any filing
-    n stri=>''=><<'',{acgt=>'D,s'}
-        my $v = C.sc->{D.sc.gk};
-        if (D.sc.flex) {
-            for my $st (@{D.sc.flex}) {
-                for my $k (sort keys %$st) {
-                    my $vv = $st->{$k};
-                    my $e;
-                    e.v = $v;
-                    e.et = $vv;
-                    $v = I.d&$k,$e;
-                    !length $v && sayre "$k dfrom D.t didn't... $v from e.v";
-                }
-            }
-        }
-        else {
-            my $k = D.sc.filt;
-            return unless $k;
-            $v = I.d&$k,$v;
-        }
-        C.sc->{D.sc.gk} = $v;
-    
 Stripes: |
     u allsvse
     n '','','%of:Styles'
@@ -119,7 +117,8 @@ Stripes: |
         [empc => 'margin' =>[qw'left right top bottom']],
         [empc => 'padding' =>[qw'left right top bottom']],
         [empc => 'ma^rgin'],
-        [empc => [qw'mi^n max']=>[qw'width height']],
+        [empc => 'mi^n'=>[qw'width height']],
+        [empc => 'max'=>[qw'width height']],
         [empc => [qw'lef^t ri^ght top^ bo^ttom']],
         [empc => [qw'left^ right^ top^ bottom^']],
         [empc => [qw'width^ height^']],
