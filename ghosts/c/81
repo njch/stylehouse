@@ -49,16 +49,24 @@ Doop: |
     J 63342:
         sayre "Here is J! ".ki $C;
 Travel: |
-    my @hosts = qw'v s';
-    my $here = $1 if `hostname` =~ /^(\S+)/;
-    $here || die "no hre: ".`hostname`;
-    my ($there) = grep {$_ ne $here} @hosts;
-    my $date = `ssh $there date`;
-    chomp $date;
-    say "Their: $date";
-    saybl "Over:  ".`date`;
-    `sudo date --set '$date'`;
+    my ($from,$to) = (s=>'v');
     
+    my $date = `ssh $from date`;
+    my $dath = `ssh $to date`;
+    chomp $date;
+    chomp $dath;
+    say "From $from: $date";
+    saybl "Over $to:  $dath";
+    `ssh $to "sudo date --set '$date'"`;
+    sayyl "Done $to now: ".`ssh $to date`;
+    
+    return;
+    
+    # some day:
+    n \ask=>\"sudo date --set '$date'";
+    saybl wdump 3, u.M;
+    
+    # t SCALAR
     # T type explains how things joined, what the target is
     # G pulls live T for you, G origins vs G wanderers
     #   u for example is w/u/J,etc
