@@ -153,7 +153,7 @@ Dwig: | # decorate A materials
     u allvse
     n \'of:De'
     s 3:
-        C.sc.fs = 30;
+        C.sc.fs = 20;
         C.sc.mw = 8;
         C.sc.lh = '50%';
         C.sc.wb = 1;
@@ -193,6 +193,7 @@ Dwig: | # decorate A materials
         c&i = 4;
     A 44: %hash:C
         c&is = 'A';
+        sayyl wdump 2,["Afer: C.t",C.y.A];
     C 456: %hash:C
         c&is = 'C';
         my @has = qw't y c sc';
@@ -235,9 +236,15 @@ Dwig: | # decorate A materials
         
     # tw implies C-ish inner, may also tiny .c
     tw 62: %t:cis:^
-        c&de ||= join' ',map{ my($k,$v) = @$_;
+        return if c&de;
+        my $s = join' ',map{ my($k,$v) = @$_;
             ref $v eq 'HASH' ? v.t : "$k:$v"
         } map{[$_=>$s.>$_]}sort keys %$s;
+        (c&de) = G&scaly,$s,14,C.sc;
+    
+    first 6: %t:yi:1
+        die "First: ".wdump 3, $C;
+    
     0&&
     Kcvt 612: %t:cis:^
         c&de ||= "{{{D}}}";
@@ -313,19 +320,19 @@ pi/iC: | # be the decor for A materials
     m c&M
 Esuy: |
     u urw
-    #n Dsut=>\$s
+    n Dsut=>\$s
     
     my $m = [@{s.M}];
-    shift @$m for 1..6;
+    #shift @$m for 1..6;
     m $m
     #m s=>-ytsc=>$m=>'%hs:347,fs:12'
-    J.VV.N = 1;
-Dsut: |
+    #J.VV.N = 1;
+Dsut: | # 
     u urw
     y.in = 6;
     my @des = map{ values %$_ } values %{s.II.De};
     m Modeal=>''=>''=>'%fs:33'
-    @des = grep{_.t=~/mon/} @des;
+    @des = grep{_.t=~/first/} @des;
     m De=>-ytsc=>[ G&norp,'y/cv',@des ]
 pi/ytsc: |
     #y.clos = 1; or y.we = grouper
@@ -365,14 +372,8 @@ X: |
     
     my $z = G&S,De=>[@$M];
     
-    #Mn($_=>''=>\$s->{$_}) for sort keys %$s;
-    # then M n sees whe yA and loops back creativity to
-    #say "SA for M: ".wdump 3,[grep /\w/, 
-    #sort keys %{z.al.A.I}];
-    
     n Esuy=>W=>\$z
     
-    n s=>[-pre=>3]=> "Wep ".wdump 4, ["woop"  ]
     
 Alit: | # to 
     u allvse
