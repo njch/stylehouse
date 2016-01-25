@@ -30,13 +30,13 @@
   <script src="paper.animate.js"></script>
 <script src="jquery.min.js" type="text/javascript"></script>
 
-  <script canvas="display" type="text/paperscript">paper.uplg = new PaperAnimate.Updater();
-
-
+  <script canvas="display" type="text/paperscript">
+      var uplg = new PaperAnimate.Updater();
+    
       var shape = new Path.RegularPolygon(view.center, 3, 100);
       shape.fillColor = '#333bbb';
-      shape.animate(1, paper.uplg)
-           .translate(new Point(200,100))
+      shape//.animate(5, uplg, true)
+           //.translate(new Point(200,100))
            .rotate(60)
            .scale(2);
 
@@ -45,14 +45,37 @@
       text.fillColor = 'green';
       text.content = 'STYLEHOUSE';
       text.scale(14);
-       text.animate(4, paper.uplg, true)
-           .scale(0.0001);
+       text.animate(11, uplg).scale(33);
 
-   function onFrame(e) { 
-   if (a.doya) {
-       a.doya(e);
-   }
-   paper.uplg.update(e);
+      var shape = new Path.RegularPolygon(view.center,3, 100);
+
+   function onFrame(e) {
+        a.uplg = uplg;
+        a.proj = project;
+        if (a.stut) {
+          return;
+        }
+        //try {
+        uplg.update(e);
+        //}
+        //catch (er) {
+         // a.m('tho '+er);
+        //}
+        var N = a.N;
+        if (N !== undefined) {
+            $.each(a.N, function(k,on) {
+                on(e);
+            });
+        }
+        if (a.yl) {
+          a.stut = 1;
+          if (!a.stul) {
+              a.stul = 90;
+          }
+          a.yl(a.stul,function(){ 
+              delete(a.stut);
+          });
+        }
    }
   </script>
 
@@ -71,6 +94,7 @@
       var w = {conin: 'ws://s:10094/s'};
       var fail = 0;
       var a = {};
+      a.N = {}
       var q = 1;
       var elvis = Math.random();
       var ws;

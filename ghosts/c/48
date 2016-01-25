@@ -447,12 +447,18 @@ papernoise: |
     
     C.sc->{$_} = I.d&ron,C.sc->{$_} for grep{C.sc->{$_}} qw'poxop poyop sca opa r';
     
+recan: |
+    y.at.jslines = 1;
+    n blag =>4=>{s=><<''},'%js'
+        a.sitandspin()
+    
 uncan: |
     y.at.jslines = 1;
     n blag =>4=>{s=><<''},'%js'
         paper.project.clear();
     
 Canvasc: |
+    y.at.jsl = 1;
     u alljs
     # & sitting
     
@@ -473,7 +479,8 @@ Canvasc: |
             var shape = new Path.RegularPolygon(view.center,3, 100);
             .
             shape.fillColor = '#8C8A00';
-            view.onFrame = function (event) {
+            a.N ||= {};
+            a.N.pzl = function (event) {
                 shape.rotate(1);
                 shape.fillColor.hue += 1;
                 .
@@ -486,10 +493,10 @@ Canvasc: |
     
     n sitandspin =>''=><<''
         with (paper) {
-            var project = new Project;
             var mousePoint = view.center;
-            var amount = 30;
+            var amount = 44;
             var colors = ['red', 'black', 'blue', 'black'];
+            var gr = [];
             for (var i = 0; i < amount; i++) {
                 var rect = new Rectangle([5, 0], [25, 25]);
                 rect.center = mousePoint;
@@ -497,14 +504,18 @@ Canvasc: |
                 path.fillColor = colors[i % 4];
                 var scale = (1 - i / amount) * 25;
                 path.scale(scale);
+                path.blendMode = 'difference';
+                i % 2 and path.blendMode = 'divide';
+                path.opacity = 0.3;
+                gr.push(path)
             }
+            var gop = new Group(gr);
             view.onMouseMove = function (event) {
                 mousePoint = event.point;
                 a.m('mm!');
             }
-            var children = project.activeLayer.children;
-            view.onFrame = function (event) {
-                paper.uplg.update(event);
+            var children = gop.children;
+            a.N.sitandspin = function (event) {
                 for (var i = 1, l = children.length; i < l; i++) {
                     var item = children[i];
                     var delta = (mousePoint - item.position) / (i + 5);
@@ -513,7 +524,7 @@ Canvasc: |
                         item.position += delta;
                     item.fillColor.hue += 1;
                     var shape = item;
-                    shape.position.x += shape.bounds.width / 50;
+                    shape.position.x += shape.bounds.width / 20;
                     if (shape.bounds.left > view.size.width) {
                         shape.position.x = -shape.bounds.width;
                     } 
