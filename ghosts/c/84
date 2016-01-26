@@ -136,6 +136,7 @@ pi/glo: | # see file glowing, flood gates of
             }
             else {
                 sayyl "Lin: $k   $dig <--- $lin" if $lin;
+                delete G.way.>$k;
                 sayre "No lin $wig " if !$lin;
             }
             write_file($waf."nt",$v);
@@ -178,7 +179,7 @@ Pile: |
     J.VV.N = 1;
     y.ert = 20;
     
-    Mn("w/jes"=>-Join);
+    Mn("w/u"=>-Join);
 pi/Join: |
     C.sc.dos = 'pileJup';
     y.ert = 32;
@@ -392,13 +393,15 @@ trowil: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
     keys %$wt || die "No top level! Circular?";
     my @ne = $wt;
     my $i;
+    my @las;
     while (@ne) {
-        $i++ > 600 && die "$s join wanders for $i from ".@li." lines, maybe circular?";
+        $i++ > 600 && die "$s join wanders for $i from ".@li." lines, maybe circular? ".join"->",@las[-20..-1];
         my @m = @ne;
         @ne = ();
         for $wt (@m) {
             for my $k (sort keys %$wt) {
                 my $t = $tw->{$k};
+                push @las, $k;
                 if (t.n) {
                     my $n = $wt->{$k};
                     $n->{$_} = {} for sort keys %{t.n};
@@ -420,10 +423,10 @@ pileJup: | # select things into Dug
     my ($tW,$tJ,$tl) = @Js;
     tW.mo.J eq $tW
         || die "not most 1: ".ki $tW;
-    tJ.C.sc.pi eq 'Join'
-        || die "not Join 2: ".ki($tJ).saybl(wdump 2, tJ.C);
+    tJ.C.sc.pi =~ /^J/
+        || die "not /^J/oinish 2: ".ki($tJ).saybl(wdump 2, tJ.C);
     tl.C.sc.pi =~ /^(bl|gee)$/
-        || die "not bl/gee 3: ".ki $tl;
+        || sayre "not bl/gee 3: ".ki $tl;
     my $jes = tJ.mo.jes;
     my $to = jes.tower;
     my @up = tl.C.t;
@@ -443,7 +446,8 @@ pileJup: | # select things into Dug
     my $path = join';',@up;
     say "Find path to tl.C.t    whichis:   $path";
     my $M = E.c.us.pick ||= [];
-    Mn(founde=>-edr=>$path,{mean=>Jiter=>onto=>tJ.C.c.s});
+    my $mean = tW.at.mean || 'Jiter';
+    Mn(founde=>-edr=>$path,{mean=>$mean=>onto=>tJ.C.c.s});
     n Dug =>$E
     T.pos = 0;
 Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
@@ -491,6 +495,7 @@ Jiter: | # Dug Jiters, make travel for the bunch of ghost in ean
     Rw waited $J:_ $c
     for keys %{r.ops};
     T.pos = 0;
+    saybl "All done";
     
     
 indoc: | # for notes, income
@@ -507,9 +512,11 @@ indoc: | # for notes, income
 Dug: | # acum, regroup, persist, do batches
     u urw
     u Sugd
+    u UpPg
     #u AmPg
     J.ev.o ||= 'indoc';
     J.ev.tr = 1;
+    y.ert = 9;
     
     J.VV.N = 1;
     #n downsave=>[-doi=>0.04]
@@ -518,6 +525,53 @@ Dug: | # acum, regroup, persist, do batches
     Atime(2);
     sayyl "Dug contient". wdump 3, J.UG;
  
+Sugd: | # acum, regroup, persist, do batches (downsave J.UG to Pg)
+    u allact
+    n Sugdev =>3143,<<'','%code:U,v:scJ'
+        J.ev.o ||= 'indoch';
+        # dubimport
+        J.ev.tr = 1;
+        J.uzk ||= [qw'mean onto etc'];
+        J.UG ||= [];
+    
+    # n MuSt # instance must have storage (AmPg)
+    
+    # between pin and M:
+    n Sugdev =>33,<<'','%code:U,v:scJ'
+        @{J.UG} = grep {keys %$_} @{J.UG};
+        my $y = J.oy;
+        y.in = 0.1;
+        y.out = 0.5;
+        y.ert = 3;
+        G&Sugour,$J;
+        J.VV.N = 1;
+    
+    u allacgts
+    n Sugour =>'',<<''
+        my $J = $s;
+        my $pi = {};
+        for my $u (@{J.UG}) {
+            my $k = join(' ', map{u.sc->{$_}}@{J.uzk});
+            push @{$pi->{$k}||=[]}, $u;
+        }
+        my $M = J.oy.o.M;
+        for my $k (sort keys %$pi) {
+            my $v = $pi->{$k};
+            my $ts = {};
+            for my $u (@$v) {
+                my $ses = u.sc->{ts.k};
+                push @{$ts->{$ses}||=[]}, $u;
+            }
+            if (keys %$ts > 1) {
+                my @o = sort {@{$ts->{$a}} <=> @{$ts->{$b}}} keys %$ts;
+                ts.win = $ts->{$_} for pop @o;
+                ts.k = 'doct';
+            }
+            Mn($k=>-ean=>{s=>$v,ts=>$ts});
+        }
+    
+    #n downsave=>[-doi=>0.04]
+    
 downsave: | # Dug downup
     if (A.us&S ) {
         sayre "Downsave shave ".@{J.UG} for 1..3;

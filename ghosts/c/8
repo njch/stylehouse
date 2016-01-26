@@ -69,6 +69,13 @@ forked: |
         say "Also: $also";
         J.me .= " $also";
     }
+    if (J.me =~ /^(\w+): (.+)$/) {
+        my $c = {t=>mesay=>y=>{}=>c=>{s=>$2,toG=>$1}};
+        n Siendo=>$c
+        J.me = '';
+        return;
+        
+    }
     if (J.me =~ /^(\w+):(\S+)(\s|$)/) {
         my $o;
         my ($is,$ul) = ($1,$2);
@@ -131,6 +138,24 @@ forked: |
     #n EYZ
     #n Usee
     # Rw followS
+Siendo: |
+    u UpPg
+    Atime(2);
+    $A =
+    n n=>''=>n
+    
+    my $db = G&db;
+    my $to;
+    if (my $to = e&toG ) {
+        my $name = "life/W/G-$to";
+        -e $name || die "$name is not exids";
+        my $W = readlink $name;
+        $W =~ s/\.c$//;
+        my $s = e&s;
+        $db->notify($W, 'me '.$s );
+        sayre "Hars: $to -> $W    puts: $s";
+    }
+    
 waitme: |
     use POSIX ':sys_wait_h';
     if (G.forked) {
@@ -189,6 +214,8 @@ Be: |
     my $s = G.c.s || 'Sl';
     ar.m ||
     Rw $s;
+Br: |
+    Rw Be;
 Le: |
     #
     Rw Be l;
@@ -320,6 +347,7 @@ Wuts: |
     
     # inter intros
     n meta =>47=><<'','%cg:em'
+        G.M->{em.is.M} = A.J;
         G.Wh->{em.is.W} && return;
         G.Wh->{em.is.W} = A.J;
         my $me = I.d&hup,$em;
@@ -384,9 +412,18 @@ Web: |
         J.tx = $tx;
         my $addr = $tx->remote_address;
         Mojo::IOLoop->stream($tx->connection)->timeout(300000);
+        $tx->max_websocket_size(512000);
         $s->on(message => sub {
             my ($M, $m) = @_;
             sayyl "Message from $addr ".$m;
+            my $dec = eval { djson $m };
+            $@ && die "Message doesnt decode: $@\n\n$m";
+            
+            if (my $W = dec.event.W) {
+                my $db = G&db;
+                $db->notify($W,decode_utf8($m));
+                say "Sent ".length($m)." to $W";
+            }
         });
         $s->on(finish => sub {
             my ($M, $code, $reason) = @_;

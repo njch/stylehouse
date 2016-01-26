@@ -23,13 +23,13 @@ allacgt: |
         C.sc.acgt = '1' if !exists C.sc.acgt;
 allacgts: |
     u allact
-    n allof
+    n allf
+    n allcode
     n 'allareacgt=s'=>42,<<''
         C.sc.acgt = 's' if !exists C.sc.acgt;
 allact: |
     u allact
     n allacgts
-    n all4noJ
     n 'allareact=1'=>42,<<''
         C.sc.act = 1 if !exists C.sc.act;
         C.sc.code = 'In' if !exists C.sc.code;
@@ -52,6 +52,18 @@ allvc: |
     n 'allarev=c'=>422,<<''
         return if C.sc.nov;
         C.sc.v = 'c'.C.sc.v if C.sc.v !~ /^(y|sc)/;
+allf: |
+    u allact
+    # of clues encode (when of, C should onc) - allof without code=C.t guess
+    # or how this u tater got .s'd
+    # gel medium
+    n 'allf'=>411,<<''
+        if (C.c.of) {
+            !C.t || die "ofall".ki$C;
+            A.J.A.vse.of = C.c.of;
+            return T.not = 1;
+        }
+        C.sc.code ||= A.J.A.vse.of if A.J.A.vse.of;
 allof: |
     u allact
     n allacgts

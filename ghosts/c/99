@@ -1,4 +1,13 @@
 
+Tp: | # execution, comes with depth unlimits
+    u Traweil
+    #n \'W:Moos,isle:VV'
+    if (C.c.toW) {
+        n C.c.toW => W => {isle=>C.c.toisle||die"Noisle".ki$C}
+        return;
+    }
+    n \'W:This,isle:Ve'
+    
 JJ: |
     u urw
     
@@ -6,10 +15,8 @@ JJ: |
     J.ev.li ||= 'climbo';
     J.ev.bo ||= 'bodos';
     
-    
-    y.at.ux = 1;
-    y.at.oWl = 1;
     y.at.ws = 1;
+    y.at.mean = 'Pgiter';
     y.at.hs = '893';
     y.in = 0.03;
     y.out = 6;
@@ -18,7 +25,66 @@ JJ: |
     
     
     #G.oin.A.tid += 3;
-    Mn("V"=>-Joien);
+    Mn("Ve"=>-Joien);
+    
+Pgiter: | # make travel intent for bunch
+    sayyl "Jiterating ! C.t   on J.name";
+    # not =>$E properly, C is first C,c.e $E is from before $E
+    my @Js = A.e&_hJ;
+    my ($tW,$tl) = @Js[0,-1];
+    tW.mo.J eq $tW || die "not most 1: ".ki $tW;
+    my $ing = tl.C;
+    my $ip = {map{$_=>ing.sc->{$_}}@{J.uzk}};
+    ip.mean && ip.onto || die " notmeanonto compre ".ki $ing;
+    ip.pi = 'edr';
+    ip.onto =~ /^\w+$/ || die "Confuse onto: ".ki $ip;
+    
+    my $duvi = sub {
+        my $tl = shift;
+        my $uv = tl.El.Duv || die "HJiter not Duv tl.name";
+        map{uv.tv->{$_}}@{uv.os}
+    };
+    my $gre = sub {
+        grep { I.d&ip,$ip,_.sc } $duvi->(shift);
+    };
+    my @bun = $gre->($tW);
+    push @bun, $gre->($tl);
+    my @s = uniq map{_.c.s} @bun;
+    saybl "Make Joint stand: ".ki($ip).": ".wdump 3, \@s;
+    my $o = {};
+    for my $leng (@s) {
+        my (@l) = split ';', $leng;
+        o.ops->{$l[0]}++;
+        while (@l > 1) {
+            my $l = shift @l;
+            my $r = shift @l;
+            say "ip.onto - $l <---- $r";
+            
+            my $h = G&qh,<<'',ip.onto,$l,$r;
+                select * from t where isle = ? and l = ? and t = ?
+            h.c = djson h.c if !ref h.c;
+            h.c.doopla = 1;
+            h.c = sjson h.c;
+            my $h = G&qp,<<'',h.c,ip.onto,$l,$r;
+                update t set c = ? where isle = ? and l = ? and t = ?
+            
+            my $f = ip.onto."/J/$l/$r";
+            o.ave->{$f}++;
+            unshift @l, $r;
+        }
+    }
+    sayyl "You ordered: ip.onto: ip.onto ".wdump $o;
+    # jobinate (J1) or fork or acquire fork or wake tests...
+    # all tops go via Tp
+    for (keys %{o.ops}) {
+        my $c = { toisle=>ip.onto, toW=>$_ };
+        Rw waited $J=Tp $c;
+        saybl "Done $_";
+    }
+    T.pos = 0;
+    saybl "All done";
+    
+    
     
 trowal: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
     my $tw = {};
@@ -120,6 +186,9 @@ notlel: |
     _.sc.ml = _.c.ind * 3 for @$N;
     
     Mn($N);
+    
+    my $ee = jes.teeps = {};
+    $ee->{_.t} = $_ for @$N;
     
     n o=>62=>"s҉",'%fs:60,blr:1,opa:3'
     saybl "J.name on";
@@ -603,10 +672,4 @@ Traweil: | # uses localeo
         
         G&joined,$i;
         
-Tp: | # execution, comes with depth unlimits
-    u Traweil
-    #n \'W:Moos,isle:VV'
-    
-    n \'W:Feel,isle:V'
-    
 

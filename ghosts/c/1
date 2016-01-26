@@ -225,6 +225,7 @@ Feel: | # wpp
     n Eel
     n Doi
     n Jam
+    n Wuts
 Doi: |
     u allacgts
     
@@ -393,7 +394,72 @@ Bubble: | # upto st way
         # the liveness projected loosely through space on top of whats things
         # we are playing the survivors
         # everything in its right place
-        # 
+        #
+    # prongy return difference mashi, merge many indexes
+    supe:
+        my $l = shift @Me;
+        $l--;
+        while (@Me) {
+            my $m = shift @Me;
+            my @k = keys %$m;
+            for my $k (@k) {
+                my $v = $m->{$k};
+                if ($l) {
+                    my $x = $s->{$k} ||= {};
+                    G&supe,$x,$l,$v;
+                }
+                else {
+                    $s->{$k} = $v;
+                }
+            }
+        }
+    
+    ylo:
+        my @o = $C;
+        while (1) {
+            my $o = $o[0];
+            unshift @o, o.y->{$s} || last;
+        }
+        @o
+    
+    
+    tC:
+        @Me = ($s,@Me);
+        @Me = ([@Me]) if !ref $Me[0];
+        my @o;
+        push @o,
+        map{_.y.cv = _.y if _.y && !ref _.y;
+            _.y ||= {};
+            _.c ||= {};
+            _.sc ||= {};
+            $_ }
+        grep{defined}
+        map {
+            if (ref $_ eq 'ARRAY') {
+                if (!ref $_->[0]) {
+                    my $C;
+                    (C.t,C.y,C.c,C.sc,my @r) = @$_;
+                    C.c = {s=>C.c} if defined C.c && !ref C.c;
+                    C.c = delete C.y if ref C.y && !C.c;
+                    $C
+                }
+                else {
+                    G&tC,@$_;
+                }
+            }
+            elsif (ref $_ eq 'HASH') {
+                _.y || _.c || _.sc || @Me || return {c=>$_};
+                $_
+            }
+            else {
+                die "par".ki$_
+            }
+        } shift @Me while @Me;
+        wantarray ? @o :
+            @o != 1 ? die "tC not 1: ".wdump(4,\@o) :
+                $o[0];
+            
+    
     C:
         my $z = G&At,$s,@Me;
         sayyl "Extract Cs from A: ". wdump 3, $s;
@@ -991,72 +1057,7 @@ Man: | # promise 1s for oneself to do
         my (@N) = grep {ref $_} @Me;
         #
     
-    supe: %com: #c prongy return difference mashi
-        my $l = shift @Me;
-        $l--;
-        while (@Me) {
-            my $m = shift @Me;
-            my @k = keys %$m;
-            for my $k (@k) {
-                my $v = $m->{$k};
-                if ($l) {
-                    my $x = $s->{$k} ||= {};
-                    G&supe,$x,$l,$v;
-                }
-                else {
-                    $s->{$k} = $v;
-                }
-            }
-        }
-    
-    n ylo =>'',<<''
-        my @o = $C;
-        while (1) {
-            my $o = $o[0];
-            unshift @o, o.y->{$s} || last;
-        }
-        @o
-    
-    n tC =>'',<<''
-        @Me = ($s,@Me);
-        @Me = ([@Me]) if !ref $Me[0];
-        my @o;
-        push @o,
-        map{_.y.cv = _.y if _.y && !ref _.y;
-            _.y ||= {};
-            _.c ||= {};
-            _.sc ||= {};
-            $_ }
-        grep{defined}
-        map {
-            if (ref $_ eq 'ARRAY') {
-                if (!ref $_->[0]) {
-                    my $C;
-                    (C.t,C.y,C.c,C.sc,my @r) = @$_;
-                    C.c = {s=>C.c} if defined C.c && !ref C.c;
-                    C.c = delete C.y if ref C.y && !C.c;
-                    $C
-                }
-                else {
-                    G&tC,@$_;
-                }
-            }
-            elsif (ref $_ eq 'HASH') {
-                _.y || _.c || _.sc || @Me || return {c=>$_};
-                $_
-            }
-            else {
-                die "par".ki$_
-            }
-        } shift @Me while @Me;
-        wantarray ? @o :
-            @o != 1 ? die "tC not 1: ".wdump(4,\@o) :
-                $o[0];
-            
-    
-    
-    
-    
+
     stlk: %com:#c
         my $R = C.c.R;
         if (my $i = C.c.lk) {

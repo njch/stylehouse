@@ -107,6 +107,7 @@ my $D = $l->{c}->{w} ? $l : do {
     my ($D,@m) = $findDt->($findII->($A), $h);
     $D
 };
+sayre slim(500,"Err: $@");
 if (!$D) {
     return sayre "NoD: $s->{t} $s->{talk}    $h    ".wdump 1, $A;
 }
@@ -147,7 +148,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 4624d1065ba4
+        dige: cf30db45ba2a
         eg: Bun
         of: I
       t: sigstackend
