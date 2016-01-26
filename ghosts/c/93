@@ -248,27 +248,6 @@ Dwig: | # decorate A materials
     0&&
     Kcvt 612: %t:cis:^
         c&de ||= "{{{D}}}";
-pi/tw: |
-    n te=>1=>":C.t"=>'%hs:794'
-    n De=>-pre=>wdump 2, $s
-pi/tape: |
-        my $n = c&s;
-        my $x;$x = sub {
-            my $n = shift;
-            my $y = shift || 1;
-            if (ref $n ne 'ARRAY') {
-                return ref($n)||$n if ref $n ne 'HASH' || !defined n.t;
-                return "n.t";
-            }
-            '[ '.slim((160 / $y) + 10,join(',',map{$x->($_,$y+1)}@$n)).' ]'
-        };
-        my $p = $x->($n);
-        $p =~ s/(HASH,HASH(?:,HASH)+)/"HASHx".scalar(split ',', $1)/eg;
-        $p = wdump 3, $n if c&i > 5;
-        n tape=>''=>$p=>'%hs:746,fs:5'
-pi/Kcvt: |
-    n t=>''=>"De 612:";
-    n De=>-pre=>wdump 3, s.De->{0.456};
 pi/iC: | # be the decor for A materials
     n k=>2=>\$_,'%hs:384,decor,ab,ml:-3' for C.c.k;
     # to be gently let off as above M is re-sensitised 
@@ -318,18 +297,43 @@ pi/iC: | # be the decor for A materials
     # more doing, bamboo, maybies (always spawning)
     c&M &&
     m c&M
+pi/tw: |
+    n te=>1=>":C.t"=>'%hs:794'
+    n De=>-pre=>wdump 2, $s
+pi/tape: |
+        my $n = c&s;
+        my $x;$x = sub {
+            my $n = shift;
+            my $y = shift || 1;
+            if (ref $n ne 'ARRAY') {
+                return ref($n)||$n if ref $n ne 'HASH' || !defined n.t;
+                return "n.t";
+            }
+            '[ '.slim((160 / $y) + 10,join(',',map{$x->($_,$y+1)}@$n)).' ]'
+        };
+        my $p = $x->($n);
+        $p =~ s/(HASH,HASH(?:,HASH)+)/"HASHx".scalar(split ',', $1)/eg;
+        $p = wdump 3, $n if c&i > 5;
+        n tape=>''=>$p=>'%hs:746,fs:5'
+pi/Kcvt: |
+    n t=>''=>"De 612:";
+    n De=>-pre=>wdump 3, s.De->{0.456};
 Esuy: |
     u urw
-    n Dsut=>\$s
+    J.so = c&z if c&z;
+    $s = J.so;
+    #n Dsut=>\$s
     
     my $m = [@{s.M}];
+    @$m = @{$m}[0..4];
     #shift @$m for 1..6;
     m $m
     #m s=>-ytsc=>$m=>'%hs:347,fs:12'
-    #J.VV.N = 1;
+    J.VV.N = 1;
+    
 Dsut: | # 
     u urw
-    y.in = 6;
+    y.in = 0.01;
     my @des = map{ values %$_ } values %{s.II.De};
     m Modeal=>''=>''=>'%fs:33'
     @des = grep{_.t=~/first/} @des;
@@ -363,8 +367,6 @@ X: |
     
     my $z = G&S,De=>[@$M];
     
-    $G::KA->{"$A"} = $z; 
-    
     @$M=();
     my $n =
     m A=>''=>\$z
@@ -372,7 +374,7 @@ X: |
     
     my $z = G&S,De=>[@$M];
     
-    n Esuy=>W=>\$z
+    n Esuy=>W=>{z=>$z}
     
     
 Alit: | # to 
