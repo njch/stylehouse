@@ -96,10 +96,11 @@ $l = $_ for grep { $_->{c}->{w} } @stack[-4..-1];
 my $D = $l->{c}->{w} ? $l : do {
     my $findII = sub {
         my $A = shift;
-        ref $A->{t} eq 'CODE' ? $A->{J}->{A}->{II} : $A->{II} || die "wtf".wdump 2, $A;
+        ref $A->{t} eq 'CODE' ? $A->{J}->{A}->{II} : $A->{II};
     };
     my $findDt = sub {
         my ($II,$t) = @_;
+        $II || return;
         $II->{I}->{0.1}->{$t} || 
         grep {$_->{t} eq $t} map{ values %$_ }map{ values %$_ } 
             map{$II->{$_}} grep {!/^(ooI|Ii)$/} keys %$II
@@ -107,7 +108,7 @@ my $D = $l->{c}->{w} ? $l : do {
     my ($D,@m) = $findDt->($findII->($A), $h);
     $D
 };
-sayre slim(500,"Err: $@");
+sayre slim(500,"Err: $s");
 if (!$D) {
     return sayre "NoD: $s->{t} $s->{talk}    $h    ".wdump 1, $A;
 }
@@ -148,7 +149,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: cf30db45ba2a
+        dige: 940227615fae
         eg: Bun
         of: I
       t: sigstackend

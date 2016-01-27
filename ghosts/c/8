@@ -219,6 +219,8 @@ waitme: | #
     else {
         G.forked = 1;
     }
+exit: |
+    exit;
 Sl: |
     J.fti ||= 0;
     if (J.fti >= 0) {
@@ -509,8 +511,7 @@ goche: |
     my $m = "g/c/".($n||8);
     Rw ghosch $m
 ghosch: |
-    sayyl "Ghosch: $m";
-    return sayre "iggy $m" if $m !~ /^g(hosts?)?\/c\//;
+    return sayre "ghosch iggy $m" if $m !~ /^g(hosts?)?\/c\//;
     my $u = LoadFile $m;
     map {
         (my $k = $_) =~ s/\W/-/g;
