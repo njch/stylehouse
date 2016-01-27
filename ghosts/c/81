@@ -77,6 +77,7 @@ pi/breath: |
 trows: |
     u allacgts
     # select and then insert somewhat, osc updates it
+    # with o {k=>v}, scalar ref v is sql hack
     pet: %acgt:s o
         my @ks = sort keys %$o;
         my @sel;
@@ -111,36 +112,14 @@ trows: |
             G&tyable,cheese=><<'';
                 s,ts:timestamptz,jid:int:references:goat:on:delete:cascade
         }
-        sayre "C.t  ----- C.c.W or C.c.pi";
         my $o = {t=>C.t};
         o.jup = C.c.W ? \'is null' : do {
             my $up = J.Jiter.trow || die "No trow upin ".ki J.Jiter;
             up.jid
         };
-        my $m;
-        J.trow = G&pet,goat=>$o;
-        if (0) {
-        if (C.c.W) {
-            J.trow = G&qh,<<'',C.c.W;
-                select * from goat where t = ? and jup is null
-            
-            J.trow ||= do{$m=1} && G&qh,<<'',C.c.W;
-                insert into goat (t) values (?) returning *
-            
-        }
-        else {
-            my $up = J.Jiter.trow || die "No trow upin ".ki J.Jiter;
-            
-            J.trow = G&qh,<<'',C.t,up.jid;
-                select * from goat where t = ? and jup = ?
-            
-            J.trow ||= do{$m=1} && G&qh,<<'',C.t,up.jid;
-                insert into goat (t,jup) values (?,?) returning *
-            
-        }
-        }
         
-        sayre(($m&&"MADE  ")." the C.t: ".sjson(J.trow));
+        J.trow = G&pet,goat=>$o;
+        
         J.wz = {map{_.t=>$_} G&qh,<<'',J.trow.jid };
             select * from cheese where jid = ?
         for (values %{J.wz}) {
@@ -165,10 +144,6 @@ trows: |
                 G&qp,<<'',J.trow.jid,$t,$s,$c,$sc;
                     insert into cheese (jid,t,s,c,sc) values (?,?,?,?,?)
             }
-            #sayre "the: ".wdump 3, J.wz;
-            #G&qh,<<'',J.trow.jid;
-        #        select * from cheese where jid = ?
-            
         }
     
     
