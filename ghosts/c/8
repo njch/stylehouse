@@ -53,6 +53,68 @@ floatation: | # ƾ
     
     # is kinda 
     # little j eventuates index of doings to follow index
+GW: | # star listening
+    u UpPg
+    u Bubble
+    my $A =
+    n s=>''=>t
+    y.at.jslines = 1;
+    J.ev.th = 'middle';
+    y.at.Mid = "G-J.mo.s.C.c.s";
+    y.at.Wid = J.mo.s.id;
+    G.GW = $J;
+    
+    if (0) {
+        my $f = "life/W/y.at.Wid\.e";
+        J.taile = $f;
+        `cat /dev/null > $f` if !-f $f;
+        G&dlin,'life/W',"J.at.Wid\.e","J.at.Mid\.e";
+        # =>{ac=>{create=>1}} # ac/asc/etc involvers slide into the experiment from E
+        n $f =>-sol
+    }
+    
+    
+    n rmold =>2=> "\n\$('ww[title=\"".y.at.Mid."\"]').remove();",'%js'
+    
+    n skfdo =>3=> "\$('#ux').append('<ww id=\"".y.at.Wid."\" style=\"position:absolute;height:100%;width:100%;background-color:hsla(118.8, 50%, 30%, 0.1);pointer-events:none;\" title=\"".y.at.Mid."\"></ww>');",'%js'
+    
+
+    my $ya = G.onfork.GW = sub {
+        my $db = G&db;
+        $db->on(notification => sub {
+            my ($db, $name, $pid, $s) = @_;
+            say "$name: $s";
+            my $J = G.oin;
+            if ($s =~ /^me (.+)$/) {
+                J.me = $1;
+                Rw forked $J;
+                return;
+            }
+            my $e = G&tC,[PgNotify=>{s=>$s}];
+            n GW=>$e
+        });
+        $db->listen(J.at.Wid);
+        sayyl "Listen: J.at.Wid";
+    };
+    $ya->();
+Siendo: | # send instruct (to forked) between G
+    u UpPg
+    Atime(2);
+    $A =
+    n n=>''=>n
+    
+    my $db = G&db;
+    my $to;
+    if (my $to = e&toG ) {
+        my $name = "life/W/G-$to";
+        -e $name || die "$name is not exids";
+        my $W = readlink $name;
+        $W =~ s/\.c$//;
+        my $s = e&s;
+        $db->notify($W, 'me '.$s );
+        sayre "Hars: $to -> $W    puts: $s";
+    }
+    
 forked: |
     # etc
     if (J.me eq 'm') {
@@ -127,25 +189,7 @@ forked: |
     #n EYZ
     #n Usee
     # Rw followS
-Siendo: | # send instruct between G
-    u UpPg
-    Atime(2);
-    $A =
-    n n=>''=>n
-    
-    my $db = G&db;
-    my $to;
-    if (my $to = e&toG ) {
-        my $name = "life/W/G-$to";
-        -e $name || die "$name is not exids";
-        my $W = readlink $name;
-        $W =~ s/\.c$//;
-        my $s = e&s;
-        $db->notify($W, 'me '.$s );
-        sayre "Hars: $to -> $W    puts: $s";
-    }
-    
-waitme: |
+waitme: | # 
     use POSIX ':sys_wait_h';
     if (G.forked) {
         sayre "waitme already forked" for 1..3;
@@ -473,39 +517,4 @@ ghosch: |
         G.way->{$k} = $u->{$_};
     } keys %$u;
     delete G.drop;
-
-flse: | # click data fusilagery
-    my $r = E.c.hC->[-1];
-    if (r.sc.to) {
-        r.sc.op || die "nop";
-        my $o = I.d&pin,r.sc.op,$A;
-        if (r.sc.to eq '!') {
-            sayyl "! op to r.sc.op, was: ".
-                I.d&pon,r.sc.op,$A,!$o;
-        }
-        else {
-            I.d&pon,r.sc.op,$A,$o+C.sc.to;
-        }
-    }
-    else {
-        sayre "How to hold ".wdump 2, $r;
-    }
-    sayre "Have flse click: ".wdump 2, $r;
-pi/cde: |
-    my $se = I.d&pin,$s,$A;
-    #$se = wdump 3, $se;
-    n row =>1 =>{idly=>1,s=>$se},'%cod:perl,dig:steve,dos:upcde,width:10,ab'
-    C.sc.cssdel = 'transform';
-    
-    
-upcde: |
-    sayre "Upacode : C.t - E.t" for 1..4;
-    
-    sayre wdump 2, $C;
-    Rw talkzyh;
-    return;
-    for (A.us&code) {
-        sayyl "Writeing $_ from C.c.e.c.us";
-        #I.d&pon,$s,$A,$_;
-    }
 

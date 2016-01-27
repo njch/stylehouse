@@ -82,4 +82,43 @@ pi/sensors: |
     s/^.*?(\d+).*$/$1/ for @l;
     $_ = shift(@k).": $_   " for @l;
     m yolt=>'',$_ for @l;
+
+pi/textl: |
+    my $l = sum map{ord $_} split '', $s;
+    $l -= 10 until $l < 10;
+    my $h = int $l;
+    n text=>1=>$s,{hs=>"${h}877"}
+
+pi/dot: | #  dead
+    C.sc.dos = $s;
+    n s=>1=>'D','%fs:12'
+    n o=>2=>$s,'%hs:268'
+    if (!J.El.Duv && exists G.way->{"${s}_up"}) {
+        say "Why not wake up... $s";
+        Rw ${s}_up;
+    }
+    
+downsave: | # Dug downup dead
+    if (A.us&S ) {
+        sayre "Downsave shave ".@{J.UG} for 1..3;
+        @{J.UG} = ();
+        return;
+    }
+    sayyl "downsave ! ".ki $C;
+    
+    my ($one,$other) = map { wdump $_, J.UG } 5,7;
+    length $one == length $other || die "wdump depth 5-7 unstable: $other";
+    my $dir = 'w/downsave';
+    `mkdir -p $dir` if !-d $dir;
+    DumpFile("$dir/C.t", J.UG);
+downsave_up: |
+    my $j = J.mo.J;
+    my $t = j.C.t;
+    my $dir = 'w/downsave';
+    my $f = "$dir/$t";
+    return saygr "No\ndown\nsave: $t" unless -f $f;
+    my $datya = LoadFile($f);
+    die "Eval $f: $@" if $@;
+    die "Not dataray $f $datya" if ref $datya ne 'ARRAY';
+    push @{j.UG}, map {saybl "Resuyming $t: ".ki $_;$_} @$datya;
     
