@@ -75,6 +75,28 @@ pi/breath: |
     [Telling=>'','My troubles'],
     [To=>'','Strangers'];
 trows: |
+    u allacgts
+    # select and then insert somewhat, osc updates it
+    pet: %acgt:s o
+        my @ks = sort keys %$o;
+        my @sel;
+        my $sel = "select * from $s where ".join" and ",map{
+            my $z = $o.>$_;
+            ref $z eq 'SCALAR' ? "$_ $$z" : do {
+                push @sel, $z;
+                "$_ = ?"
+            };
+        }@ks;
+        my $n = G&qh,$sel,@sel;
+        $n ||= do {
+            my @ac = grep { ref $o.>$_ ne 'SCALAR' } @ks;
+            my @in = map { $o.>$_ } @ac;
+            my $in = "insert into $s (".join(',',@ac)
+                .") values (".join(",",('?') x 0+@ac).") returning *";
+            G&qh,$in,@in;
+        };
+        $n
+    
     u allact
     n UpPg
     
@@ -95,8 +117,9 @@ trows: |
             my $up = J.Jiter.trow || die "No trow upin ".ki J.Jiter;
             up.jid
         };
-        #J.trow = G&pet,goat=>{t=>C.c.W
         my $m;
+        J.trow = G&pet,goat=>$o;
+        if (0) {
         if (C.c.W) {
             J.trow = G&qh,<<'',C.c.W;
                 select * from goat where t = ? and jup is null
@@ -115,6 +138,8 @@ trows: |
                 insert into goat (t,jup) values (?,?) returning *
             
         }
+        }
+        
         sayre(($m&&"MADE  ")." the C.t: ".sjson(J.trow));
         J.wz = {map{_.t=>$_} G&qh,<<'',J.trow.jid };
             select * from cheese where jid = ?
