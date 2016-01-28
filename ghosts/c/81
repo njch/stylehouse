@@ -12,39 +12,53 @@ Tr: |
     m some=>-dlu
     m sonete=>-dlu
     m soy=>-dlu
+Goh: |
+    u UpPg
+    $A=
+    n s=>''=>t
+    J.lsit ||= G&db ->listen('Goh',sub{
+        Rw waited $C $e:
+    });
 Goat: |
-    #u urw
-    u trows
-    J.VV.N = 1;
+    u urw
     
-    whitehorse 6:
-        Blaga!
+    n Gosh
     
-    n breath=>pi
-    
+    Rw waito + $d=4;
 Gosh: |
     u trows
-    J.VV.N = 1;
     #u urw
+    J.VV.N = 1;
     y.in=y.out=0.3;
     
     my @c = map {"Ghost/c/$_"} 'ඬ', qw'11 61 43';
     my @z = `ls --full-time --inode @c`;
-    my ($sha) = map{@{_.M}}
+    $A=
     n sha=>1=>slm(20,dig(join"\n",@z))
-    #return
-    saybl"-----------\nSkiping same C.t: ".ki$sha
-        if sha.c.s eq J.wz.sha.c.s;
+    my ($sha) = @{A.M};
+    if (sha.c.s eq J.wz.sha.c.s) {
+        J.lies = 1;
+        return saybl"Skiping same C.t: ".ki$sha;
+    }
+        
     
     #Atime(2)||return do{J.V = 0; sayre "Ghostreturn"};
-    saybl wdump 3, J.wz;
     for (@z) {
         s/^\s+|\s+$//sg;
         my ($ino,$mo,$qua,$use,$grp,$size,$date,$time,$tz,$file)
             = split /\s+/, $_, 11;
         my $o = {ts=>"$date $time $tz",ino=>$ino,size=>$size};
-        saybl "Wasl $file: ".wdump 3, J.wz.>$file ;
-        m $file=>-Gosh=>$o
+        my $oC = J.wz.>$file;
+        $oC || say "No find $file in: ".wdump 1, J.wz;
+        #saybl "Comp: ".wdump 3,[$o,oC.sc];
+        my @dif = G&hesl,oC.sc,$o;
+        if (!@dif) {
+            m $file=>''=>'','%wassame'
+        }
+        else {
+            sayre "$file wasdif: ",@dif;
+            m $file=>-Gosh=>$o
+        }
     }
 pi/Gosh: |
     y.at.>$_ = c&$_ || die "no $_ givec" for qw'ts ino size';
@@ -52,22 +66,34 @@ pi/Gosh: |
     # ^ any unId or for index c, what was given
     # could do an early g&3, which swims changes along by named hops (the M^ Ans)
     # hop missing means not, how to merge at different spillover points
-    my ($sha) = map{@{_.M}}
+    $A=
     n sha=>1=>(`sha1sum $s` =~ /^(\S+)/)[0]
-    return saybl"-----------\nSkiping same C.t: ".ki$sha
+    my ($sha) = @{A.M};
+    return saybl"Skiping same C.t: ".ki$sha
         if sha.c.s eq J.wz.sha.c.s;
     
     #Atime(2)||return say "Same J.name";
-    
-    my $Y = LoadFile($s);
-    my @l = sort keys %$Y;
+    my $file = $s;
+    my $am = LoadFile($file);
+    my @l = sort keys %$am;
     for (@l) {
-        # should be on sev somewhere, impose new ts by s change, maintain this W
-        my $s = $Y.>$_;
-        my $c = {perch=>{ts=>'s'}};
-        my $sc = {t=>$_,s=>$s,ts=>J.at.ts};
-        #G&upgok,$c,$sc;
-        m $_=>''=>$s,{dig=>slm(9,dig($s))}
+        # should be on sev somewhere, impose new ts by s/dig change, maintain this W
+        my $s = $am.>$_;
+        my $wa = J.wz.>$_;
+        my $dig = slm(9,dig($s));
+        if ($dig ne wa.dig) {
+            my $ts = 
+            my $c;
+            c.t = $_;
+            c.c.s = $s;
+            (c.sc.ts) = map{_.ts} G&qh,<<'';
+                select now() as ts
+            c.sc.tos = J.at.ts;
+            c.sc.dig = $dig;
+            c.sc.file = $file;
+            G&sen,Goh=>$c;
+        }
+        n $_=>3=>$s,{dig=>$dig}
     }
     # sev fold 3 - 
 pi/breath: |
@@ -75,29 +101,6 @@ pi/breath: |
     [Telling=>'','My troubles'],
     [To=>'','Strangers'];
 trows: |
-    u allacgts
-    # select and then insert somewhat, osc updates it
-    # with o {k=>v}, scalar ref v is sql hack
-    pet: %acgt:s o
-        my @ks = sort keys %$o;
-        my @sel;
-        my $sel = "select * from $s where ".join" and ",map{
-            my $z = $o.>$_;
-            ref $z eq 'SCALAR' ? "$_ $$z" : do {
-                push @sel, $z;
-                "$_ = ?"
-            };
-        }@ks;
-        my $n = G&qh,$sel,@sel;
-        $n ||= do {
-            my @ac = grep { ref $o.>$_ ne 'SCALAR' } @ks;
-            my @in = map { $o.>$_ } @ac;
-            my $in = "insert into $s (".join(',',@ac)
-                .") values (".join(",",('?') x 0+@ac).") returning *";
-            G&qh,$in,@in;
-        };
-        $n
-    
     u allact
     n UpPg
     
@@ -120,18 +123,16 @@ trows: |
         
         J.trow = G&pet,goat=>$o;
         
-        J.wz = {map{_.t=>$_} G&qh,<<'',J.trow.jid };
+        J.wz = {map{_.t=> G&decj,$_ } G&qh,<<'',J.trow.jid };
             select * from cheese where jid = ?
-        for (values %{J.wz}) {
-            _.c = djson(_.c);
-            _.sc = djson(_.sc);
-        }
+        
         J.pich.trows = {any=>1,u=>'trows'};
     
     n rows =>5,<<'','%code:Sev,v:yat'
         my $V = C.c.V;
         my $J = C.c.J;
         if (C.y.cv == 0.9) {
+            return if delete J.lies;
             # grab current (just past) things we said
             my @bu = map { V.ta->{$_} || die "No $_ on V f ".ki$C }
                 C.y.k, sort keys %{at.V};
@@ -140,6 +141,9 @@ trows: |
                 delete from cheese where jid = ?
             
             for (@bu) {
+                if (_.sc.wassame) {
+                    $_ = J.wz.>_.t || die "No _.t to same";
+                }
                 my ($t,$s,$c,$sc) = (_.t,_.c.s,sjson(_.c),sjson(_.sc));
                 G&qp,<<'',J.trow.jid,$t,$s,$c,$sc;
                     insert into cheese (jid,t,s,c,sc) values (?,?,?,?,?)
@@ -290,7 +294,7 @@ AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
     #
 UpPg: |
     u allacgts
-    n db =>'',<<''
+    db:
         use Mojo::Pg;
         my $sJ = A.J && A.J.mo.s || die "no AJmos: A.talk";
         my $pg = sJ.A.pg ||= Mojo::Pg->new('postgresql://s@/s');
@@ -302,10 +306,10 @@ UpPg: |
             $db
         };
     
-    n qp =>'',<<''
+    qp:
         G&db ->query($s,@Me);
     
-    n tyable =>'',<<''
+    tyable:
         $s ||= 'names';
         my @col = map{split','} @Me;
         push @col, 't','y real','c json','sc json';
@@ -314,15 +318,52 @@ UpPg: |
         say "Create: $q from".wdump 2, [$s,@Me] ;
         G&qp,$q
     
-    n qh =>'',<<''
+    qh:
         my @o;
         G&qp,$s,@Me ->hashes->map(sub{push @o,$_});
         wantarray ? @o : $o[0]
     
-    n Jr =>'',<<''
+    Jr:
         G&qh,<<'',$s
             select * from names where t = ?
     
+
+    # select and then insert somewhat, osc updates it
+    # with o {k=>v}, scalar ref v is sql hack
+    decj:
+        $s = G&hup,$s;
+        $s.>$_ = djson $s.>$_ for 'c', 'sc';
+        $s;
+    encj:
+        $s = G&hup,$s;
+        $s.>$_ = sjson $s.>$_ for 'c', 'sc';
+        $s;
+    
+    hesl: %acgt:s c
+        map{qq[$s.>$_ \n ne \n $c.>$_]}grep { $s.>$_ ne $c.>$_ } keys %$c;
+    
+    pet: %acgt:s o
+        my @ks = sort keys %$o;
+        my @sel;
+        my $sel = "select * from $s where ".join" and ",map{
+            my $z = $o.>$_;
+            ref $z eq 'SCALAR' ? "$_ $$z" : do {
+                push @sel, $z;
+                "$_ = ?"
+            };
+        }@ks;
+        my $n = G&qh,$sel,@sel;
+        $n ||= do {
+            my @ac = grep { ref $o.>$_ ne 'SCALAR' } @ks;
+            my @in = map { $o.>$_ } @ac;
+            my $in = "insert into $s (".join(',',@ac)
+                .") values (".join(",",('?') x 0+@ac).") returning *";
+            G&qh,$in,@in;
+        };
+        $n
+    
+    sen:
+        G&db ->notify($s,sjson([@Me]));
 Usee: |
     u urw
     u curv=>pi=><<''

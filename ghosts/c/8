@@ -201,6 +201,11 @@ waitme: | #
         sayyl " ,,,,";
         sayyl "FOrked!";
         sayyl " ,,,,";
+        $SIG{INT} = sub {
+            sayre "Killing $pid...";
+            kill 'KILL', $pid;
+            delete $SIG{INT}
+        };
         waitpid($pid,0);
         saybl "Restart? <";
         my $IN = \*STDIN;
