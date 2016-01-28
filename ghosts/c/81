@@ -7,18 +7,20 @@ Tr: |
         mostily
     y.in = 2;
     
-    
-    J.VV.N = 1;
     m some=>-dlu
     m sonete=>-dlu
     m soy=>-dlu
 Goh: |
+    u urw
     u UpPg
     $A=
     n s=>''=>t
-    J.lsit ||= G&db ->listen('Goh',sub{
-        Rw waited $C $e:
-    });
+    delete J.ev.th;
+    J.lsit ||= G&liz;
+    saybl wdump 3, $_ for e&C;
+    
+    Rw waito + $d=4;
+    
 Goat: |
     u urw
     
@@ -40,9 +42,7 @@ Gosh: |
         J.lies = 1;
         return saybl"Skiping same C.t: ".ki$sha;
     }
-        
     
-    #Atime(2)||return do{J.V = 0; sayre "Ghostreturn"};
     for (@z) {
         s/^\s+|\s+$//sg;
         my ($ino,$mo,$qua,$use,$grp,$size,$date,$time,$tz,$file)
@@ -50,7 +50,7 @@ Gosh: |
         my $o = {ts=>"$date $time $tz",ino=>$ino,size=>$size};
         my $oC = J.wz.>$file;
         $oC || say "No find $file in: ".wdump 1, J.wz;
-        #saybl "Comp: ".wdump 3,[$o,oC.sc];
+        
         my @dif = G&hesl,oC.sc,$o;
         if (!@dif) {
             m $file=>''=>'','%wassame'
@@ -63,16 +63,14 @@ Gosh: |
 pi/Gosh: |
     y.at.>$_ = c&$_ || die "no $_ givec" for qw'ts ino size';
     y.in=y.out=0.3;
-    # ^ any unId or for index c, what was given
-    # could do an early g&3, which swims changes along by named hops (the M^ Ans)
-    # hop missing means not, how to merge at different spillover points
+    
+    #Atime(2)||return say "Same J.name";
     $A=
     n sha=>1=>(`sha1sum $s` =~ /^(\S+)/)[0]
     my ($sha) = @{A.M};
     return saybl"Skiping same C.t: ".ki$sha
         if sha.c.s eq J.wz.sha.c.s;
     
-    #Atime(2)||return say "Same J.name";
     my $file = $s;
     my $am = LoadFile($file);
     my @l = sort keys %$am;
@@ -81,8 +79,7 @@ pi/Gosh: |
         my $s = $am.>$_;
         my $wa = J.wz.>$_;
         my $dig = slm(9,dig($s));
-        if ($dig ne wa.dig) {
-            my $ts = 
+        if ($dig ne wa.sc.dig) {
             my $c;
             c.t = $_;
             c.c.s = $s;
@@ -91,7 +88,8 @@ pi/Gosh: |
             c.sc.tos = J.at.ts;
             c.sc.dig = $dig;
             c.sc.file = $file;
-            G&sen,Goh=>$c;
+            sayyl "Was a change: $file -> c.t";
+            G&zen,Goh=>$c;
         }
         n $_=>3=>$s,{dig=>$dig}
     }
@@ -294,6 +292,11 @@ AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
     #
 UpPg: |
     u allacgts
+    # not here
+    hesl: %acgt:s c
+        map{qq[$s.>$_ \n ne \n $c.>$_]}
+            grep { $s.>$_ ne $c.>$_ } keys %$c;
+    
     db:
         use Mojo::Pg;
         my $sJ = A.J && A.J.mo.s || die "no AJmos: A.talk";
@@ -327,7 +330,6 @@ UpPg: |
         G&qh,<<'',$s
             select * from names where t = ?
     
-
     # select and then insert somewhat, osc updates it
     # with o {k=>v}, scalar ref v is sql hack
     decj:
@@ -338,9 +340,6 @@ UpPg: |
         $s = G&hup,$s;
         $s.>$_ = sjson $s.>$_ for 'c', 'sc';
         $s;
-    
-    hesl: %acgt:s c
-        map{qq[$s.>$_ \n ne \n $c.>$_]}grep { $s.>$_ ne $c.>$_ } keys %$c;
     
     pet: %acgt:s o
         my @ks = sort keys %$o;
@@ -357,13 +356,22 @@ UpPg: |
             my @ac = grep { ref $o.>$_ ne 'SCALAR' } @ks;
             my @in = map { $o.>$_ } @ac;
             my $in = "insert into $s (".join(',',@ac)
-                .") values (".join(",",('?') x 0+@ac).") returning *";
+                .") values (".join(",",('?') x 0+@ac)
+                .") returning *";
             G&qh,$in,@in;
         };
         $n
     
-    sen:
+    liz: %acgt:s J
+        $s ||= C.c.W;
+        $J ||= C.c.W;
+        G.W.noti.>$s = $J;
+        G.W.lizdb->listen($s) if G.W.lizdb;
+    
+    zen:
         G&db ->notify($s,sjson([@Me]));
+
+        
 Usee: |
     u urw
     u curv=>pi=><<''
