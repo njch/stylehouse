@@ -2,28 +2,29 @@
 Tr: |
     u urw
     n exit=>[-dot=>0.03]
-    
     is: %fs:20
         mostily
     y.in = 2;
-    
     m some=>-dlu
     m sonete=>-dlu
     m soy=>-dlu
 Goh: |
     u urw
     u UpPg
+    
     $A=
     n s=>''=>t
     delete J.ev.th;
     J.lsit ||= G&liz;
-    saybl wdump 3, $_ for e&C;
-    
+    for (e&C) {
+        my $e = djson _.c.s;
+        saybl wdump 3, $e;
+    }
     Rw waito + $d=4;
-    
+    # 
 Goat: |
     u urw
-    
+    warn "Hi";
     n Gosh
     
     Rw waito + $d=4;
@@ -33,7 +34,7 @@ Gosh: |
     J.VV.N = 1;
     y.in=y.out=0.3;
     
-    my @c = map {"Ghost/c/$_"} 'ඬ', qw'11 61 43';
+    my @c = map {"Ghost/c/$_"} 'ඬ', qw'11 61 43 81';
     my @z = `ls --full-time --inode @c`;
     $A=
     n sha=>1=>slm(20,dig(join"\n",@z))
@@ -47,6 +48,7 @@ Gosh: |
         s/^\s+|\s+$//sg;
         my ($ino,$mo,$qua,$use,$grp,$size,$date,$time,$tz,$file)
             = split /\s+/, $_, 11;
+        $time =~ s/\.?0+$//g;
         my $o = {ts=>"$date $time $tz",ino=>$ino,size=>$size};
         my $oC = J.wz.>$file;
         $oC || say "No find $file in: ".wdump 1, J.wz;
@@ -308,6 +310,7 @@ UpPg: |
             db.process = $$;
             $db
         };
+        
     
     qp:
         G&db ->query($s,@Me);
@@ -356,7 +359,7 @@ UpPg: |
             my @ac = grep { ref $o.>$_ ne 'SCALAR' } @ks;
             my @in = map { $o.>$_ } @ac;
             my $in = "insert into $s (".join(',',@ac)
-                .") values (".join(",",('?') x 0+@ac)
+                .") values (".join(",",('?') x @ac)
                 .") returning *";
             G&qh,$in,@in;
         };
@@ -411,6 +414,7 @@ Details: |
     u urw
     u curv=>pi=><<''
         curve 3 -0.2
+        curve 5 0.5
         zoom 2 0.6
     
     #Rw AfghanRug;

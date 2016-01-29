@@ -8,6 +8,7 @@ our $A = {};
 
 sub sigstackend {
 my $s = $@;
+$s ||= do { saygr "\$@ was blank"; $_[0] };
 local $@;
 eval { G::confess( '' ) };
 my @stack = split m/\n/, $@;
@@ -65,7 +66,8 @@ for (@stack) {
         #undef $tal if $tal eq $le->{c}->{tal};
         $ind .= " " if $_->{sc}->{pack} ne $le->{sc}->{pack} &&
             !$le->{sc}->{waspack} || $le->{sc}->{waspack} ne $_->{sc}->{pack};
-        undef $file if $file eq $le->{sc}->{pack} || $file eq $le->{sc}->{waspack};
+        undef $file if $file eq $le->{sc}->{pack}
+            || $file eq $le->{sc}->{waspack};
         undef $pack if $pack eq $le->{sc}->{pack};
     }
     if (!$file && $pack) {
@@ -92,7 +94,7 @@ for (@stack) {
 }
 $A && $h || return;
 my $l = $stack[-1];
-$l = $_ for grep { $_->{c}->{w} } @stack[-4..-1];
+$l = $_ for grep { $_->{c}->{w} || $_->{c}->{h} } @stack[-10..-1];
 my $D = $l->{c}->{w} ? $l : do {
     my $findII = sub {
         my $A = shift;
@@ -108,22 +110,25 @@ my $D = $l->{c}->{w} ? $l : do {
     my ($D,@m) = $findDt->($findII->($A), $h);
     $D
 };
+$s =~ s/\n//;
 sayre slim(500,"Err: $s");
 if (!$D) {
-    return sayre "NoD: $s->{t} $s->{talk}    $h    ".wdump 1, $A;
+    return sayre "NoD: $h    ".wdump 1, $A;
 }
 else {
     say "For $D->{t} $D->{y}->{cv}: ".ki $D->{sc};
     saybl "Call: $l->{sc}->{call}";
-    my $line = $l->{sc}->{line};
-    my $wali = "w/way";
-    my @lines = $l->{sc}->{file} =~ /^\(eval/ ? split "\n", $D->{c}->{s}
-        : $l->{c}->{w} ? `cat $wali/$l->{c}->{w}` : "???";
-    $line--;
+    my $line = $s =~ /line (\d+)/ ? $1 : $l->{sc}->{line};
+    my @lines = $l->{c}->{w} ? `cat w/way/$l->{c}->{w}` :
+        $l->{sc}->{file} =~ /^\(eval/ ? split "\n", $D->{c}->{s} :
+        "???";
+    $line += $l->{c}->{w} ? -4 : -1;
     my $i = 0;
+    my $bef = @lines - 5 > $line ? 9 : 6;
     for (@lines) {
+        chomp;
         $i == $line ? sayyl $_ :
-        $i > $line - 6 &&
+        $i > $line - $bef &&
         $i < $line + 5 ? saygr $_ : 1;
         $i++;
     }
@@ -149,7 +154,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 940227615fae
+        dige: d5296824072f
         eg: Bun
         of: I
       t: sigstackend

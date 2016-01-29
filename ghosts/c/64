@@ -43,7 +43,7 @@ Goth: | # agther limbs (Ear)
     }
     Rw thilm + $E;
 opot: | # sneak library update
-    my @for = qw'Bun Ngwe'; #    KnowTime    Shelf        
+    my @for = qw'GBabz Bun'; #    KnowTime    Shelf        
     `rm w/U/$_` for @for;
     my $com = 'othlia';
     my @fo = `find $com -type f`;
@@ -248,6 +248,7 @@ Bun: | # stack exits
         
     sigstackend: %args
         my $s = $@;
+        $s ||= do { saygr "\$@ was blank"; $_[0] };
         local $@;
         eval { G::confess( '' ) };
         my @stack = split m/\n/, $@;
@@ -305,7 +306,8 @@ Bun: | # stack exits
                 #undef $tal if $tal eq le.c.tal;
                 $ind .= " " if _.sc.pack ne le.sc.pack &&
                     !le.sc.waspack || le.sc.waspack ne _.sc.pack;
-                undef $file if $file eq le.sc.pack || $file eq le.sc.waspack;
+                undef $file if $file eq le.sc.pack
+                    || $file eq le.sc.waspack;
                 undef $pack if $pack eq le.sc.pack;
             }
             if (!$file && $pack) {
@@ -332,7 +334,7 @@ Bun: | # stack exits
         }
         $A && $h || return;
         my $l = $stack[-1];
-        $l = $_ for grep { _.c.w } @stack[-4..-1];
+        $l = $_ for grep { _.c.w || _.c.h } @stack[-10..-1];
         my $D = l.c.w ? $l : do {
             my $findII = sub {
                 my $A = shift;
@@ -348,22 +350,25 @@ Bun: | # stack exits
             my ($D,@m) = $findDt->($findII->($A), $h);
             $D
         };
+        $s =~ s/\n//;
         sayre slim(500,"Err: $s");
         if (!$D) {
-            return sayre "NoD: s.t s.talk    $h    ".wdump 1, $A;
+            return sayre "NoD: $h    ".wdump 1, $A;
         }
         else {
             say "For D.t D.y.cv: ".ki D.sc;
             saybl "Call: l.sc.call";
-            my $line = l.sc.line;
-            my $wali = "w/way";
-            my @lines = l.sc.file =~ /^\(eval/ ? split "\n", D.c.s
-                : l.c.w ? `cat $wali/l.c.w` : "???";
-            $line--;
+            my $line = $s =~ /line (\d+)/ ? $1 : l.sc.line;
+            my @lines = l.c.w ? `cat w/way/l.c.w` :
+                l.sc.file =~ /^\(eval/ ? split "\n", D.c.s :
+                "???";
+            $line += l.c.w ? -4 : -1;
             my $i = 0;
+            my $bef = @lines - 5 > $line ? 9 : 6;
             for (@lines) {
+                chomp;
                 $i == $line ? sayyl $_ :
-                $i > $line - 6 &&
+                $i > $line - $bef &&
                 $i < $line + 5 ? saygr $_ : 1;
                 $i++;
             }
@@ -680,28 +685,35 @@ GBabz: |
             }
             .
             #c babable # expect closing brackets and insert J
-            .
+            
             # eg Atime(2) = A.time->($J, 2)
             $s =~ s/(p.mwall)(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
             $s =~ s/(p.mwall)(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
             $s =~ s/(p.mwall)(\w*J)(\w+)\(/$1$2\.$3->(\$A,\$C,\$G,\$T, /smg;
-            $s =~ s/(p.mwall)(\w*[MN])(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
-            .
+            $s =~ s/(p.mwall)(\w*[MN])(\w+)\(/
+                ${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
+            
+            $s =~ s/(p.mwall)(u|n) (.+?)(;| for(\s*$| .+?))?$/
+                "${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'')".($4||';')/smeg;
+            
+            $s =~ s/(p.mwall)(m) (.+?)(;| for .+?)?$/
+                "${1}J\.$2->(\$A,\$C,\$G,\$T,\$M,$3=>'')".($4||';')/smeg;
+            
             # should all gone now - comp comps
             # close side ourselves, likely to gobble suro if, etc.
-            $s =~ s/(p.mwall)(u|n) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'')".($4||';')/smeg;
-            $s =~ s/(p.mwall)(m) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,\$M,$3=>'')".($4||';')/smeg;
             #$s =~ s/(p.mwall)(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
-            $s =~ s/\$J->\{m\}->\(\$M,/J\.m->(\$A,\$C,\$G,\$T,\$M,/g;
-            $s =~ s/\$J->\{n\}->\(\$J,/J\.n->(\$A,\$C,\$G,\$T,/g;
-            $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g;
-            $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
-            $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
+            $s =~ s/\$J->\{m\}->\(\$M,/J\.m->(\$A,\$C,\$G,\$T,\$M,/g && warn "Used 3";
+            $s =~ s/\$J->\{n\}->\(\$J,/J\.n->(\$A,\$C,\$G,\$T,/g && warn "Used 4";
+            $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g && warn "Used 5";
+            $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g && warn "Used 6";
+            $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g && warn "Used gwnoacgt";
+            
             $s =~ s/I\.d\&(p.oint)/G\&$1/g;
-            .
+            
             # C&hs = 388 # C.sc.>hs
             $s =~ s/\bC&(\w+)\b/C\.sc\.$1/g;
             $s =~ s/\bc&(\w+)\b/C\.c\.$1/g;
+            $s =~ s/\b([e])&(\w+)\b/G\&$1,"$2"/g;
             
             # also e&so -> G&e,"so"...  generalised name pickup, spiral slumping
             $s =~ s/ ((?!G)\w+)\&(p.oint)/ G\&$1,"$2"/g;

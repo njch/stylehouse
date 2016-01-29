@@ -79,28 +79,35 @@ for my $l (split "\n", $s) {
     }
     
     #c babable # expect closing brackets and insert J
-    
+
     # eg Atime(2) = $A->{time}->($J, 2)
     $s =~ s/($p->{mwall})(\w*A)(\w+)\(/$1$2\.$3->(\$J, /smg;
     $s =~ s/($p->{mwall})(\w*G)(\w+)\(/${1}G\.$3->(\$A,\$C,\$G,\$T, /smg;
     $s =~ s/($p->{mwall})(\w*J)(\w+)\(/$1$2\.$3->(\$A,\$C,\$G,\$T, /smg;
-    $s =~ s/($p->{mwall})(\w*[MN])(\w+)\(/${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
-    
+    $s =~ s/($p->{mwall})(\w*[MN])(\w+)\(/
+        ${1}J\.m->(\$A,\$C,\$G,\$T, \$$2, /smg;
+
+    $s =~ s/($p->{mwall})(u|n) (.+?)(;| for(\s*$| .+?))?$/
+        "${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'')".($4||';')/smeg;
+
+    $s =~ s/($p->{mwall})(m) (.+?)(;| for .+?)?$/
+        "${1}J\.$2->(\$A,\$C,\$G,\$T,\$M,$3=>'')".($4||';')/smeg;
+
     # should all gone now - comp comps
     # close side ourselves, likely to gobble suro if, etc.
-    $s =~ s/($p->{mwall})(u|n) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,$3=>'')".($4||';')/smeg;
-    $s =~ s/($p->{mwall})(m) (.+?)(;| for .+?)?$/"${1}J\.$2->(\$A,\$C,\$G,\$T,\$M,$3=>'')".($4||';')/smeg;
     #$s =~ s/($p->{mwall})(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
-    $s =~ s/\$J->\{m\}->\(\$M,/J\.m->(\$A,\$C,\$G,\$T,\$M,/g;
-    $s =~ s/\$J->\{n\}->\(\$J,/J\.n->(\$A,\$C,\$G,\$T,/g;
-    $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g;
-    $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g;
-    $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g;
+    $s =~ s/\$J->\{m\}->\(\$M,/J\.m->(\$A,\$C,\$G,\$T,\$M,/g && warn "Used 3";
+    $s =~ s/\$J->\{n\}->\(\$J,/J\.n->(\$A,\$C,\$G,\$T,/g && warn "Used 4";
+    $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g && warn "Used 5";
+    $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g && warn "Used 6";
+    $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g && warn "Used gwnoacgt";
+
     $s =~ s/I\.d\&($p->{oint})/G\&$1/g;
-    
+
     # $C->{sc}->{hs} = 388 # $C->{sc}.>hs
     $s =~ s/\bC&(\w+)\b/C\.sc\.$1/g;
     $s =~ s/\bc&(\w+)\b/C\.c\.$1/g;
+    $s =~ s/\b([e])&(\w+)\b/G\&$1,"$2"/g;
 
     # also $G->{h}->($A,$C,$G,$T,"e","so") -> $G->{h}->($A,$C,$G,$T,"e","so"...)  generalised name pickup, spiral slumping
     $s =~ s/ ((?!G)\w+)\&($p->{oint})/ G\&$1,"$2"/g;
@@ -208,7 +215,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 5172a2988599
+        dige: 7269bd59294f
         eg: GBabz
         of: I
       t: parse_babbl
