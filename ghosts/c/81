@@ -12,7 +12,7 @@ Goh: |
     u urw
     u UpPg
     # qua     ! ! !
-    $A=
+    J.lA=$A=
     n s=>''=>t
     J.ev.t.PgNotify.s = 'M';
     J.ev.f.Gup = 'Gohup';
@@ -20,14 +20,31 @@ Goh: |
     J.lsit ||= G&liz;
     Rw waito + $d=4;
 Gohup: |
-    sayyl "Gohup! ".wdump 3, $E;
+    $A = J.lA||die "Need an init J.name A"; #! ! ! ! ! !@! ! ! ! ! ! !
     my $c;
     c.t = E.t;
     c.s = E.c.s;
     $c.>$_ = E.sc.>$_ for qw'ts file dig';
-    say "To up: ".wdump 3, $c;
-    G&tyable,gho=><<'';
-        s,ts:timestamptz,jid:serial:primary:key,jup:int
+    my($o) = my @m = G&qh,<<'',c.t;
+        select * from gho where t = ?
+    die "Many c.t: ".wdump 4,\@m if @m > 1;
+    
+    my ($ts) = map{_.ts} G&qh,<<'';
+        select now() as ts
+    my @s = (c.file,c.t,c.s,c.dig,$ts);
+    if ($o) {
+        G&qp,<<'',c.file,c.t,c.s,c.dig,$ts,c.t
+            update gho set file=?, t=?, s=?, dig=?, ts=? where t = ?
+    }
+    else {
+        G&qp,<<'',c.file,c.t,c.s,c.dig,$ts
+              insert into gho (file,t,s,dig,ts) values (?,?,?,?,?)
+    }
+    
+    
+    
+Tray: |
+    # ! !  ! ! !!
 Goat: |
     u urw
     n Gosh
@@ -299,7 +316,7 @@ AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
     #
 UpPg: |
     u allacgts
-    # not here
+    # not here ! ! ! !
     hesl: %acgt:s c
         map{qq[$s.>$_ \n ne \n $c.>$_]}
             grep { $s.>$_ ne $c.>$_ } keys %$c;
