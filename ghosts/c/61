@@ -21,11 +21,21 @@ wayt: |
     };
     Rw timer $d $cb;
     
+wayty: |
+    my $pin = ar.p || die "Give pin";
+    my $d = ar.d || 0.03;
+    my $p = 'waytyd';
+    J.waity.>$pin && return saygr "Already queued: $pin";
+    J.waity.>$pin = 1;
+    Rw wayt $p $d $pin $J;
+waytyd: |
+    delete J.waity.>$pin;
+    Rw $pin;
 waito: | # refresh vector in a post e swarm catchup way, without e, departs call stack
     #say "Comebacking J.name with C.t...";# if A.V&V;
     my $d = ar.d || 0.03;
     my $p = ar.p || 'waited';
-    my $K = "ar.p ar.d J.name"; # request comp
+    my $K = ar.K || "ar.p ar.d J.name"; # request comp
     my $queued = J.waito->{$K};
     saygr " waito $K     the C.t  ".($queued ? "again":"") if $queued;
     return if $queued;

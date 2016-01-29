@@ -94,6 +94,8 @@ for (@stack) {
 }
 $A && $h || return;
 my $l = $stack[-1];
+my $less = -@stack;
+$less = -10 if $less < -10;
 $l = $_ for grep { $_->{c}->{w} || $_->{c}->{h} } @stack[-10..-1];
 my $D = $l->{c}->{w} ? $l : do {
     my $findII = sub {
@@ -154,7 +156,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: d5296824072f
+        dige: fefd32ee01d1
         eg: Bun
         of: I
       t: sigstackend

@@ -56,13 +56,13 @@ floatation: | # ƾ
 GW: | # star listening
     u UpPg
     u Bubble
-    $A =
+    J.lA=$A=
     n s=>''=>t
     y.at.jslines = 1;
     J.ev.th = 'middle';
     y.at.Mid = "G-J.mo.s.C.c.s";
     y.at.Wid = J.mo.s.id;
-    G.W = $J;
+    G.GW = G.W = $J;
     
     if (0) {
         my $f = "life/W/y.at.Wid\.e";
@@ -85,10 +85,10 @@ GW: | # star listening
         $db->on(notification => sub {
             my ($db, $name, $pid, $s) = @_;
             my $J = G.oin;
-            say "$name: $s";
+            say "listened: $name: $s";
             if (my $J = G.W.noti.>$name ) {
-                say "ugnote";
-                my $c = {e=>G&tC,[PgNotify=>{s=>$s}] };
+                my $c;
+                c.e = G&tC,[PgNotify=>{s=>$s}];
                 ref $J eq 'CODE' ? $J->($name,$s) :
                     Rw waited $J $c
             }
@@ -97,17 +97,17 @@ GW: | # star listening
                 Rw forked $J;
             }
             else {
-                say "Resur pgnotify";
-                my $c = [PgNotify=>{s=>$s}];
-                my $e = G&tC,$c;
-                n GW=>$e
+                my $c;
+                c.e = G&tC,[PgNotify=>{s=>$s}];
+                Rw waited $J:G.W $c;
             }
         });
         $db->listen($_) for J.at.Wid, keys %{G.W.noti};
         G.W.lizdb = $db;
         sayyl "Listen: J.at.Wid";
     };
-    $ya->();
+    $ya->() unless J.islisten++;
+    
 Siendo: | # send instruct (to forked) between G
     u UpPg
     Atime(2);
