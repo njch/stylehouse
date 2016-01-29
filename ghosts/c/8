@@ -56,7 +56,7 @@ floatation: | # ƾ
 GW: | # star listening
     u UpPg
     u Bubble
-    my $A =
+    $A =
     n s=>''=>t
     y.at.jslines = 1;
     J.ev.th = 'middle';
@@ -87,6 +87,7 @@ GW: | # star listening
             my $J = G.oin;
             say "$name: $s";
             if (my $J = G.W.noti.>$name ) {
+                say "ugnote";
                 my $c = {e=>G&tC,[PgNotify=>{s=>$s}] };
                 ref $J eq 'CODE' ? $J->($name,$s) :
                     Rw waited $J $c
@@ -96,7 +97,10 @@ GW: | # star listening
                 Rw forked $J;
             }
             else {
-                n GW=>G&tC,[PgNotify=>{s=>$s}]
+                say "Resur pgnotify";
+                my $c = [PgNotify=>{s=>$s}];
+                my $e = G&tC,$c;
+                n GW=>$e
             }
         });
         $db->listen($_) for J.at.Wid, keys %{G.W.noti};
@@ -278,6 +282,10 @@ Be: |
     ar.m ||
     Rw $s;
 Br: |
+    Rw Be;
+Bu: |
+    Rw Be;
+Bo: |
     Rw Be;
 Le: |
     #
