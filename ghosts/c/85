@@ -130,17 +130,39 @@ Elis: |
         saygr("JevLi: J.ev.li: A.J.name to J.name  ---  C.sc.J.name  E.sc.J.name") &&
         Rw J.ev.li;
     
-    my $f = J.ev.f;
-    $f = {split':',$f,2} if !ref $f;
-    for my $pi (keys %$f) {
-        E.sc.pi eq $pi || next;
-        my $d = $f->{$pi};
-        my $pin = ref $d ? die "ref f d in $pi" : $d;
-        A.V&E &&
-        sayyl "Elis: $pi to $pin";
-        return
-        Rw $pin;
-    }
+    my @done;
+    my @be = $E;
+    being: while (@be) {
+        my $E = shift @be;
+        my $f = J.ev.f;
+        $f = {split':',$f,2} if !ref $f;
+        for my $pi (keys %$f) {
+            E.sc.pi eq $pi || next;
+            my $d = $f->{$pi};
+            my $pin = ref $d ? die "ref f d in $pi" : $d;
+            A.V&E &&
+            sayyl "Elis: $pi to $pin";
+            push @done, $E;
+            Rw $pin;
+            next being;
+        }
+        if (my $t = J.ev.t) {
+            for my $k (keys %$t) {
+                E.t eq $k || next;
+                my $pin = $t.>$k;
+                if (ref $pin) {
+                    die "More: ".ki $pin if 's' ne join' ',keys %$pin;
+                    for my $i (keys %$pin) {
+                        $i eq 's' || die "More to $k/$i: ".ki $t;
+                        my $do = $pin.>$i;
+                        
+                    }
+                }
+                push @done, $E;
+                Rw $pin;
+                next being;
+            }
+        }
     
     E.sc.was && return saybl "E.t was: $_ ".E.c.s;
     

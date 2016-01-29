@@ -139,7 +139,7 @@ sub sigstackwarn {
 my ($s) = @_;
 return if $s =~ /Deep recursion on subroutine/
     || $s =~ /masks earlier declaration in same/;
-$A->{I}->{sigstackend}->();
+$A->{I}->{sigstackend}->($s);
 warn "Warndg: $s";
 };
 $A->{II} = Load(<<STEVE);
@@ -168,7 +168,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: 3b5d7e9be29b
+        dige: 4e0bcff964ae
         eg: Bun
         of: I
       t: sigstackwarn
