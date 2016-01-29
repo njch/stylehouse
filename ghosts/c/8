@@ -203,17 +203,29 @@ waitme: | #
         return;
         exit;
     }
-        
+    
+    my $parent = $$;
     if (my $pid = fork()) {
         sayyl " ,,,,";
         sayyl "FOrked!";
         sayyl " ,,,,";
-        $SIG{INT} = sub {
+        my $and;
+        my $kill = $SIG{INT} = sub {
             sayre "Killing $pid...";
             kill 'KILL', $pid;
             delete $SIG{INT}
         };
+        $SIG{HUP} = sub {
+            $and = 1;
+        };
+        
         waitpid($pid,0);
+        
+        if ($and) {
+            saybl "child wants restart!";
+            return
+            Rw waitme
+        }
         saybl "Restart? <";
         my $IN = \*STDIN;
         while (my $k = <$IN>) {
@@ -229,9 +241,15 @@ waitme: | #
         }
     }
     else {
-        G.forked = 1;
+        G.forked = $parent;
     }
 exit: |
+    for (@{ar.m||[]}) {
+        if ($_ eq 'refork') {
+            G.forked eq $$ && die "You are forked: $$";
+            kill HUP=>G.forked;
+        }
+    }
     exit;
 Sl: |
     J.fti ||= 0;
