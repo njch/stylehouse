@@ -111,6 +111,7 @@ Goh: |
     # qua     ! ! !!! ! ! !!! !!! ! !! !! ! ! !! !! ! ! !!! !!
     J.lA=$A=
     n GW
+    G&tyable,gho=>'file,s,dig,ts:timestamptz';
     J.ev.th = 'middle';
     J.ev.t.PgNotify.s = 'M';
     J.ev.f.Gup = 'Gohup';
@@ -126,7 +127,6 @@ Gohup: |
     my($o) = my @m = G&qh,<<'',c.t;
         select * from gho where t = ?
     die "Many c.t: ".wdump 4,\@m if @m > 1;
-    sayyl wdump 4, $c;
     # ts was noticed time
     # tos is mtime of the paddock
     my ($ts) = map{_.ts} G&qh,<<'';
@@ -153,7 +153,6 @@ Gohdown: | # read pins from gho where t=$p, chucks in G.way
     say "Gohdown way: $p";
     (my $fi = $p) =~ s/\W/-/g;
     my $was = G.way.>$fi;
-    say "Suplip: w.s";
     G.way.>$fi = w.s;
     
     write_file('/tmp/gohgon',$was);
@@ -166,13 +165,10 @@ Goat: |
     n Gosh
     J.times++ > 20 &&
         Rw exit refork;
-    Rw waito + $d=7;
+    Rw waito + $d=27;
 Gosh: |
     u trows
-    J.VV.N = 0;
     y.in=y.out=0.3;
-    say "ጞ!  ඬ !!!!!!!!";
-     #!!! ! ! !!! !!!!
     my @c = map {"Ghost/c/$_"} qw'ඬ 11 61 43 81';
     $A=
     n Gosh=>9=>{}
@@ -183,8 +179,7 @@ Gosh: |
         $cmd .= " | tail -3";
         Rw recur $d=0.3 $cb:_ for sub {
             my $stuff = G&batik,$cmd;
-            J.fast_stuff eq $stuff &&
-                return sayre " - - Same stuff";
+            return if J.fast_stuff eq $stuff;
             my $fir = !J.fast_stuff;
             J.fast_stuff = $stuff;
             return sayre " - - First!" if $fir;
@@ -207,7 +202,11 @@ Gosh: |
         my ($ino,$mo,$qua,$use,$grp,$size,$date,$time,$tz,$file)
             = split /\s+/, $_, 11;
         $time =~ s/\.?0+$//g;
-        my $o = {ts=>"$date $time $tz",ino=>$ino,size=>$size};
+        my $o = {
+            ts=>"$date $time $tz",
+            ino=>$ino,
+            size=>$size
+        };
         my $oC = J.wz.>$file;
         $oC || say "No find $file in: ".wdump 1, J.wz;
         
@@ -216,15 +215,13 @@ Gosh: |
             m $file=>''=>'','%wassame'
         }
         else {
-            sayre "$file wasdif: ",@dif;
             m $file=>-Gosh=>$o
         }
     }
-pi/Gosh: |
+pi/Gosh: | # a ghost file change
     y.at.>$_ = c&$_ || die "no $_ givec" for qw'ts ino size';
     y.in=y.out=0.3;
     
-    #Atime(2)||return say "Same J.name";
     $A=
     n sha=>1=>(`sha1sum $s` =~ /^(\S+)/)[0]
     my ($sha) = @{A.M};
@@ -286,12 +283,12 @@ trows: |
         
         J.pich.trows = {any=>1,u=>'trows'};
     
+    # grab current (just past) things we said
     n rows =>5,<<'','%code:Sev,v:yat'
         my $V = C.c.V;
         my $J = C.c.J;
         if (C.y.cv == 0.9) {
             return if delete J.lies;
-            # grab current (just past) things we said
             my @bu = map { V.ta->{$_} || die "No $_ on V f ".ki$C }
                 C.y.k, sort keys %{at.V};
             
@@ -316,7 +313,24 @@ trows: |
     
     #
 Travel: |
-    Rw svsync;
+    my ($from,$to) = ('s','v');
+    
+    my $date = `ssh $from date`;
+    my $dath = `ssh $to date`;
+    chomp $date;
+    chomp $dath;
+    
+    say "From $from: $date";
+    saybl "Over $to:  $dath";
+    `ssh $to "sudo date --set '$date'"`;
+    sayyl "Done $to now: ".`ssh $to date`;
+    
+    return;
+    # sudo -u postgres vacuumdb s
+    
+    # some day:
+    n \ask=>\"sudo date --set '$date'";
+    saybl wdump 3, u.M;
     # scan ISLE
     # do chobs
     
@@ -487,7 +501,7 @@ UpPg: |
         for my $o (@o) {
             for my $k (keys %$o) {
                 my $v = $o.>$k;
-                $o.>$v = encode_utf8($v) if defined $v && !ref $v;
+                $o.>$k = encode_utf8($v) if defined $v && !ref $v;
             }    
         }
         sayre "".(@o-1)." rows dropped from: @Me\n$s" if !wantarray && @o > 1;
