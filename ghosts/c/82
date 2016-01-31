@@ -1,5 +1,237 @@
 
-So: |
+Gonews: |
+    # look at hosts->host_pins table, invents from Gohup ! ! !!!! !
+    if (!ar.do) {
+        push @{J.todo||=[]}, ar.c || die "No arc! ".wdump 1, $ar;
+        say "Arcup: ar.c.t";
+        Rw wayty $J $p=Gonews $do=1 $woping=3oe;
+        return;
+    }
+    my @pins = uniq map{_.t} @{delete J.todo};
+    my $where = join' or ',map{"t = ?"}@pins;
+    my $wh={};
+    acum $wh, _.w, _.t for G&qh,<<''.$where,@pins;
+        select * from gw_pin where 
+    while (my ($Wid,$pins) = each %$wh) {
+        my $m = "Pinup;".join',',@$pins;
+        say "$Wid -> $m";
+        G&zen,$Wid,$m
+    }
+Pinup: |
+    my $wake = {};
+    for my $p (@$m) {
+        my $o = J.supins.>$p || next;
+        say "Waking $p would do: ".wdump 2, $o;
+        $wake.>$_ ++ for keys %$o;
+        Rw Gohdown $p;
+    }
+    saybl "Pinup; J.name  ! ".wdump 4,[$wake];
+    
+    for my $W (keys %$wake) {
+        n $W
+    }
+    
+Pintidy: | # ambient GW process table cleanup
+    u UpPg
+    # qua     ! ! !!! ! ! !!!
+    $A=
+    n n=>''=>n
+    my @e = G&qh,<<'';
+        select * from gw
+    for (@e) {
+        if (_.pid && -e "/proc/_.pid/status") {
+            say "Alive: ".ki $_;
+        }
+        else {
+            say "Gone process: ".ki $_;
+            G&qp,<<'',_.pid;
+                delete from gw where pid = ?
+        }
+    }
+Pins: |
+    my $pins = {};
+    ###
+    my $self = J.name;
+    $pins->{$_}->{$self} = 1 for keys %{J.pins};
+    while (my ($k,$v) = each %{J.inJ}) {
+        $v eq v.mo.J || die "v.name not mo";
+        v.pins || die "$k has no pins...";
+        $pins->{$k}->{$k} = 1;
+        $pins->{$_}->{$k} = 1 for keys %{v.pins};
+    }
+    my $la = J.pinla ||= {};
+    my $new = [grep { !$la.>$_ } keys %$pins];
+    if (@$new) {
+        G.GW || return sayre "Avoid pin listening sync, no GW";
+        say "pin listenings: + @$new";
+        $A = G.GW.lA || die "GW no .lA :".wdump 2, G.W;
+        Rw AddPins $A $J $new;
+        $la.>$_ = 1 for @$new;
+    }
+    sayyl "Pinla J.name ! ";
+    J.supins = $pins;
+AddPins: |
+    # given GW's A for UpPg, and J Oth whose id GW is listening to
+    my $o;
+    o.w = G.GW.at.Wid || die "No wid G_W";
+    o.t = G.GW.at.Mid || die "no mid G_W";
+    o.pid = $$;
+    if (!J.gwup++) {
+        #G&tyable,gw=>'w:text:primary:key,pid';
+        #G&tyable,gw_pin=>'w:text:references:gw:on:delete:cascade';
+        G&qp,<<'',o.w;
+            delete from gw where w = ?
+    }
+    my $h = G&pet,gw=>$o;
+    G&qp,<<'',h.w,$_ for @$new;
+        insert into gw_pin (w,t) values (?,?)
+Goh: |
+    u UpPg
+    # qua     ! ! !!! ! ! !!! !!! ! !! !! ! ! !! !! ! ! !!! !!
+    J.lA=$A=
+    n GW
+    #G&tyable,gho=>'file,s,dig,ts:timestamptz';
+    J.ev.th = 'middle';
+    J.ev.t.PgNotify.s = 'M';
+    J.ev.f.Gup = 'Gohup';
+    delete J.ev.li;
+    J.lsit ||= G&liz;
+    Rw waito + $d=22;
+Gohup: |
+    $A = J.lA||die "Need an init J.name A"; #! ! ! !!! !!@!
+    my $c;
+    c.t = E.t;
+    c.s = E.c.s;
+    $c.>$_ = E.sc.>$_ for qw'ts file dig';
+    my($o) = my @m = G&qh,<<'',c.t;
+        select * from gho where t = ?
+    die "Many c.t: ".wdump 4,\@m if @m > 1;
+    # ts was noticed time
+    # tos is mtime of the paddock
+    my ($ts) = map{_.ts} G&qh,<<'';
+        select now() as ts
+    my @s = (c.file,c.t,c.s,c.dig,$ts);
+    if ($o) {
+        G&qp,<<'',@s,c.t
+            update gho set file=?, t=?, s=?, dig=?, ts=? where t = ?
+    }
+    else {
+        G&qp,<<'',@s
+            insert into gho (file,t,s,dig,ts) values (?,?,?,?,?)
+    }
+    c.ts = $ts;
+    Rw Gonews $J $c;
+    
+Gohdown: | # read pins from gho where t=$p, chucks in G.way
+    my $J = G.GW || die "No GW";
+    $A = J.lA || die "Need init GW A";
+    my @w = G&qh,<<'',$p;
+        select file,t,s,dig from gho where t = ?
+    @w > 1 && die "Many ways to $p: ".wdump 3, \@w;
+    my $w = shift @w;
+    say "Gohdown way: $p";
+    (my $fi = $p) =~ s/\W/-/g;
+    my $was = G.way.>$fi;
+    G.way.>$fi = w.s;
+    
+    write_file('/tmp/gohgon',$was);
+    write_file('/tmp/gohdon',w.s);
+    sayre "WAOKs out $p: ". `diff /tmp/gohgon /tmp/gohdon`;
+Tray: |
+    # ! !  ! ! !!
+Goat: |
+    n GW
+    n Gosh
+    J.times++ > 20 &&
+        Rw exit refork;
+    Rw waito + $d=27;
+Gosh: |
+    u trows
+    y.in=y.out=0.3;
+    my @c = map {"Ghost/c/$_"} qw'ඬ 11 61 43 81';
+    $A=
+    n Gosh=>9=>{}
+    #
+    my $cmd = "ls --full-time --inode @c";
+    J.fast ||= do {
+        (my $cmd = $cmd) =~ s/^ls/ls -rt/;
+        $cmd .= " | tail -3";
+        Rw recur $d=0.3 $cb:_ for sub {
+            my $stuff = G&batik,$cmd;
+            return if J.fast_stuff eq $stuff;
+            my $fir = !J.fast_stuff;
+            J.fast_stuff = $stuff;
+            return sayre " - - First!" if $fir;
+            sayyl "Coming back! to J.name";
+            Rw waito $J;
+        };
+        1
+    };
+    my @z = G&batik,$cmd;
+    $A=
+    n sha=>1=>slm(20,dig(join"\n",@z))
+    my ($sha) = @{A.M};
+    if (sha.c.s eq J.wz.sha.c.s) {
+        J.lies = 1;
+        return saybl"Skiping same C.t: ".ki$sha;
+    }
+    
+    for (@z) {
+        s/^\s+|\s+$//sg;
+        my ($ino,$mo,$qua,$use,$grp,$size,$date,$time,$tz,$file)
+            = split /\s+/, $_, 11;
+        $time =~ s/\.?0+$//g;
+        my $o = {
+            ts=>"$date $time $tz",
+            ino=>$ino,
+            size=>$size
+        };
+        my $oC = J.wz.>$file;
+        $oC || say "No find $file in: ".wdump 1, J.wz;
+        
+        my @dif = G&hesl,oC.sc,$o;
+        if (!@dif) {
+            m $file=>''=>'','%wassame'
+        }
+        else {
+            m $file=>-Gosh=>$o
+        }
+    }
+pi/Gosh: | # a ghost file change
+    y.at.>$_ = c&$_ || die "no $_ givec" for qw'ts ino size';
+    y.in=y.out=0.3;
+    
+    $A=
+    n sha=>1=>(`sha1sum $s` =~ /^(\S+)/)[0]
+    my ($sha) = @{A.M};
+    return saybl"Skiping same C.t: ".ki$sha
+        if sha.c.s eq J.wz.sha.c.s;
+    
+    my $file = $s;
+    my $am = LoadFile($file);
+    my @l = sort keys %$am;
+    for (@l) {
+        # should be on sev somewhere, impose new ts by s/dig change, maintain this W
+        my $s = $am.>$_;
+        my $wa = J.wz.>$_;
+        my $dig = slm(9,dig($s));
+        if ($dig ne wa.sc.dig) {
+            my $c;
+            c.t = $_;
+            c.c.s = $s;
+            c.sc.pi = 'Gup';
+            (c.sc.ts) = map{_.ts} G&qh,<<'';
+                select now() as ts
+            c.sc.tos = J.at.ts;
+            c.sc.dig = $dig;
+            c.sc.file = $file;
+            sayyl "Was a change: $file -> c.t";
+            G&zen,Goh=>$c;
+        }
+        n $_=>3=>$s,{dig=>$dig}
+    }
+    # sev fold 3 - 
+So: | # dead ghosti
     #u urw
     u Deso
     #u ishfi
@@ -13,6 +245,91 @@ Deso: |
     
     n fsize=>5=><<'','%code:Mo'
         C.sc.fsize = -s C.t;
+
+Ghost: |
+    u CimPg
+    #u urw
+    y.in=y.out=0.3;
+    
+    my @c = map {"Ghost/c/$_"} qw'81 85 ඬ 99';
+    my @z = `ls --full-time --inode @c`;
+    n sha=>1=>slm(20,dig(join"\n",@z))
+    
+    #Atime(2)||return do{J.V = 0; sayre "Ghostreturn"};
+    
+    for (@z) {
+        s/^\s+|\s+$//sg;
+        my ($ino,$mo,$qua,$use,$grp,$size,$date,$time,$tz,$file)
+            = split /\s+/, $_, 11;
+        m $file=>-Ghost=>{ts=>"$date $time $tz",ino=>$ino,size=>$size}
+        J.ajkdi++ > 1 && last;
+    }
+pi/Ghost: |
+    y.at.>$_ = c&$_ || die "no $_ givec" for qw'ts ino size';
+    y.in=y.out=0.3;
+    # ^ any unId or for index c, what was given
+    # could do an early g&3, which swims changes along by named hops (the M^ Ans)
+    # hop missing means not, how to merge at different spillover points
+    n sha=>1=>(`sha1sum $s` =~ /^(\S+)/)[0]
+    Atime(2)||return say "Same J.name";
+    my $Y = LoadFile($s);
+    my @l = sort keys %$Y;
+    for (@l) {
+        # should be on sev somewhere, impose new ts by s change, maintain this W
+        my $s = $Y.>$_;
+        my $c = {perch=>{ts=>'s'}};
+        my $sc = {t=>$_,s=>$s,ts=>J.at.ts};
+        G&upgok,$c,$sc;
+        m $_=>''=>$s
+    }
+    # sev fold 3 - 
+CimPg: | # C.c diff imposes C.c from Jiter
+    n UpPg
+    
+    
+    u allact
+    n Arow =>32,<<'','%code:U,v:scJ'
+        #J.oy.at.rows = 1;
+        #G&qp,<<'';
+        #     drop table if exists G;
+        #G&tyable,G=>'s,ts:timestamptz';
+        
+    
+    # to grab t:s as the {}
+    u allsvse
+    n rows =>4,<<'','%code:Art'
+        return warn "Nonroot row: ".ki$C if !C.c.root;
+        my $Y = C.c.Y;
+        my $te = {map{_.t=>$_}values %{Y.tv}};
+        my $ts = {map{_.t=>_.c.s}values %$te};
+        my $k = te.k.c.s;
+    
+    # apply the {}, unless the Me says things to ignore
+    u allacgts
+    upgok:
+        my ($c,$sc) = ($s,@Me);
+        sc.t || die "Index mis: ".ki $sc;
+        my $j = G&qh,<<'',sc.t;
+            select * from G where t = ?
+        
+        my $e = $j;
+        my $i = {};
+        $i.>$_ = $sc.>$_ for keys %$sc;
+        if (my $p = c.perch) {
+            while (my ($k,$v) = each %$p) {
+                # same ts is no s change, etc.
+                $i.>$k = $j.>$k if $j.>$v eq $i.>$v;
+                say "Wasnoch $k" if sc.t =~ /This/ && $j.>$v eq $i.>$v;
+            }
+        }
+        return if G&heq,$j,$i;
+        
+        $e ? 
+        G&qp,<<'',i.s,i.ts,i.t
+            update g set s = ?, ts = ? where t = ?
+        :
+        G&qp,<<'',i.t,i.s,i.ts;
+            insert into G (t,s,ts) values (?,?,?)
 ambth: | # e,biertoho, does the 0.3 things (should do 6 and compress into 3"
     while (my ($k,$v) = each %{J.El.Pre.v->{'0.3'}}) {
         next unless v.sc.pi;
