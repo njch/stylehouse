@@ -2,24 +2,73 @@
 Tr: |
     u urw
     n exit=>[-dot=>0.03]
-    is: %fs:20
+    # #
+    J.VV.N = 1;
+    is: %fs:25
         mostilie
     y.in = 2;
+    m oooStevoooiooo=>-dlu
     m some=>-dlu
     m sonete=>-dlu
     m soy=>-dlu
     sayyl wdump 4, J.pins;
 pi/dlu: |
     y.ert = 8;
-    # !!!
+    # !!! 
     y.clos = 1;
     n n=>1=>';Heft' 
+    m o=>''=>C.t=>'%hs:775,ml:3'
     m t=>''=>',' for 1..(J.doofs++ + 3);
     
 Gonews: |
-    # look at hosts->host_pins table, invents from Gohup
+    # look at hosts->host_pins table, invents from Gohup ! ! !!!! !
+    if (!ar.do) {
+        push @{J.todo||=[]}, ar.c || die "No arc! ".wdump 1, $ar;
+        say "Arcup: ar.c.t";
+        Rw wayty $J $p=Gonews $do=1 $woping=3oe;
+        return;
+    }
+    my @pins = uniq map{_.t} @{delete J.todo};
+    my $where = join' or ',map{"t = ?"}@pins;
+    my $wh={};
+    acum $wh, _.w, _.t for G&qh,<<''.$where,@pins;
+        select * from gw_pin where 
+    while (my ($Wid,$pins) = each %$wh) {
+        my $m = "Pinup;".join',',@$pins;
+        say "$Wid -> $m";
+        G&zen,$Wid,$m
+    }
+Pinup: |
+    my $wake = {};
+    for my $p (@$m) {
+        my $o = J.supins.>$p || next;
+        say "Waking $p would do: ".wdump 2, $o;
+        $wake.>$_ ++ for keys %$o;
+        Rw Gohdown $p;
+    }
+    saybl "Pinup; J.name  ! ".wdump 4,[$wake];
     
+    for my $W (keys %$wake) {
+        n $W
+    }
     
+Pintidy: | # ambient GW process table cleanup
+    u UpPg
+    # qua     ! ! !!! ! ! !!!
+    $A=
+    n n=>''=>n
+    my @e = G&qh,<<'';
+        select * from gw
+    for (@e) {
+        if (_.pid && -e "/proc/_.pid/status") {
+            say "Alive: ".ki $_;
+        }
+        else {
+            say "Gone process: ".ki $_;
+            G&qp,<<'',_.pid;
+                delete from gw where pid = ?
+        }
+    }
 Pins: |
     my $pins = {};
     ###
@@ -40,19 +89,26 @@ Pins: |
         Rw AddPins $A $J $new;
         $la.>$_ = 1 for @$new;
     }
+    sayyl "Pinla J.name ! ";
     J.supins = $pins;
 AddPins: |
     # given GW's A for UpPg, and J Oth whose id GW is listening to
     my $o;
-    o.W = G.GW.at.Wid || die "No wid G_W";
+    o.w = G.GW.at.Wid || die "No wid G_W";
     o.t = G.GW.at.Mid || die "no mid G_W";
-    my $h = G&pet,$o;
-    sayre "Got: ".wdump 3, $h;
-    #my $c = G&tC,[AddPins=>{s=>\@new}];
-    #    n GW=>$c
+    o.pid = $$;
+    if (!J.gwup++) {
+        #G&tyable,gw=>'w:text:primary:key,pid';
+        #G&tyable,gw_pin=>'w:text:references:gw:on:delete:cascade';
+        G&qp,<<'',o.w;
+            delete from gw where w = ?
+    }
+    my $h = G&pet,gw=>$o;
+    G&qp,<<'',h.w,$_ for @$new;
+        insert into gw_pin (w,t) values (?,?)
 Goh: |
     u UpPg
-    # qua     ! ! !!! ! ! !!!
+    # qua     ! ! !!! ! ! !!! !!! ! !! !! ! ! !! !! ! ! !!! !!
     J.lA=$A=
     n GW
     J.ev.th = 'middle';
@@ -62,7 +118,7 @@ Goh: |
     J.lsit ||= G&liz;
     Rw waito + $d=22;
 Gohup: |
-    $A = J.lA||die "Need an init J.name A"; #! ! ! !!!
+    $A = J.lA||die "Need an init J.name A"; #! ! ! !!! !
     my $c;
     c.t = E.t;
     c.s = E.c.s;
@@ -76,22 +132,37 @@ Gohup: |
         select now() as ts
     my @s = (c.file,c.t,c.s,c.dig,$ts);
     if ($o) {
-        G&qp,<<'',@s,$ts,c.t
+        G&qp,<<'',@s,c.t
             update gho set file=?, t=?, s=?, dig=?, ts=? where t = ?
     }
     else {
-        G&qp,<<'',@s,$ts
+        G&qp,<<'',@s
             insert into gho (file,t,s,dig,ts) values (?,?,?,?,?)
     }
     c.ts = $ts;
-    Rw Gonews $c;
+    Rw Gonews $J $c;
     
+Gohdown: |
+    my $J = G.GW || die "No GW";
+    $A = J.lA || die "Need init GW A";
+    my @w = G&qh,<<'',$p;
+        select file,t,s,dig from gho where t = ?
+    @w > 1 && die "Many ways to $p: ".wdump 3, \@w;
+    my $w = shift @w;
+    say "Gohdown way: $p";
+    (my $fi = $p) =~ s/\W/-/g;
+    my $was = G.way.>$fi;
+    G.way.>$fi = w.s;
+    
+    write_file('/tmp/gohgon',$was);
+    write_file('/tmp/gohdon',w.s);
+    sayre "WAOKs out $p: ". `diff /tmp/gohgon /tmp/gohdon`;
 Tray: |
     # ! !  ! ! !!
 Goat: |
     n GW
     n Gosh
-    J.times++ > 45 &&
+    J.times++ > 20 &&
         Rw exit refork;
     Rw waito + $d=4;
 Gosh: |
@@ -431,7 +502,8 @@ UpPg: |
         G.W.lizdb->listen($s) if G.W.lizdb;
     
     zen:
-        G&db ->notify($s,sjson([@Me]));
+        my $m = @Me > 1 || ref $Me[0] ? sjson(\@Me) : $Me[0];
+        G&db ->notify($s,$m);
 
         
 Usee: |

@@ -76,7 +76,7 @@ GW: | # star listening
     
     n rmold =>2=> "\n\$('ww[title=\"".y.at.Mid."\"]').remove();",'%js'
     
-    n skfdo =>3=> "\$('#ux').append('<ww id=\"".y.at.Wid."\" style=\"position:absolute;height:100%;width:100%;background-color:hsla(118.8, 50%, 30%, 0.1);pointer-events:none;\" title=\"".y.at.Mid."\"></ww>');",'%js'
+    n skfdo =>3=> "\$('#ux').append('<ww id=\"".y.at.Wid."\" style=\"position:absolute;height:100%;width:100%;pointer-events:none;\" title=\"".y.at.Mid."\"></ww>');",'%js'
     
 
     my $ya = G.onfork.GW = sub {
@@ -84,6 +84,15 @@ GW: | # star listening
         my $not = G.W.noti ||= {};
         $db->on(notification => sub {
             my ($db, $name, $pid, $s) = @_;
+            Rw GW_Answer $name $s;
+        });
+        $db->listen($_) for J.at.Wid, keys %{G.W.noti};
+        G.W.lizdb = $db;
+        sayyl "Listen: J.at.Wid";
+    };
+    $ya->() unless J.islisten++;
+    
+GW_Answer: |
             my $J = G.oin;
             say "listened: $name: $s";
             if (my $J = G.W.noti.>$name ) {
@@ -92,7 +101,12 @@ GW: | # star listening
                 ref $J eq 'CODE' ? $J->($name,$s) :
                     Rw waited $J $c
             }
+            elsif ($s =~ /^(\w+);(.+)$/) {
+                my $m = [split',',$2];
+                Rw $1 $J:G.oin $m;
+            }
             elsif ($s =~ /^me (.+)$/) {
+                $J = G.U;
                 J.me = $1;
                 Rw forked $J;
             }
@@ -101,13 +115,6 @@ GW: | # star listening
                 c.e = G&tC,[PgNotify=>{s=>$s}];
                 Rw waited $J:G.W $c;
             }
-        });
-        $db->listen($_) for J.at.Wid, keys %{G.W.noti};
-        G.W.lizdb = $db;
-        sayyl "Listen: J.at.Wid";
-    };
-    $ya->() unless J.islisten++;
-    
 Siendo: | # send instruct (to forked) between G
     u UpPg
     Atime(2);
@@ -256,6 +263,7 @@ exit: |
     }
     exit;
 Sl: |
+    G.U = $J;
     J.fti ||= 0;
     if (J.fti >= 0) {
         Rw waitme;

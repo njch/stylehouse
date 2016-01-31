@@ -62,30 +62,19 @@ pi/glo: | # see file glowing, flood gates of
     `mkdir w/digway` if !-d 'w/digway';
         
         while(my($k,$v) = each %$d) {
-            $k =~ s/\//-/g;
-            my $waf = "w/way/$k";
-            my $wig = "w/digway/$k";
-            my $dig = slm 10, dig($v);
-            my $lin = readlink($wig) if -l $wig;
-            if ($lin eq $dig) {
-                #sayyl "$wig same ($dig)";
-                next;
+            {
+                my $k = $k;
+                $k =~ s/\//-/g;
+                my $waf = "w/way/$k";
+                # bol
+                my $wig = "w/digway/$k";
+                my $dig = slm 10, dig($v);
+                my $lin = readlink($wig) if -l $wig;
+                next if $lin eq $dig;
             }
-            else {
-                sayyl "Lin: $k   $dig <--- $lin" if $lin;
-                delete G.way.>$k;
-                sayre "No lin $wig " if !$lin;
-            }
-            write_file($waf."nt",$v);
-            if (!-f $waf || `diff $waf ${waf}nt`) {
-                Mn(gfot=>''=>"+ $k");
-                `mv ${waf}nt $waf`;
-            }
-            else {
-                `rm ${waf}nt`;
-            }
-            -l $wig && `unlink $wig`;
-            `ln -s $dig $wig`;
+            Rw w_way_file $k $v
+            && 
+            Mn(gfot=>''=>"+ $k")
         }
         
     # mtimes in wf must be after any of the inner branches ^
@@ -95,6 +84,32 @@ pi/glo: | # see file glowing, flood gates of
     `mkdir w/wf` if !-d 'w/wf';
     write_file($wf,'');
     
+w_way_file: |
+            $k =~ s/\//-/g;
+            my $waf = "w/way/$k";
+            # bol
+            my $wig = "w/digway/$k";
+            my $dig = slm 10, dig($v);
+            my $lin = readlink($wig) if -l $wig;
+            if ($lin eq $dig) {
+                #sayyl "$wig same ($dig)";
+                return
+            }
+            else {
+                sayyl "Lin: $k   $dig <--- $lin" if $lin;
+                delete G.way.>$k;
+                sayre "No lin $wig " if !$lin;
+            }
+            write_file($waf."nt",$v);
+            if (!-f $waf || `diff $waf ${waf}nt`) {
+                `mv ${waf}nt $waf`;
+            }
+            else {
+                `rm ${waf}nt`;
+            }
+            -l $wig && `unlink $wig`;
+            `ln -s $dig $wig`;
+            return 1
 Pile: |
     u ReoCur
     u curv =>pi=><<''
