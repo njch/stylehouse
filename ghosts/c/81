@@ -118,7 +118,7 @@ Goh: |
     J.lsit ||= G&liz;
     Rw waito + $d=22;
 Gohup: |
-    $A = J.lA||die "Need an init J.name A"; #! ! ! !!! !
+    $A = J.lA||die "Need an init J.name A"; #! ! ! !!! !!@!
     my $c;
     c.t = E.t;
     c.s = E.c.s;
@@ -126,6 +126,7 @@ Gohup: |
     my($o) = my @m = G&qh,<<'',c.t;
         select * from gho where t = ?
     die "Many c.t: ".wdump 4,\@m if @m > 1;
+    sayyl wdump 4, $c;
     # ts was noticed time
     # tos is mtime of the paddock
     my ($ts) = map{_.ts} G&qh,<<'';
@@ -162,8 +163,6 @@ Tray: |
     # ! !  ! ! !!
 Goat: |
     n GW
-    say "Goat am J.times !!!";
-    # !!!
     n Gosh
     J.times++ > 20 &&
         Rw exit refork;
@@ -172,16 +171,18 @@ Gosh: |
     u trows
     J.VV.N = 0;
     y.in=y.out=0.3;
-    say "ጞ!  ඬ !";
-     #!!! ! ! !!!
+    say "ጞ!  ඬ !!!!!!!!";
+     #!!! ! ! !!! !!!!
     my @c = map {"Ghost/c/$_"} qw'ඬ 11 61 43 81';
+    $A=
+    n Gosh=>9=>{}
     
     my $cmd = "ls --full-time --inode @c";
     J.fast ||= do {
         (my $cmd = $cmd) =~ s/^ls/ls -rt/;
-        $cmd .= "| tail -3";
+        $cmd .= " | tail -3";
         Rw recur $d=0.3 $cb:_ for sub {
-            my $stuff = `$cmd`;
+            my $stuff = G&batik,$cmd;
             J.fast_stuff eq $stuff &&
                 return sayre " - - Same stuff";
             my $fir = !J.fast_stuff;
@@ -192,7 +193,7 @@ Gosh: |
         };
         1
     };
-    my @z = `$cmd`;
+    my @z = G&batik,$cmd;
     $A=
     n sha=>1=>slm(20,dig(join"\n",@z))
     my ($sha) = @{A.M};
@@ -219,7 +220,6 @@ Gosh: |
             m $file=>-Gosh=>$o
         }
     }
-
 pi/Gosh: |
     y.at.>$_ = c&$_ || die "no $_ givec" for qw'ts ino size';
     y.in=y.out=0.3;
@@ -447,6 +447,9 @@ AmPg: | # U at.row=1, J.ro=$read, UG=ro.sc.M=UG or ro.M=oy.o.M
 UpPg: |
     u allacgts
     # not here ! ! ! !
+    batik:
+        $s = decode_utf8($s); # o
+        `$s`
     hesl: %acgt:s c
         map{qq[$s.>$_ \n ne \n $c.>$_]}
             grep { $s.>$_ ne $c.>$_ } keys %$c;
@@ -465,7 +468,9 @@ UpPg: |
         
     
     qp:
-        G&db ->query($s,map{ref $_ ? $_ : decode_utf8($_)} @Me);
+        G&db ->query($s,
+        map{!ref && defined $_ ? decode_utf8($_) : $_ }
+        @Me);
     
     tyable:
         $s ||= 'names';
@@ -485,6 +490,7 @@ UpPg: |
                 $o.>$v = encode_utf8($v) if defined $v && !ref $v;
             }    
         }
+        sayre "".(@o-1)." rows dropped from: @Me\n$s" if !wantarray && @o > 1;
         wantarray ? @o : $o[0]
     
     Jr:
