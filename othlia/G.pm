@@ -104,7 +104,7 @@ sub djson {
 my $m = shift;
 my $j;
 
-eval { $j = $JSON->decode(encode_utf8($m)) };
+eval { $j = $JSON->decode($m) };
 die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
 die "$m\n\nJSON decoded to ~undef~" unless defined $j;
 $j

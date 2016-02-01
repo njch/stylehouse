@@ -1,1 +1,264 @@
-../../w/c66
+wag: |
+    $H ||= {up=>hitime()};
+    my $G = bless {}, 'G';
+    G.w = sub { $G->w(@_) };
+    G.id = mkuid();
+    G.name = "theG";
+    $G->catchings;
+    $G->wayup("wormhole/yb\.yml");
+    G.w->('expro');
+    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+wayup: | # %style:
+    my $way = read_file(shift);
+    G.way = Load($way); 
+fwind: |
+    my $way = shift;
+          my $point = shift;
+          return $way->{$point} if exists $way->{$point};
+          my @path = split /\/|\./, $point;
+          my $h = $way;
+          for my $p (@path) {
+              $h = $h->{$p};
+              unless ($h) {
+                  undef $h;
+                  last;
+              }
+          }
+          return $h if defined $h;
+    
+          return undef unless $point =~ /\*/;
+          die "sat rs findy $point";
+stack: |
+    my $b = shift;
+    my $for = shift || 169;
+    $b = 1 unless defined $b;
+    my @from;
+    while (my $f = join " ", (caller($b))[0,3,2]) {
+        last unless defined $f;
+        my $surface = $f =~ s/(Mojo)::Server::(Sand)Box::\w{24}/$1$2/g
+            || $f =~ m/^Mojo::IOLoop/
+            || $f =~ m/^Mojolicious::Controller/;
+        $f =~ s/(MojoSand\w+) (MojoSand\w+)::/$2::/;
+        push @from, $f;
+        last if $surface;
+        last if !--$for;
+        $b++;
+    }
+    return [@from];
+F_delta: |
+    my $now = hitime();
+    my $then = $F[0]->{hitime};
+    my $d = sprintf("%.3f",$now-$then);
+    $d = $d<1 ? ($d*1000).'ms' : $d.'s';
+inter: |
+    my $thing = shift;
+    my $ki = ki($thing);
+    $ki =~ s/^\s+//;
+    $F[1]->{inter} .= " -{".$ki."}\n";
+head: | # %style:nonbabble
+    # two annoying dependencies 
+    use Mojo::IOLoop::Stream;
+    use Mojo::IOLoop;
+    use Mojo::UserAgent;
+    #use Mojo::SMTP::Client;
+    use File::Slurp qw(read_file write_file);
+    use JSON::XS;
+    our $JSON = JSON::XS->new->allow_nonref;
+    our $JSONS = JSON::XS->new->allow_nonref;
+    $JSONS->canonical(1); # sorts hashes
+    our $IDI = 1; # hash
+    use YAML::Syck qw(Dump DumpFile Load LoadFile);
+    use Data::Dumper; 
+    use Storable 'dclone';
+    use Carp;
+    use UUID;
+    
+    use Time::HiRes qw(gettimeofday usleep);
+    use List::Util qw(first max maxstr min minstr reduce shuffle sum);
+    use List::MoreUtils qw(natatime uniq);
+    use POSIX qw'ceil floor';
+    use Math::Trig 'pi2';
+    
+    use HTML::Entities qw(encode_entities decode_entities);
+    use Unicode::UCD 'charinfo';
+    use Encode qw(encode_utf8 decode_utf8 is_utf8);
+    use Term::ANSIColor;
+    our @F; # is Ring re subs from below 
+    
+    our $MAX_FCURSION = 240;
+    our $RADIAN = 1.57079633;
+    our $NUM = qr/-?\d+(?:\.\d+)?/;
+    
+    # going...
+    our $db = 0;
+    our $gp_inarow = 0;
+    our $swdepth = 5;
+    our $G0;
+    our $Ly;
+    our $_ob = undef;
+    
+    
+    # ^ curves should optimise away, accord ion
+    
+    # to dry up
+ddump: |
+    my $thing = shift;
+    my $ind;
+    return
+        join "\n",
+        grep {
+            1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
+            ...
+            do { /^$ind\S/ } )
+        }
+        "",
+        grep !/^       /,
+        split "\n", Dump($thing);
+wdump: |
+    my $thing = shift;
+    my $maxdepth = 3;
+    if (@_ && $thing =~ /^\d+$/) {
+        $maxdepth = $thing;
+        $thing = shift;
+    }
+    $Data::Dumper::Maxdepth = $maxdepth;
+    my $s = join "\n", map { s/      /  /g; $_ } split /\n/, Dumper($thing);
+    $s =~ s/^\$VAR1 = //;
+    $s =~ s/^    //gm;
+    $s;
+saycol: |
+    my $colour = shift;
+    print colored(join("\n", @_,""), $colour);
+    wantarray ? @_ : shift @_
+say: |
+    saycol(white => @_)
+sayyl: |
+    saycol(bright_yellow => @_)
+sayre: |
+    saycol(red => @_)
+sayg: |
+    saycol(bright_green => @_)
+saygr: |
+    saycol(green => @_)
+saybl: |
+    saycol(bright_blue => @_) 
+ki: |
+    my ($re,$ar,$d) = @_;
+    $d++;
+    if ($re !~ /^\d+$/ && !$ar) {
+        $ar = $re;
+        $re = 2;
+    }
+    if (!ref $ar || "$ar" !~ /(HASH)/) {
+        my $s = "!%:$ar";
+        $s =~ s/\n/\\n/g;
+        return slim(30,$s);
+    }
+    return ref $ar if ref $ar =~ /^[A-Z][a-z]/;
+    my $lim = 150 - (150 * ($d / 3));
+    my @keys = sort keys %$ar;
+    @keys = ('name') if ar.name && ar.bb;
+    @keys = ('t','y','c','sc') if ar.t && ar.y && ar.c && ar.sc;
+    if (ar.cv eq '0.3' && ar.aspace eq '0.6') {
+          my $t = {map{$_=>1}qw'aspace in out ov pcv space spc mu i u thi'};
+        @keys = grep{!$t->{$_}}@keys;
+    }
+    join ' ', map {
+          my $k = $_;
+        my $v = $ar->{$k};
+        $v = "~" unless defined $v;
+        ref $v eq 'HASH' ? do {
+            v.bb && v.name ?
+                ($d > 1 && (v.name eq 'Duv' || v.name eq 'Pre') ? "$_:v.name"
+              : $d > 1 && $_ eq 'at' ? "at:".slim(5,v.t)
+              :
+                "$_={@".v.name."&".slm(3,v.id)."@}"
+              )
+            : 
+                  "$_=".($re?"{ ".slim($lim,ki($re-1,$v,$d))." }":"$v")
+        }
+        : ref $v eq 'ARRAY' ?
+              do "$_=\@x".@$v.(@$v < 9 && slim(19, join", ",@$v))
+            : "$_=".slim(150,"$v")
+    } @keys;
+kk: |
+    my ($s,$lum) = @_;
+    $lum ||= 1;
+    my $d = (3 - $lum);
+    my $lim = 150 - (150 * ($d / 3));
+    !ref $s || "$s" !~ /(ARRAY|HASH)/ && return "!%:$s";
+    join ' ', map {
+        my $v = $s->{$_};
+        $v = "~" unless defined $v;
+        ref $v eq 'HASH'
+            ? "$_=".($lum ?  "{ ".slim($lim,ok($v,$lum-1))." }" : "$v")
+        : ref $v eq 'ARRAY'
+            ? "$_=\@x".@$v
+            : "$_=".slim(150,"$v")
+    } sort keys %$s;
+k2: |
+    ki(1, shift);
+unico: |
+    my ($int, $wantinfo) = @_;
+    my $h = sprintf("%x", $int);
+    my @s = eval '"\\x{'.$h.'}"';
+    push @s, charinfo($int) if $wantinfo;
+    wantarray ? @s : shift @s
+hexend: |
+    $_[0] =~ /([0-f])?([0-f])?([0-f])?$/;
+    map { hex($_) } $1, $2, $3;
+hexbe: |
+    my@h = map { sprintf('%x', int($_)) } @_;
+    wantarray ? @h : join'',@h;
+hitime: |
+    return join ".", gettimeofday();
+flatline: |
+    map { ref $_ eq "ARRAY" ? flatline(@$_) : $_ } @_
+mkuid: |
+    (mkuuid() =~ /^(\w+)-.+$/)[0]
+    .$IDI++
+mkuuid: |
+    UUID::generate(my $i);
+    UUID::unparse($i, my $s);
+    $s
+zjson: |
+    my $n = shift;
+    if (n.J) {
+        $n = {%$n};
+        delete n.J;
+    }
+    sjson($n)
+djson: |
+    my $m = shift;
+    my $j;
+    
+    eval { $j = $JSON->decode($m) };
+    die "JSON DECODE FUCKUP: $@\n\nfor $m\n\n\n\n" if $@;
+    die "$m\n\nJSON decoded to ~undef~" unless defined $j;
+    $j
+ejson: |
+    my $m = shift;
+    $JSON->encode($m);
+sjson: |
+    my $m = shift;
+    $JSONS->encode($m);
+slim: |
+    my ($f,$t,$c) = @_;
+    ($f,$t,$c) = (40,40,$f) if defined $f && !defined $t && !defined $c;
+    ($f,$t,$c) = ($f,$f,$t) if defined $t && defined $f && !defined $c;
+    $c = ($c=~/^(.{$t})/s)[0]."..".(length($c) - $f) if length($c) > $f;
+    $c
+slm: |
+    my $s = slim(@_);
+    $s =~ s/\.\.(\.|\d+)$//;
+    $s
+acum: |
+    my ($n, $y, $c) = @_;
+    push @{$n->{$y}||=[]}, $c;
+ind: |
+    "$_[0]".join "\n$_[0]", split "\n", $_[1]
+dig: |
+    Digest::SHA::sha1_hex(encode_utf8(shift))
+snooze: |
+    return Time::HiRes::usleep((shift || 500) * 10);
+
