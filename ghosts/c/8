@@ -62,7 +62,9 @@ GW: | # star listening
     J.ev.th = 'middle';
     y.at.Mid = "G-J.mo.s.C.c.s";
     y.at.Wid = J.mo.s.id;
+    my $ear = G.W;
     G.GW = G.W = $J;
+    $J.>$_ = $ear.>$_ for keys %{$ear||{}};
     
     if (0) {
         my $f = "life/W/y.at.Wid\.e";
@@ -84,11 +86,14 @@ GW: | # star listening
         my $not = G.W.noti ||= {};
         $db->on(notification => sub {
             my ($db, $name, $pid, $s) = @_;
+            $s = encode_utf8($s);
             Rw GW_Answer $name $s;
         });
-        $db->listen($_) for J.at.Wid, keys %{G.W.noti};
+        for (J.at.Wid, keys %{G.W.noti}) {
+            $db->listen($_);
+            sayyl "Listen: $_";
+        }
         G.W.lizdb = $db;
-        sayyl "Listen: J.at.Wid";
     };
     $ya->() unless J.islisten++;
     
@@ -128,8 +133,8 @@ Siendo: | # send instruct (to forked) between G
         -e $name || die "$name is not exids";
         my $W = readlink $name;
         $W =~ s/\.c$//;
-        my $s = e&s;
-        $db->notify($W, 'me '.$s );
+        my $s = 'me '.e&s;
+        G&zen,$W=>$s;
         sayre "Hars: $to -> $W    puts: $s";
     }
     
@@ -511,6 +516,7 @@ Web: |
         $tx->max_websocket_size(512000);
         $s->on(message => sub {
             my ($M, $m) = @_;
+            $m = encode_utf8($m);
             sayyl "Message from $addr ".$m;
             my $dec = eval { djson $m };
             $@ && die "Message doesnt decode: $@\n\n$m";
@@ -519,6 +525,9 @@ Web: |
                 my $db = G&db;
                 $db->notify($W,decode_utf8($m));
                 say "Sent ".length($m)." to $W";
+            }
+            else {
+            
             }
         });
         $s->on(finish => sub {
@@ -536,15 +545,16 @@ Web: |
     G.Websen = J.Websen ||= sub {
         my $m = shift;
         say "Web is sended! $m";
-        J.tx->send($m);
+        J.tx->send(decode_utf8($m));
     };
     
     my $ya = G.onfork.Web = sub {
         my $db = G&db;
         $db->on(notification => sub {
-            my ($db, $name, $pid, $payload) = @_;
-            say "$name: $payload";
-            J.Websen->($payload);
+            my ($db, $s, $pid, $m) = @_;
+            $m = encode_utf8($m);
+            say "$s: $m";
+            J.Websen->($m);
         });
         $db->listen('Js');
     };
