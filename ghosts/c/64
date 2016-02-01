@@ -924,17 +924,48 @@ Draw: | # most wild (furthest from Wild, goes in circle)
     # merge/split things into Seate-good, Seate-bung etc
     
 G: | # GGG subs, must get wormholes to do this this shortly
-    my $f = "w/J.name\.yml";
-    my $N = -f $f ? LoadFile($f) : do {
-        J.at.isle && die "Run without isle";
-        my $ay = 
-        n Dwight
-        my $N = Rw getJN $J:ay.nj $I:ay.I $pi=clife;
-        # for cfile drop cache by mtime
-        delete _.c.from for @$N;
-        DumpFile($f,$N);
-        $N
-    };
+    my $N = [];
+    if ('fo'eq'amer') {
+        my $f = "w/J.name\.yml";
+        $N = -f $f ? LoadFile($f) : do {
+            J.at.isle && die "Run without isle";
+            my $ay = 
+            n Dwight
+            my $N = Rw getJN $J:ay.nj $I:ay.I $pi=clife;
+            # for cfile drop cache by mtime
+            delete _.c.from for @$N;
+            DumpFile($f,$N);
+            $N
+        };
+    }
+    my $fi = 'w/c66';
+    if ('a'eq'bandonment') {
+        `cat /dev/null > $fi`;
+        for (@$N) {
+            my $style = " # %style:_.sc.style"
+                if _.sc.style ne 'func';
+            G&wraf,$fi,$_ for "_.t: |$style\n".ind('    ', _.c.s)."\n";
+        }
+    }
+    $N = [];
+        my @lino = `cat $fi`;
+        my $ya = LoadFile($fi);
+        for (@lino) {
+            /^\s/ && next;
+            /^(\S+): \|.*?(%style:(.*))?\s*$/ || next;
+            $1 eq 'wayup' && next;
+            my $c;
+            c.t = $1;
+            exists $ya.>$1 || die "NMoti o $1: $_";
+            c.c.s = $ya.>$1;
+            c.sc.style = $3||'func';
+            c.y.cv = 0.1;
+            say "$1 -> $3    of ($_) means ".wdump 4, $c if c.t eq 'head';
+            push @$N, $c;
+        }
+    
+    
+    
     return sayyl "isleless J.name, assume stop" if !J.at.isle;
     
     Nn(enth=>''=><<'','%style:func');

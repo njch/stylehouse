@@ -12,22 +12,20 @@ my ($s,$iii,$x,$xrd,@Me) = @M;
 my $I = $A->{I};
 for my $ik (sort keys %$iii) {
     my $D = $iii->{$ik};
-    if (my $nk = $D->{sc}->{nk}) {
+    if ($D->{sc}->{nk} && !$D->{sc}->{def}) {
+        my $nk = $D->{sc}->{nk};
         die "AC-C confusio".wdump 4,[$A->{C},$C] if $A->{C} ne $C;
         next if !exists $C->{$nk};
         if (my $gk = $D->{sc}->{gk}) {
             next if !exists $C->{$nk}->{$gk};
         }
     }
-    my $act;
     my $dont;
-    if ($D->{sc}->{acgt} && $D->{sc}->{act}) {
-        $act = 1;
+    if ($D->{sc}->{acgt}) {
         # acgtsubs can be defined at any cv
         # run themselves if act
         # usu. one receiver (Ci) and the rest scheme
         # may up Iso personalities as sublingoes to decompress inpatterns.
-        die "$D->{t} .act gets... $D->{sc}->{act}" if $D->{sc}->{act} ne '1';
         $dont = 1 if exists $A->{I}->{$D->{t}};
         if ($dont) {
             my $Ige = $A->{I}->{$D->{t}."_dige"};
@@ -53,7 +51,8 @@ for my $ik (sort keys %$iii) {
     my @is = $A->{s};
     @is = $G->{h}->($A,$C,$G,$T,"scIfs",$D->{sc}->{Ifs}) if $D->{sc}->{Ifs};
     @is || next;
-    if ($act) {
+    if ($D->{sc}->{act}) {
+        die "$D->{t} .act gets... $D->{sc}->{act}" if $D->{sc}->{act} ne '1';
         push @$xrd, [$I->{k},$ik];
         my $Ds = $x->{$I->{k}}->{$ik} ||= {};
         $Ds->{D} = $D;
@@ -161,7 +160,7 @@ for my $kik (@$xrd) {
     my $D = $Ds->{D};
     for my $s (@{$Ds->{is}}) {
         $D->{sc}->{acgt} eq 's'||die "nonacgts".wdump $D;
-        exists $A->{I}->{$D->{t}}||die "acgtI $D->{t} not up: ".wdump $A->{I};
+        exists $A->{I}->{$D->{t}}||die "acgtI $D->{t} not up: ".wdump $D;
         
         $T->{D} = $D;
         $G->{h}->($A,$C,$G,$T,"$D->{t}",$s);
@@ -253,9 +252,10 @@ I:
         args: A,C,G,T,s,iii,x,xrd
         bab: ~
         code: I
-        dige: e18fb8040929
+        dige: 910e45d8137c
         eg: Ise::KnowTime
         l: "#c"
+        of: I
       t: carebowl
       "y": 
         cv: '0.1'
@@ -270,6 +270,7 @@ I:
         dige: abd15ac755ac
         eg: Ise::KnowTime
         l: "#c"
+        of: I
       t: ex
       "y": 
         cv: '0.1'
@@ -281,9 +282,10 @@ I:
         args: A,C,G,T,o,x,xrd
         bab: ~
         code: I
-        dige: e0d1bb4c4b11
+        dige: fdca72aaf554
         eg: Ise::KnowTime
         l: "#c"
+        of: I
       t: exood
       "y": 
         cv: '0.1'
@@ -298,6 +300,7 @@ I:
         dige: 971f4fb0fe3d
         eg: Ise::KnowTime
         nois: "#c"
+        of: I
       t: t
       "y": 
         cv: '0.1'

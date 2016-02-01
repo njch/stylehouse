@@ -6,20 +6,6 @@ no warnings qw(uninitialized redefine);
 use G;
 our $A = {};
 
-sub T {
-my ($A,$C,$G,$T,$s,@Me) = @_;
-my $I = $A->{I};
-my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole',{base=>$s},@Me);
-return $e;
-};
-sub tie {
-my ($A,$C,$G,$T,@M)=@_;
-my ($class,@Me) = @M;
-my $I = $A->{I};
-my %na;
-tie %na, $class, @Me;
-return \%na
-};
 {
     package Ghoz; #
     use Tie::Hash;
@@ -49,6 +35,12 @@ return \%na
         }
     }
 }
+sub T {
+my ($A,$C,$G,$T,$s,@Me) = @_;
+my $I = $A->{I};
+my $e = $G->{h}->($A,$C,$G,$T,"tie",'Wormhole',{base=>$s},@Me);
+return $e;
+};
 {
     package Wormhole;
     use G;
@@ -94,6 +86,14 @@ return \%na
         });
     }
 }
+sub tie {
+my ($A,$C,$G,$T,@M)=@_;
+my ($class,@Me) = @M;
+my $I = $A->{I};
+my %na;
+tie %na, $class, @Me;
+return \%na
+};
 $A->{II} = Load(<<STEVE);
 --- 
 I: 
@@ -108,6 +108,7 @@ I:
         code: I
         dige: 274ac0734b1d
         eg: Down::Tides
+        of: I
       t: T
       "y": 
         cv: '0.1'
@@ -121,6 +122,7 @@ I:
         code: I
         dige: 26a6bbbfb025
         eg: Down::Tides
+        of: I
       t: tie
       "y": 
         cv: '0.1'

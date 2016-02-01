@@ -10,7 +10,7 @@ sub A {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 ($A,my$up) = ({},$A);
-$A->{G} = $G; # for wiring from A (G/T/Hypo)
+$A->{G} = $G;
 $A->{up} = $up;
 $A->{mo} = $A;
 $A->{am} = $s || die "unsame?";
@@ -53,7 +53,7 @@ sub AN {
 my ($A,$C,$G,$T,$s,@Me) = @_;
 my $I = $A->{I};
 $C = {};
-($C->{c}->{J}, $C->{c}->{N}, $C->{c}->{M}) = (@Me);
+$C->{c}->{$_} = shift @Me for qw'J N M';
 ref $C->{c}->{N} eq 'ARRAY' || die "Not array CcN";
 my $t = $C->{c}->{N}->[0];
 $C->{c}->{N} = [$C->{c}->{N}] if defined $t && !ref $t; # C[] -> N[C[]]
@@ -187,8 +187,9 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 18cd98643529
+        dige: 866b67261493
         eg: Ise::Shelf
+        of: I
       t: A
       "y": 
         cv: '0.1'
@@ -200,8 +201,9 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: e06917e4c9af
+        dige: 03087a02a900
         eg: Ise::Shelf
+        of: I
       t: AN
       "y": 
         cv: '0.1'
@@ -215,6 +217,7 @@ I:
         code: I
         dige: c929109024ff
         eg: Ise::Shelf
+        of: I
       t: Act
       "y": 
         cv: '0.1'
@@ -228,6 +231,7 @@ I:
         code: I
         dige: 6d795f329e50
         eg: Ise::Shelf
+        of: I
       t: An
       "y": 
         cv: '0.1'
@@ -241,6 +245,7 @@ I:
         code: I
         dige: ee898b7ce694
         eg: Ise::Shelf
+        of: I
       t: In
       "y": 
         cv: '0.1'
@@ -254,6 +259,7 @@ I:
         code: I
         dige: 27eb1421046a
         eg: Ise::Shelf
+        of: I
       t: Mo
       "y": 
         cv: '0.1'
@@ -267,6 +273,7 @@ I:
         code: I
         dige: 3d64a2c76c68
         eg: Ise::Shelf
+        of: I
       t: Sev
       "y": 
         cv: '0.1'
@@ -280,6 +287,7 @@ I:
         code: I
         dige: 9dac59c7fcb5
         eg: Ise::Shelf
+        of: I
       t: d
       "y": 
         cv: '0.1'
@@ -293,6 +301,7 @@ I:
         code: I
         dige: 5d909c56b7af
         eg: Ise::Shelf
+        of: I
       t: loop
       "y": 
         cv: '0.1'
@@ -306,6 +315,7 @@ I:
         code: I
         dige: d76511e31fad
         eg: Ise::Shelf
+        of: I
       t: recycle
       "y": 
         cv: '0.1'

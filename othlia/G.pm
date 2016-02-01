@@ -329,9 +329,3 @@ my $way = shift;
       die "sat rs findy $point";
 
 }
-sub wayup {
-my $G = shift;
-my $way = read_file(shift);
-$G->{way} = Load($way); 
-
-}
