@@ -1,6 +1,6 @@
 
 Gonews: |
-    # look at hosts->host_pins table, invents from Gohup ! ! !!!! !
+    # look at hosts->host_pins table, invents from Gohup ! ! !!!! ! ! !!!!!!
     if (!ar.do) {
         push @{J.todo||=[]}, ar.c || die "No arc! ".wdump 1, $ar;
         say "Arcup: ar.c.t";
@@ -62,13 +62,12 @@ Pins: |
     my $la = J.pinla ||= {};
     my $new = [grep { !$la.>$_ } keys %$pins];
     if (@$new) {
-        G.GW || return sayre "Avoid pin listening sync, no GW";
+        G.GW || return;
         say "pin listenings: + @$new";
         $A = G.GW.lA || die "GW no .lA :".wdump 2, G.W;
         Rw AddPins $A $J $new;
         $la.>$_ = 1 for @$new;
     }
-    sayyl "Pinla J.name ! ";
     J.supins = $pins;
 AddPins: |
     # given GW's A for UpPg, and J Oth whose id GW is listening to
@@ -120,6 +119,7 @@ Gohup: |
             insert into gho (file,t,s,dig,ts) values (?,?,?,?,?)
     }
     c.ts = $ts;
+    Rw w_way_file $k:c.t $v:c.s;
     Rw Gonews $J $c;
     
 Gohdown: | # read pins from gho where t=$p, chucks in G.way
@@ -148,7 +148,7 @@ Goat: |
 Gosh: |
     u trows
     y.in=y.out=0.3;
-    my @c = map {"Ghost/c/$_"} qw'ඬ 11 61 43 81';
+    my @c = map {"Ghost/c/$_"} qw'1* 8* ඬ 11 61 43';
     $A=
     n Gosh=>9=>{}
     #
@@ -232,8 +232,8 @@ pi/Gosh: | # a ghost file change
         n $_=>3=>$s,{dig=>$dig}
     }
     # sev fold 3 - 
-So: | # dead ghosti
-    #u urw
+So: | # gonish vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    #u urw #
     u Deso
     #u ishfi
     J.VV.N = 1;

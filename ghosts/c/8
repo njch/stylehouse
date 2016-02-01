@@ -101,6 +101,16 @@ GW: | # star listening
 GW_Answer: |
             my $J = G.oin;
             say "listened: $name: $s";
+            if ($s =~ /^CCC (\d+)$/) {
+                my $h = G&qh,<<'',$1;
+                    select f,t,s,mid from mez where mid = ?
+                length(h.s) || die "mized mez: $1";
+                Rw timer $d=2 $cb:_ for sub { G&qp,<<'',h.mid };
+                    delete from mez where mid = ?
+                $s = h.s;
+                sayyl "Length of mez h.t from h.f: ".length $s;
+                warn "aNm not $name h.t for mezmid=h.mid" if h.t ne $name;
+            }
             if (my $J = G.W.noti.>$name ) {
                 my $c;
                 c.e = G&tC,[PgNotify=>{s=>$s}];
@@ -209,10 +219,6 @@ forked: |
         n reJSlines
     
     J.me = '';
-    #n Details
-    #n EYZ
-    #n Usee
-    # Rw followS
 waitme: | # 
     use POSIX ':sys_wait_h';
     if (G.forked) {

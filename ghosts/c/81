@@ -5,18 +5,17 @@ Tr: |
     $A=
     n exit=>[-dot=>0.03]
     # #
-    my $q =  '! ඬ ؎ ‎ ﴿ጞ !';
+    my $q =  '!!! ඬ ؎ ‎ ﴿ጞ !!';
     my $o = G&qh,<<'',$q;
         insert into random (t) values (?) returning t
+    
     
     if (!e&C) {
         G&liz,doowop=>$_ for sub {
             my ($s,$t) = @_;
-            sayre "Goatoa: $s $t";
             saybl djson($t)->{t};
         };
         Rw timer $d=1 $cb:_ for sub {
-            sayyl "Wdopkep" for 1..4;
             my $j = sjson({t=>LoadFile('g/c/81')->{Garb}});
             G&zen,doowop=>$j
         };
@@ -38,6 +37,7 @@ Tr: |
     sayyl wdump 4, J.pins;
 Garb: |
     my $q =  '! ඬ ؎ ‎ ﴿ጞ !';
+    # !
 pi/dlu: |
     y.ert = 8;
     # !!! 
@@ -50,20 +50,17 @@ pi/breath: |
     Mn(@$_) for
     [Telling=>'','My troubles'],
     [To=>'','Strangers'];
-trows: |
+trows: | # osc at 5 fillin at time 2
     u allact
     n UpPg
     
     n Arow =>32,<<'','%code:U,v:scJ'
         if (0) {
-            G&qp,<<'';
-                drop table cheese;
-            G&qp,<<'';
-                drop table goat;
-            G&tyable,goat=><<'';
-                s,ts:timestamptz,jid:serial:primary:key,jup:int
-            G&tyable,cheese=><<'';
-                s,ts:timestamptz,jid:int:references:goat:on:delete:cascade
+            G&tyable,@$_
+            for 
+            # reverse map { G&qp,$_ } map { "drop table $_" } reverse
+            [goat => 's,ts:timestamptz,jid:serial:primary:key,jup:int'],
+            [cheese => 's,ts:timestamptz,jid:int:references:goat:on:delete:cascade']
         }
         my $o = {t=>C.t};
         o.jup = C.c.W ? \'is null' : do {
@@ -106,7 +103,7 @@ trows: |
     
     
     #
-Travel: |
+Travel: | # sync clocks
     my ($from,$to) = ('s','v');
     
     my $date = `ssh $from date`;
@@ -264,7 +261,18 @@ UpPg: |
     
     zen:
         my $m = @Me > 1 || ref $Me[0] ? sjson(\@Me) : $Me[0];
-        G&db ->notify($s,decode_utf8($m));
+        if (length $m > 5000) {
+            #G&tyable,mez=><<'' if !G.tabup++;
+            #    f,s,ts:timestamptz:default:now(),mid:serial:primary:key
+            my $h = G&qh,<<'',G.t,$s,$m;
+                insert into mez (f,t,s) values (?,?,?) returning mid
+            sayyl "Length of zen/notify $s: ".length $m;
+            $m = "CCC h.mid";
+        }
+        else {
+            $m = decode_utf8($m);
+        }
+        G&db ->notify($s,$m);
 
         
 Usee: |
