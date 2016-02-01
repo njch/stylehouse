@@ -1,22 +1,5 @@
 
-Gonews: |
-    # look at hosts->host_pins table, invents from Gohup ! ! !!!! ! ! !!!!!!
-    if (!ar.do) {
-        push @{J.todo||=[]}, ar.c || die "No arc! ".wdump 1, $ar;
-        say "Arcup: ar.c.t";
-        Rw wayty $J $p=Gonews $do=1 $woping=3oe;
-        return;
-    }
-    my @pins = uniq map{_.t} @{delete J.todo};
-    my $where = join' or ',map{"t = ?"}@pins;
-    my $wh={};
-    acum $wh, _.w, _.t for G&qh,<<''.$where,@pins;
-        select * from gw_pin where 
-    while (my ($Wid,$pins) = each %$wh) {
-        my $m = "Pinup;".join',',@$pins;
-        say "$Wid -> $m";
-        G&zen,$Wid,$m
-    }
+
 Pinup: |
     my $wake = {};
     for my $p (@$m) {
@@ -137,8 +120,23 @@ Gohdown: | # read pins from gho where t=$p, chucks in G.way
     write_file('/tmp/gohgon',$was);
     write_file('/tmp/gohdon',w.s);
     sayre "WAOKs out $p: ". `diff /tmp/gohgon /tmp/gohdon`;
-Tray: |
-    # ! !  ! ! !!
+Gonews: |
+    # look at hosts->host_pins table, invents from Gohup ! ! !!!! ! ! !!!!!!
+    if (!ar.do) {
+        push @{J.todo||=[]}, ar.c || die "No arc! ".wdump 1, $ar;
+        Rw wayty $J $p=Gonews $do=1 $woping=3oe;
+        return;
+    }
+    my @pins = uniq map{_.t} @{delete J.todo};
+    my $where = join' or ',map{"t = ?"}@pins;
+    my $wh={};
+    acum $wh, _.w, _.t for G&qh,<<''.$where,@pins;
+        select * from gw_pin where 
+    while (my ($Wid,$pins) = each %$wh) {
+        my $m = "Pinup;".join',',@$pins;
+        say "$Wid -> $m";
+        G&zen,$Wid,$m
+    }
 Goat: |
     n GW
     n Gosh
@@ -211,6 +209,7 @@ pi/Gosh: | # a ghost file change
     my $file = $s;
     my $am = LoadFile($file);
     my @l = sort keys %$am;
+    my @ch;
     for (@l) {
         # should be on sev somewhere, impose new ts by s/dig change, maintain this W
         my $s = $am.>$_;
@@ -227,11 +226,13 @@ pi/Gosh: | # a ghost file change
             c.sc.dig = $dig;
             c.sc.file = $file;
             sayyl "Was a change: $file -> c.t";
-            G&zen,Goh=>$c;
+            push @ch, $c;
         }
         n $_=>3=>$s,{dig=>$dig}
     }
-    # sev fold 3 - 
+    say "zending ".@ch;
+    G&zen,Goh=>@ch if @ch;
+    # sev fold 3 - !
 So: | # gonish vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     #u urw #
     u Deso
@@ -246,7 +247,6 @@ Deso: |
     
     n fsize=>5=><<'','%code:Mo'
         C.sc.fsize = -s C.t;
-
 Ghost: |
     u CimPg
     #u urw
