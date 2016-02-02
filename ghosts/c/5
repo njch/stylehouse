@@ -31,7 +31,6 @@ Run: |
     c&n = 'Sen' if c&b eq '1';
     c&u ||= '1' if G.t =~ /^W/;
     
-    saybl wdump 2, $C;
     Rw ${_}_up for grep{c&u eq '1'} G.t;
     Rw $_ for grep{$_&&'1'ne$_} c&u;
     
@@ -46,9 +45,8 @@ Top: |
     my $J;
     my $t = 'Oth';
     my $cv = 0.3;
-    my $nt = "n$t";
-    $J = G.sc->{$nt} ||= do {
-        $J = Rw Jto $t:nt;
+    $J = G.sc.>not$t ||= do {
+        $J = Rw Jto $t=not$t;
         my $sc;
         G.s = G.oin = sc.J = Rw Jto $t;
         Rw jamsc $J $t $cv $sc;
@@ -65,9 +63,10 @@ Oth: | # rising wave
     y.at.oJl = 1;
     J.A.tid++;
     
-    if (!G.last && c&b) {
+    sayyl wdump 2, [C.t,C.y.cv,C.c,C.sc];
+    if (!G.last && G.c.n) {
         sayyl "YPE:";
-        n $_ for grep{$_} split /,/, c&b
+        n $_ for grep{$_} split /,/, G.c.n
     }
     
     $s eq 'Oth' && die "Find hangout";

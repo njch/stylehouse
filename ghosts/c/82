@@ -196,28 +196,27 @@ Gonews: |
 Goat: |
     n GW
     n Ghost
+    # 
     J.times++ > 20 &&
         Rw exit refork;
     Rw waito + $d=27;
-Ghost: | # farm #
+Ghost: | # farm # #
     u trows
-    J.VV.N = 1;
     y.in=y.out=0.3;
-    my @c = map {"Ghost/c/$_"} qw'1*';# 8* ඬ 11 61 43';
+    my @c = map {"Ghost/c/$_"} qw'82 81';# 1* 8* ඬ 11 61 43'; #####!###
     $A=
     n C.t=>9=>{}
     #
-    my $cmd = "ls --full-time --inode @c";
+    my $cmd = "ls -rt --full-time --inode @c";
     J.fast ||= do {
-        (my $cmd = $cmd) =~ s/^ls/ls -rt/;
+        my $cmd = $cmd;
         $cmd .= " | tail -3";
-        Rw recur $d=0.3 $cb:_ for sub {
+        Rw recur $d=0.5 $cb:_ for sub {
             my $stuff = G&batik,$cmd;
             return if J.fast_stuff eq $stuff;
             my $fir = !J.fast_stuff;
             J.fast_stuff = $stuff;
             return sayre " - - First!" if $fir;
-            sayyl "Coming back! to J.name";
             Rw waito $J;
         };
         1
@@ -227,13 +226,15 @@ Ghost: | # farm #
     $A=
     n sha=>1=>slm(20,dig(join"\n",@z))
     my ($sha) = @{A.M};
-    if (sha.c.s eq J.wz.sha.c.s) {
-        J.lies = 1;
-        return saybl"------- C.t";
+    #
+    if (sha.c.s eq J.wz.sha.c.s && J.El.Duv) {
+        J.lies = 1; # 
+        y.ope = T.nose = 1;
+        return saybl"------- C.t    sha.c.s";
     }
-    saybl wdump 3, J.wz;
-    # !
+    # !!!! !!
     for (@z) {
+        chomp;
         s/^\s+|\s+$//sg;
         my ($ino,$mo,$qua,$use,$grp,$size,$date,$time,$tz,$file)
             = split /\s+/, $_, 11;
@@ -243,30 +244,30 @@ Ghost: | # farm #
             ino=>$ino,
             size=>$size
         };
-        my $oC = J.wz.>$file;
-            || say "No find $file in: ".wdump 1, J.wz;
+        my $oC = J.wz.>$file
+            || say("No find $file in: ".wdump 1, J.wz) && {};
         
         my @dif = G&hesl,oC.sc,$o;
-        
-        o.nose = 1 if @dif;
+        sayre "Nodif $file" if !@dif;
         
         m $file=>-Ghost=>$o
     }
     y.ope = 1;
     
 pi/Ghost: | # paddock #
-    T.nose = 1 if J.nose++ && delete C.c.nose;
     y.at.>$_ = c&$_ || die "no $_ givec" for qw'ts ino size';
     y.in=y.out=0.3;
     
-    sayyl "Hel" for 1..3;
     $A=
     n sha=>1=>(`sha1sum $s` =~ /^(\S+)/)[0]
     my ($sha) = @{A.M};
-    return saybl"Skiping same C.t" # #
-        if sha.c.s eq J.wz.sha.c.s;
     
-    # # #
+    if (J.El.Duv && sha.c.s eq J.wz.sha.c.s) {
+        saybl"Skiping same C.t"; # #
+        y.ope = T.nose = 1;
+        return;
+    }
+    
     
     my $file = $s;    
     my $am = LoadFile($file);
@@ -276,6 +277,7 @@ pi/Ghost: | # paddock #
         # should be on sev somewhere, impose new ts by s/dig change, maintain this W ##
         my $s = $am.>$_;
         my $wa = J.wz.>$_;
+        sayre("Jaws missing: $_") if !$wa;
         my $dig = slm(9,dig($s));
         if ($dig ne wa.sc.dig) {
             my $c;
@@ -287,7 +289,7 @@ pi/Ghost: | # paddock #
             c.sc.tos = J.at.ts;
             c.sc.dig = $dig;
             c.sc.file = $file;
-            sayyl "Was a change: $file -> c.t\t: $dig ne wa.sc.dig";
+            sayyl "Was a change: $file -> c.t\t:    $dig ne wa.sc.dig";
             push @ch, $c;
         }
         n $_=>3=>$s,{dig=>$dig}
