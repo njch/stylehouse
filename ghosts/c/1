@@ -223,32 +223,9 @@ Eel: | # most wild (furthest from Wild, goes in circle)
     n KnowTime
 Feel: | # wpp
     n Eel
-    n Doi
     n Jam
     n Wuts
-Doi: |
-    u allacgts
-    
-    comac:
-        my @s = split ',',$s;
-        my $tw = {map{$_=>1}@s};
-        for (split ',', @Me) {
-            if (/^-(.+)$/) {
-                delete $tw.>$1
-            }
-            else {
-                my $s = $_;
-                @s = grep { $_ ne $s } @s if $tw.>$s;
-                push @s, $s;
-                $tw.>$s = 1;
-            }
-        }
-        join ',', grep { $tw.>$_ } @s;
-    fp: %acgt:p h
-        # take C.>$p-ointer, replace with G&$h,@Me;
-    po:
-        # post ghost
-        
+    n Done
 Again: |
     n Being
     n Arms
@@ -362,8 +339,50 @@ Dt: |
     return 0 if !G&ip,\$sc,$C;
     #return 0 if !$ip->(\$sc,$C);
     1
+Done: |
+    u allacgts
+    tC:
+        @Me = ($s,@Me);
+        @Me = ([@Me]) if !ref $Me[0];
+        my @me = @Me;
+        my @o;
+        push @o,
+        map{_.y.cv = _.y if _.y && !ref _.y;
+            _.y ||= {};
+            _.c ||= {};
+            _.sc ||= {};
+            $_ }
+        grep{defined}
+        map {
+            if (ref $_ eq 'ARRAY') {
+                if (!ref $_->[0]) {
+                    my $C;
+                    (C.t,C.y,C.c,C.sc,my @r) = @$_;
+                    C.c = {s=>C.c} if defined C.c && !ref C.c;
+                    C.c = delete C.y if ref C.y && !C.c;
+                    $C
+                }
+                else {
+                    G&tC,@$_;
+                }
+            }
+            elsif (ref $_ eq 'HASH') {
+                _.y || _.c || _.sc || @Me || return {c=>$_};
+                $_
+            }
+            else {
+                sayre "par".wdump 5,["Looking at:",$_,FromMe=>\@me];
+                die "Notgood: ".wdump 3,\@me;
+            }
+        } shift @Me while @Me;
+        wantarray ? @o :
+            @o != 1 ? die "tC not 1: ".wdump(4,\@o) :
+                $o[0];
+            
+    
 Bubble: | # upto st way
     u allacgts
+    n Done
     
     usage:
         # make C & feed atom
@@ -421,45 +440,6 @@ Bubble: | # upto st way
         }
         @o
     
-    
-    tC:
-        @Me = ($s,@Me);
-        @Me = ([@Me]) if !ref $Me[0];
-        my @me = @Me;
-        my @o;
-        push @o,
-        map{_.y.cv = _.y if _.y && !ref _.y;
-            _.y ||= {};
-            _.c ||= {};
-            _.sc ||= {};
-            $_ }
-        grep{defined}
-        map {
-            if (ref $_ eq 'ARRAY') {
-                if (!ref $_->[0]) {
-                    my $C;
-                    (C.t,C.y,C.c,C.sc,my @r) = @$_;
-                    C.c = {s=>C.c} if defined C.c && !ref C.c;
-                    C.c = delete C.y if ref C.y && !C.c;
-                    $C
-                }
-                else {
-                    G&tC,@$_;
-                }
-            }
-            elsif (ref $_ eq 'HASH') {
-                _.y || _.c || _.sc || @Me || return {c=>$_};
-                $_
-            }
-            else {
-                sayre "par".wdump 5,["Looking at:",$_,FromMe=>\@me];
-                die "Notgood: ".wdump 3,\@me;
-            }
-        } shift @Me while @Me;
-        wantarray ? @o :
-            @o != 1 ? die "tC not 1: ".wdump(4,\@o) :
-                $o[0];
-            
     
     C:
         my $z = G&At,$s,@Me;

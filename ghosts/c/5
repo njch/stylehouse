@@ -6,22 +6,36 @@ Rummage: |
     # as a kind of u that gains meaning as it receives layers of language
     # so behaviour can eat the rest of its specuity
 Run: |
-    for (@ARGV) {
-        my $k = /^\d+$/ ? 'cv' : 't';
-        if (/^(.+):(.+)$/) {
-            G.c.>$1 = $2;
-            next;
-        }
-        $G->{$k} = $_;
+    my @m = @ARGV;
+    
+    G.t = shift @m if $m[0] =~ /^((?!\d)\w)/ && $1 eq uc($1);
+    
+    G.cv = $m[0] =~ /^\d+/ ? shift @m : 3;
+    
+    for (map {split ','} @m) {
+        my ($k, $v) = split ':', $_, 2;
+        $v = 1 if !defined $v;
+        G.c.>$k = $v;
     }
-    G.IIII = [map{'G/T/'.$_}qw'H/Boat H/Rest Chang K/eel K/Jam']
-        if G.cv >= 4;
     
-    Rw $_
-        for grep {G.way->{$_}} map {$_.'_up'} grep {/^W[se]$/} G.t;
+    my $ta = $_<3?
+        'K/Eel':'K/Feel' for G.cv;
     
-    #Rw wayt $d=0.001 $p=Top;
-    Rw Top;
+    G.IIII = [map{'G/T/'.$_}split /\s+/,
+        "H/Boat H/Rest Chang ".$ta
+    ];
+    
+    G.y = $G;
+    $C = $G;
+    
+    c&n = 'Sen' if c&b eq '1';
+    c&u ||= '1' if G.t =~ /^W/;
+    
+    saybl wdump 2, $C;
+    Rw ${_}_up for grep{c&u eq '1'} G.t;
+    Rw $_ for grep{$_&&'1'ne$_} c&u;
+    
+    Rw Top
     
 Top: |
     G.now = hitime();
@@ -46,11 +60,15 @@ Top: |
     
     G.lastout = hitime();
     G.last = G.now;
-Oth: |
-    # rising
+Oth: | # rising wave
     y.ope = 1;
     y.at.oJl = 1;
     J.A.tid++;
+    
+    if (!G.last && c&b) {
+        sayyl "YPE:";
+        n $_ for grep{$_} split /,/, c&b
+    }
     
     $s eq 'Oth' && die "Find hangout";
     
@@ -61,13 +79,167 @@ Oth: |
     # randonly pour time ^
     T.nose = 1; # J no osc
     
+Sen: | # next net, fork catchee on stdin listened puur
+    #u urw
+    u UpPg;
+    #u SpaceWatch
+    y.in = 0.02;
+    y.out = 0.5;
+    y.at.sca = 0.3;
+    $A = 
+    s:
+        t
+    
+    G.Jsem = sub {
+        my $em = shift;
+        my $db = G&db;
+        $em = {lines=>[$em]} if !ref $em;
+        $db->notify('Js',decode_utf8(join"\n",@{em.lines}));
+    };
+    
+    Rw End
+End: | # fork/be the U slipperer
+    G.U = $J;
+    J.fti ||= 0;
+    if (J.fti >= 0) {
+        Rw waitme;
+    }
+    sayyl "G.t J.name up J.fti";
+    Rw forked;
+    
+waitme: | # 
+    use POSIX ':sys_wait_h';
+    if (G.forked) {
+        sayre "waitme already forked" for 1..3;
+        return;
+        exit;
+    }
+    
+    my $parent = $$;
+    if (my $pid = fork()) {
+        sayyl "
+            oooo
+               oo
+               o o
+              o   o
+             o";
+        my $and;
+        my $kill = $SIG{INT} = sub {
+            sayre "Killing $pid...";
+            kill 'KILL', $pid;
+            delete $SIG{INT}
+        };
+        $SIG{HUP} = sub {
+            $and = 1;
+        };
+        
+        waitpid($pid,0);
+        
+        if ($and) {
+            saybl "child wants restart!";
+            return
+            Rw waitme
+        }
+        saybl "Restart? <";
+        my $IN = \*STDIN;
+        while (my $k = <$IN>) {
+            chomp $k;
+            J.me = $k;
+            say "__ $k";
+            Rw goche $n=$1
+            while $k =~ s/(\d+)//g;
+            Rw goche $n:_
+                for qw'81 64 8 84 1';
+            Rw waitme;
+            return;
+        }
+    }
+    else {
+        G.forked = $parent;
+    }
+forked: |
+    # etc
+    if (J.me eq 'm') {
+        J.me = read_file("w/wasme");
+        say "Repeating: J.me";
+    }
+    write_file("w/wasme", J.me) if J.me;
+    J.wasme = J.me;
+    if (J.me =~ /^(\w+): (.+)$/) {
+        my $c = {t=>mesay=>y=>{}=>c=>{s=>$2,toG=>$1}};
+        n Siendo=>$c
+        J.me = '';
+        return;
+    }
+    if (J.me =~ /^(\w+):(\S+)(\s|$)/) {
+        my $o;
+        my ($is,$ul) = ($1,$2);
+        my $t = $1 if $ul =~ /^(\w+)/ || die "niul $ul";
+        if (!-f "w/$is/$t") {
+            my @op = glob "w/$is/$t*";
+            sayre "Many options: ".ki @op if @op > 1;
+            my $o = shift @op;
+            $ul = $1 if $o =~ /^.+\/(.+?)$/;
+        }
+        sayyl "So: $is, $ul   fr  $o";
+        J.me = " ALL $is:$ul";
+    }
+    if (J.me =~ s/^ (\w+)(?: (.+))?// && G.way->{$1}) {
+        n $1=>W=>{t=>$2}
+    }
+    
+    J.fti -= 3 if J.me =~ s/o//g;
+    J.fti -= 2 if J.me =~ s/i//g;
+    
+    delete G.forked if J.me =~ s/p//;
+    
+    Rw loopby $b=3 $d=5 $p=Top
+        if J.fti < 0;
+    J.fti++;
+    
+    J.me =~ /n/ &&
+        `cat /dev/null > G.GW.taile`;
+    J.me =~ /a/ &&
+        n All=>W=>{time=>6}
+    J.me =~ /A/ &&
+        n Aim
+    J.me =~ /u/ &&
+        n uncan
+    J.me =~ /N/ &&
+        n Notes
+    J.me =~ /s/ &&
+        n Sefi
+    J.me =~ /S/ &&
+        n Sefission
+    J.me =~ /w/ &&
+        n Pile
+    J.me =~ /g/ &&
+        n Dug
+    J.me =~ /c/ &&
+        n Chang
+    J.me =~ /d/ &&
+        n Details
+    J.me =~ /j/ &&
+        n ALL=>W=>{t=>'Swomp',isle=>'jes'}
+    J.me =~ /t/ &&
+        n Tarp
+    J.me =~ /v/ &&
+        n reJSlines
+    
+    J.me = '';
+exit: |
+    for (@{ar.m||[]}) {
+        if ($_ eq 'refork') {
+            G.forked eq $$ && die "You are forked: $$";
+            kill HUP=>G.forked;
+        }
+    }
+    exit;
 We: |
     n Modems
     n SevWo
     Rw wayt $d=1.9 $p=Othse $J;
-Othse: |
-    say wdump 3, ["J.mo.s, G.oin",J.mo.s, G.oin];
-All: |
+All: | # together active ambience
     J.mo.s.al = $J;
     n Check
     n @$_ for map{[$_=>W=>{}]} map {_.name}
@@ -76,42 +248,23 @@ All: |
         
     
     
-Check: |
+Check: | # always ambient ambulance
     Rw Loading;
     n wa =>''=>{pi=>'waps'}
     
     
-Rig: | # Wild
-    u Indulator
-    u Modulator
-    u Modems
-    n s=>''=>t
-    Rw dow $Rig:J.A.I;
-    # trigbacky, like there is a whole plateu of links aft tests
-    `cp w/Rig w/Wild`;
-    
-Sit: | # linkup Seate, Remy
-    n Seate
-    n Remy
-    
-Seate: | # Seven
-    u Seven
-    
-    u GeoSo
-    u Goodat
-    u Foli
-    u qqlaces
-    
-    n s=>''=>t
-    # use Wild as always, Seate just the Seven thing for use with another Wild
-    Rw dow $Seate:J.A.I;
-    T.nose = 1; # dont Sev (next run may use trouble)
-    
-Remy: | # mix Wild + Seate = Remy, to becomer Wild as things join Rig
-    J.A.IIII = ['G/T/Wild','G/T/Seate','G/T/Chang'];
-    n s=>''=>t
-    Rw dow $Remy:J.A.II;
-    # do tests... contigo
-    # merge/split things into Seate-good, Seate-bung etc
-    
+Loading: |
+    my @l;
+    push @l, keys %{G.T} if G.T;
+    push @l, keys %{G.Tfor} if G.Tfor;
+    @l = uniq @l;
+    for my $k (sort @l) {
+        my $f = G.Tfor->{$k} || "w/$k";
+        my $s = -s $f;
+        $s || sayre("Juynk in tied hash? Not $f") && next;
+        G.Tt->{$k} eq $s && next;
+        sayyl "Loading: $k";
+        G.Tt->{$k} = $s;
+        G.T->{$k} = LoadFile($f);
+    }
 

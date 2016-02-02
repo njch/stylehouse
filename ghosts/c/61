@@ -31,8 +31,8 @@ wayty: |
 waytyd: |
     delete J.waity.>$pin;
     Rw $pin;
-waito: | # refresh vector in a post e swarm catchup way, without e, departs call stack
-    #say "Comebacking J.name with C.t...";# if A.V&V;
+waito: | # refresh vector in a post e swarm catchup way, without e, departs call stack 
+    #say###"Comebacking J.name with C.t...";# if A.V&V;
     my $d = ar.d || 0.03;
     my $p = ar.p || 'waited';
     my $K = ar.K || "ar.p ar.d J.name"; # request comp
@@ -42,16 +42,24 @@ waito: | # refresh vector in a post e swarm catchup way, without e, departs call
     J.waito->{$K} = 1;
     Rw wayt + $K $d $p;
     
-waited: | # refresh soon has returned so it cIsOn, a hicup of order clasps e noise
+waited: | # refresh soon has returned so it cIsOn #
+    # (t is of any type, c gives
+    # a hicup of order clasps e noise
+    # how much exactly... arg scuttle lots
+    # mind moires, eddying structures
     ar.K && say("Back to ar.K") &&
         delete J.waito->{ar.K};
-    # how much exactly... arg scuttle lots, mind moires, eddying structures
-    #my $c = {%{C.c}};
-    #delete c.e;
+    
     my $c;
-    c.W = ar.J ? ref ar.J ? ar.J.name : ar.J : ar.W || die "say what W to waited";
+    (c.W) = ar.W || ref ar.J ? 
+        map{_.W||_.name||_.t||die"NotaJ:".ki$_}ar.J
+        :
+        ar.J || die "say what W to waited";
+    
     %$c = (%$c, %{ar.c}) if ar.c;
+    
     my $J = G.oin;
+    
     n c.W =>''=>{%$c,time=>6}
 loopfourby: |
     Rw loopby + $b=4;
@@ -81,18 +89,4 @@ vortex: |
          Rw o.way $J;
      };
      bl.id = G.oin.bb->{$loopr} = Rw recur $d $cb;
-Loading: |
-    my @l;
-    push @l, keys %{G.T} if G.T;
-    push @l, keys %{G.Tfor} if G.Tfor;
-    @l = uniq @l;
-    for my $k (sort @l) {
-        my $f = G.Tfor->{$k} || "w/$k";
-        my $s = -s $f;
-        $s || sayre("Juynk in tied hash? Not $f") && next;
-        G.Tt->{$k} eq $s && next;
-        sayyl "Loading: $k";
-        G.Tt->{$k} = $s;
-        G.T->{$k} = LoadFile($f);
-    }
 

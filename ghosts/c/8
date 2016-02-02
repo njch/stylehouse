@@ -87,7 +87,6 @@ GW: | # star listening !
         $db->on(notification => sub {
             my ($db, $name, $pid, $s) = @_;
             $s = encode_utf8($s);
-            say "Go $name =-> $s";
             Rw GW_Answer $name $s;
         });
         for (J.at.Wid, keys %{G.W.noti}) {
@@ -101,6 +100,9 @@ GW: | # star listening !
 GW_Answer: |
             my $J = G.oin;
             say "listened: $name: $s";
+            if ($s =~ /^\['/) {
+                Rw Too $name $s;
+            }
             if ($s =~ /^CCC (\d+)$/) {
                 my $h = G&qh,<<'',$1;
                     select f,t,s,mid from mez where mid = ?
@@ -108,7 +110,6 @@ GW_Answer: |
                 Rw timer $d=2 $cb:_ for sub { G&qp,<<'',h.mid };
                     delete from mez where mid = ?
                 $s = h.s;
-                sayyl "Length of mez h.t from h.f: ".length $s;
                 warn "aNm not $name h.t for mezmid=h.mid" if h.t ne $name;
             }
             if (my $J = G.W.noti.>$name ) {
@@ -131,6 +132,22 @@ GW_Answer: |
                 c.e = G&tC,[PgNotify=>{s=>$s}];
                 Rw waited $J:G.W $c;
             }
+Too: |
+    for (G&tC,djson$s ) {
+        if (_.c.mez) {
+            my $h = G&qh,<<'',$1;
+                select f,t,s,mid from mez where mid = ?
+            length(h.s) || die "mized mez: $1";
+            Rw timer $d=2 $cb:_ for sub { G&qp,<<'',h.mid };
+                delete from mez where mid = ?
+            $s = h.s;
+            warn "aNm not $name h.t for mezmid=h.mid" if h.t ne $name;
+        }
+        else {
+            say "What $name: ".ki$_
+        }
+    }
+    
 Siendo: | # send instruct (to forked) between G
     u UpPg
     Atime(2);
@@ -149,131 +166,6 @@ Siendo: | # send instruct (to forked) between G
         sayre "Hars: $to -> $W    puts: $s";
     }
     
-forked: |
-    # etc
-    if (J.me eq 'm') {
-        J.me = read_file("w/wasme");
-        say "Repeating: J.me";
-    }
-    write_file("w/wasme", J.me) if J.me;
-    J.wasme = J.me;
-    if (J.me =~ /^(\w+): (.+)$/) {
-        my $c = {t=>mesay=>y=>{}=>c=>{s=>$2,toG=>$1}};
-        n Siendo=>$c
-        J.me = '';
-        return;
-    }
-    if (J.me =~ /^(\w+):(\S+)(\s|$)/) {
-        my $o;
-        my ($is,$ul) = ($1,$2);
-        my $t = $1 if $ul =~ /^(\w+)/ || die "niul $ul";
-        if (!-f "w/$is/$t") {
-            my @op = glob "w/$is/$t*";
-            sayre "Many options: ".ki @op if @op > 1;
-            my $o = shift @op;
-            $ul = $1 if $o =~ /^.+\/(.+?)$/;
-        }
-        sayyl "So: $is, $ul   fr  $o";
-        J.me = " ALL $is:$ul";
-    }
-    if (J.me =~ s/^ (\w+)(?: (.+))?// && G.way->{$1}) {
-        n $1=>W=>{t=>$2}
-    }
-    
-    J.fti -= 3 if J.me =~ s/o//g;
-    J.fti -= 2 if J.me =~ s/i//g;
-    
-    delete G.forked if J.me =~ s/p//;
-    
-    Rw loopby $b=3 $d=5 $p=Top
-        if J.fti < 0;
-    J.fti++;
-    
-    J.me =~ /n/ &&
-        `cat /dev/null > G.GW.taile`;
-    J.me =~ /a/ &&
-        n All=>W=>{time=>6}
-    J.me =~ /A/ &&
-        n Aim
-    J.me =~ /u/ &&
-        n uncan
-    J.me =~ /N/ &&
-        n Notes
-    J.me =~ /s/ &&
-        n Sefi
-    J.me =~ /S/ &&
-        n Sefission
-    J.me =~ /w/ &&
-        n Pile
-    J.me =~ /g/ &&
-        n Dug
-    J.me =~ /c/ &&
-        n Chang
-    J.me =~ /d/ &&
-        n Details
-    J.me =~ /j/ &&
-        n ALL=>W=>{t=>'Swomp',isle=>'jes'}
-    J.me =~ /t/ &&
-        n Tarp
-    J.me =~ /v/ &&
-        n reJSlines
-    
-    J.me = '';
-waitme: | # 
-    use POSIX ':sys_wait_h';
-    if (G.forked) {
-        sayre "waitme already forked" for 1..3;
-        return;
-        exit;
-    }
-    
-    my $parent = $$;
-    if (my $pid = fork()) {
-        sayyl " ,,,,";
-        sayyl "FOrked!";
-        sayyl " ,,,,";
-        my $and;
-        my $kill = $SIG{INT} = sub {
-            sayre "Killing $pid...";
-            kill 'KILL', $pid;
-            delete $SIG{INT}
-        };
-        $SIG{HUP} = sub {
-            $and = 1;
-        };
-        
-        waitpid($pid,0);
-        
-        if ($and) {
-            saybl "child wants restart!";
-            return
-            Rw waitme
-        }
-        saybl "Restart? <";
-        my $IN = \*STDIN;
-        while (my $k = <$IN>) {
-            chomp $k;
-            J.me = $k;
-            say "__ $k";
-            Rw goche $n=$1
-            while $k =~ s/(\d+)//g;
-            Rw goche $n:_
-                for qw'81 64 8 84 1';
-            Rw waitme;
-            return;
-        }
-    }
-    else {
-        G.forked = $parent;
-    }
-exit: |
-    for (@{ar.m||[]}) {
-        if ($_ eq 'refork') {
-            G.forked eq $$ && die "You are forked: $$";
-            kill HUP=>G.forked;
-        }
-    }
-    exit;
 Sl: |
     G.U = $J;
     J.fti ||= 0;
@@ -312,23 +204,7 @@ Le: |
     Rw Be l;
     n Ger;
 
-Sen: |
-    #u urw
-    u UpPg;
-    #u SpaceWatch
-    y.in = 0.02;
-    y.out = 0.5;
-    y.at.sca = 0.3;
-    $A = 
-    s:
-        1
-    
-    G.Jsem = sub {
-        my $em = shift;
-        my $db = G&db;
-        $em = {lines=>[$em]} if !ref $em;
-        $db->notify('Js',decode_utf8(join"\n",@{em.lines}));
-    };
+
 SevWo: |
     n Meta
     n Wuts
@@ -476,7 +352,7 @@ Wuts: |
     n takeover =>49=><<'','%cg:em'
         G&dlin,'life/W',"em.is.W\.c","em.is.M";
     
-Ws_up: |
+Web_up: |
     use Mojolicious::Lite;
     push @{app->static->paths}, '/home/s/styleshed/public';
     app->secrets([readlink '/home/s/stylehouse/msecret']);
@@ -494,15 +370,11 @@ Ws_up: |
         saybl "Starting  G.t     listens: $s";
         app->start('daemon', '--listen' => "$s");
     };
-Ws: |
-    #
-    n Web;
-    #n Tarp;
-    #
 Web: |
     u UpPg
-    my ($A) =
-    n s=>''=>t
+    $A=
+    s:
+        t
     
     G.Websock = J.Websock ||= sub {
         my $mojo = shift;
