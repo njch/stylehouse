@@ -32,16 +32,27 @@ stylepap: |
                 }
                 r = new Raster(src);
             }
+            var n = r;
+            a.uplg and n = r.animate(4.3, a.uplg);
             s.poes and r.position = eval(s.poes);
             else
             C.sc.pa !== '3' and r.position = view.center;
             s.poxop and r.position.x += s.poxop;
             s.poyop and r.position.y += s.poyop;
-            s.sca and r.scaling = s.sca;
+            s.sca and r.scale(s.sca);
             s.b and r.blendMode = s.b;
-            s.r and r.rotation = s.r;
+            s.r and n.rotate(s.r);
             if (s.opa) {
-                and r.opacity = s.opa;
+                var del = 1000;
+                r.opacity = 0;
+                for (var i = 1; i < 5; i++) {
+                    a.yl(del * i, function(){
+                        r.opacity = s.opa * ($i / 5);
+                        a.m("Varvu: "+(s.opa * ($i / 5)));
+                    });
+                }
+            }
+                
             }
             A.W ||= {};
             A.W.ras ||= {};
@@ -49,8 +60,7 @@ stylepap: |
             
             A.W.raz ||= [];
             A.W.raz.push(r);
-            console.log("Raz: are "+ A.W.raz.length);
-            
+            console.log("Blues: "+ A.W.raz.length, r);
             var rzl = A.W.raz.length;
             while (rzl > 9) {
                 var v = A.W.raz.shift();
