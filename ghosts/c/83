@@ -66,7 +66,7 @@ Dub: |
     u UpPg
     
     J.lA=
-    n s=>''=>t
+    n s=>''=>{}
     # #
     Rw Code;
     Atime(2);
@@ -81,6 +81,16 @@ Dub: |
     #my $j = G&A,'S';
     #n Rec=>$C
     
+PSF: |
+    my $j;
+    for (`ps faux | grep perl`) {
+        next if /grep perl/;
+        my ($user,$pid,$cpu,$mem) = split /\s+/;
+        my $p = $1 if /\|  (.+)$/;
+        $j .= "$cpu  $mem \t !  $p\n";
+    }
+    
+    n ps=>-pre=>$j
 Rec: | # batchy you, web
     #u urw
     u Sugd
@@ -108,11 +118,11 @@ urw: | # the pointyclick, curved probablW, %dos do w
         
 Code: |
     ###
-    G.edit ||= 'G/way/Dub';
+    G.edit ||= 'Dub';
     #J.se.cod = 1 if !exists J.se.cod;
     n edit=>0.02=>'@'=>'%dos:flse,op:J/se/cod,to:!,fs:40'
     J.se.cod &&
-    n 'G/edit'=>[-cde=>'1-2'],{},'%height:3'
+    n 'G/edit'=>[-cde=>'1-2']
     J.se.cod &&
     n G.edit=>[-cde=>'2-6']
     y.at.cssdel = 'transform';
@@ -148,12 +158,14 @@ flse: | # click data fusilagery
     }
     #sayre "Have flse click: ".wdump 2, $r;
 pi/cde: |
-    my $se = I.d&pin,$s,$A;
-    n row =>1 =>{idly=>1,s=>$se},'%cod:perl,dig:steve,dos:upcde,width:42,ab'
+    my $he = $s = /\// ? $s : "G/way/$s";
+    my $se = G&pin,$he,$A;
+    
+    my $sc = G&peel,'%cod:perl,dig:steve,dos:upcde,width:42,ab';
+    sc.height = C.y.spc * 10;
+    n row =>1 =>$se,$sc
+    
     C.sc.cssdel = 'transform';
-    # mo !!!!
-    
-    
 upcde: |
     sayre "Upacode J.name: C.t - E.t" for 1..4;
     
@@ -167,9 +179,11 @@ upcde: |
             saybl "Blank thing";
         }
         else {
+            
             my $E = e&us;
             E.t = t.t;
             E.c.s = $_;
+            
             Rw Gohup $J $E;
             # goh wind, 
             my $pin = t.c.s;
