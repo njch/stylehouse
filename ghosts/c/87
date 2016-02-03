@@ -1,5 +1,14 @@
+Wind: |
+    Rw waito $J $d=9;
+    J.doing = 1 if J.doing++ > 7;
+    J.doing eq '1' &&
+    n uncan
+    n Tarp
+    
+    
 stylepap: |
     u alljse
+    y.at.jsl = 1;
     
     # push to codcoil the paper scope grab to build into the dome
     n pa =>34=><<''
@@ -31,13 +40,52 @@ stylepap: |
             s.sca and r.scaling = s.sca;
             s.b and r.blendMode = s.b;
             s.r and r.rotation = s.r;
-            s.opa and r.opacity = s.opa;
+            if (s.opa) {
+                and r.opacity = s.opa;
+            }
             A.W ||= {};
             A.W.ras ||= {};
             A.W.ras[src] = r;
+            
+            A.W.raz ||= [];
+            A.W.raz.push(r);
+            console.log("Raz: are "+ A.W.raz.length);
+            
+            var rzl = A.W.raz.length;
+            while (rzl > 9) {
+                var v = A.W.raz.shift();
+                rzl--;
+                console.log(["rm ",v.image.src])
+                v.remove();
+            }
+            
             A.bb.pa = r;
         }
     
+Tarp: |
+    u urw
+    #y.at.dis = 0;
+    #
+    J.VV.N = 1;
+    for (J.slow ? (3,6,5) : (1,2,3)) {
+    
+    J.tea ||= [shuffle grep /^[\/\-\.\w]+jpg$/i, glob 'eye/*/*'];
+    
+    my $pg = 'w/Tarpig';
+    J.slow = readlink($pg) || 0;
+    J.slow += 3;
+    J.slow = 0 if J.slow >= @{J.tea};
+    G&dlin,w=>J.slow,'Tarpig';
+    
+    #
+    my $f = J.tea->[1-$_ + int J.slow];
+    J.fast += 1 if rand 5 > 1;
+    
+    n "the J.slow J.fast"=>-pape=>{s=>'mild'=>thumb=>$f};
+    
+    Mn(f=>''=>$f=>'%dos:flse,op:J/slow,to:1');
+    
+    }
 pi/pape: |
     C.sc.pa = 'res';
     C.sc.qz = 1;
@@ -60,8 +108,10 @@ papernoise: |
     C.sc.poyop = -70 * (rand(2) -1.9);
     C.sc.sca = 3.421 * rand(3) ^ 2;
     C.sc.opa = 0.6 * (0.5 + rand 0.9);
-    C.sc.b = (shuffle 'normal', 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten', 'difference', 'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract', 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 'xor')[0];
-    C.sc.r = int(900 * $fo);
+    C.sc.b = (shuffle 'normal', 'multiply',, 'multiply',, 'multiply',, 'multiply',, 'multiply',, 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten', 'difference')
+    #'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract', 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 'xor')
+    [0];
+    C.sc.r = int(360 * $fo);
     
     C.sc->{$_} = I.d&ron,C.sc->{$_} for grep{C.sc->{$_}} qw'poxop poyop sca opa r';
     
@@ -75,3 +125,4 @@ uncan: |
     n blag =>4=>{s=><<''},'%js'
         paper.project.clear();
     
+
