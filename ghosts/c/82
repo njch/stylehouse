@@ -92,6 +92,7 @@ Gohup: |
         select * from gho where t = ?
     die "Many c.t: ".wdump 4,\@m if @m > 1;
     # ts was noticed time
+    saygr "Gohup c.file c.t";
     # tos is mtime of the paddock
     my ($ts) = map{_.ts} G&qh,<<'';
         select now() as ts
@@ -141,6 +142,7 @@ Gonews: |
         say "$Wid -> $m";
         G&zen,$Wid,$m
     }
+    saygr "No remotes" if !keys %$wh;
 Goat: |
     n GW
     n Ghost
