@@ -29,8 +29,9 @@ Run: |
     
     c&n = 'Sen' if c&b eq '1';
     c&u ||= '1' if G.t =~ /^W/;
-    
     Rw ${_}_up for grep{c&u eq '1'} G.t;
+    
+    Rw iolam if c&i;
     Rw $_ for grep{$_&&'1'ne$_} c&u;
     
     Rw Top
@@ -63,7 +64,6 @@ Oth: | # rising wave
     J.A.tid++;
     
     if (!G.last && G.c.n) {
-        sayyl "YPE:";
         n $_ for grep{$_} split /,/, G.c.n
     }
     
@@ -155,6 +155,7 @@ waitme: | #
         G.forked = $parent;
     }
 forked: |
+    J.me = ar.m->[0] if ar.m;
     # etc
     if (J.me eq 'm') {
         J.me = read_file("w/wasme");
