@@ -26,6 +26,47 @@ Jergen: |
             }
         </style>
     
+stylehut: |
+    u alljs
+    
+    n e =>''=><<'',{args=>'e'}
+        !q and console.log("xut "+e);
+        var m;
+        try { m = eval(e); }
+        catch (er) { a.er(e, er); }
+        m
+    
+    n er =>''=><<'',{args=>'e,er'}
+        console.log("xutbang: ", e, er);
+        var ej = {er: {e: e}};
+        er && er.message and ej.er.m = er.message;
+        s.reply(ej);
+        a.m("!"+ (ej.er.m || e));
+    
+    n m =>''=><<'','%args:e'
+        var d = e.substr(0,1);
+        d == " " and return a.e(e);
+        d == "[" || d == "{"  and return a.om({},$.parseJSON(e),a,{});
+        d == "." and e = '<span style="font-size:66%">'+e+'</span>';
+        a.c(e);
+
+    n c =>''=><<'','%args:e'
+        $('#msgs').prepend(e+"\n");
+    
+    n yl =>''=><<'',{args=>'delay,func'}
+        setTimeout(func, delay);
+
+    n ks =>''=><<'','%args:s'
+        var ks = [];
+        for (var k in s) {
+            ks.push(k);
+        }
+        return ks.join(',');
+    
+styclick: |
+    u alljs
+    y.at.jsl = 1;
+    
     cl: %args:ev ws
           if (keyjam) {
               return;
@@ -103,43 +144,6 @@ Jergen: |
               }
           }
           ws.reply({event: d});
-stylehut: |
-    u alljs
-    
-    n e =>''=><<'',{args=>'e'}
-        !q and console.log("xut "+e);
-        var m;
-        try { m = eval(e); }
-        catch (er) { a.er(e, er); }
-        m
-    
-    n er =>''=><<'',{args=>'e,er'}
-        console.log("xutbang: ", e, er);
-        var ej = {er: {e: e}};
-        er && er.message and ej.er.m = er.message;
-        s.reply(ej);
-        a.m("!"+ (ej.er.m || e));
-    
-    n m =>''=><<'','%args:e'
-        var d = e.substr(0,1);
-        d == " " and return a.e(e);
-        d == "[" || d == "{"  and return a.om({},$.parseJSON(e),a,{});
-        d == "." and e = '<span style="font-size:66%">'+e+'</span>';
-        a.c(e);
-
-    n c =>''=><<'','%args:e'
-        $('#msgs').prepend(e+"\n");
-    
-    n yl =>''=><<'',{args=>'delay,func'}
-        setTimeout(func, delay);
-
-    n ks =>''=><<'','%args:s'
-        var ks = [];
-        for (var k in s) {
-            ks.push(k);
-        }
-        return ks.join(',');
-    
 styleomi: |
     u alljs
     

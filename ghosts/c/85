@@ -447,8 +447,9 @@ lookiDuv: | # search Duv.ids, Duv.vs deeply for ids, returns the C with sc.J
     shift @got;
 clack: |
     sayyl "UNclassified something at J.name";
-    saybl "M<essage: ".wdump ar.m if ar.m;
-    saybl wdump J.ev;
+    sayre "M<essage: ar.m" if ar.m;
+    saygr "J.name ev: ".ki J.ev;
+    saybl "e\&us: ".ki E.c.us if E.c.us;
     
     Rw talkzyh;
     
@@ -459,7 +460,16 @@ talkzyh: |
     for my $k (qw'z yJ hJ hC') {
         saybl("no $k") && next unless E.c->{$k};
         saybl "$k $k $k $k $k $k" for 1..2;
-        sayyl ref _.sc ? ki $_ : " - _.name    ". ki _.C.sc for @{E.c->{$k}};
+        for (@{E.c->{$k}}) {
+            if (ref _.sc) {
+                $_ = G&hup,$_;
+                _.y = _.y.cv if ref _.y;
+                sayyl "   _.t  _.y \t".ki {c=>_.c,sc=>_.sc};
+            }
+            else {
+                sayyl " - _.name    ". ki _.C.sc;
+            }
+        }
     }
     
 yJTrunk: | # from C.sc.J, uup

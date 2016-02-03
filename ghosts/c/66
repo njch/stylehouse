@@ -177,9 +177,20 @@ ki: |
             : 
                   "$_=".($re?"{ ".slim($lim,ki($re-1,$v,$d))." }":"$v")
         }
-        : ref $v eq 'ARRAY' ?
-              do "$_=\@x".@$v.(@$v < 9 && slim(19, join", ",@$v))
-            : "$_=".slim(150,"$v")
+        : ref $v eq 'ARRAY' ? do {
+              my $x;$x = sub {
+                  my $n = shift;
+                  my $y = shift || 1;
+                  if (ref $n ne 'ARRAY' || $y > 3) {
+                      return ref($n)||$n if ref $n ne 'HASH' || !defined n.t;
+                      return "n.t";
+                  }
+                  '[ '.slim((160 / $y) + 10,join(',',map{$x->($_,$y+1)}@$n)).' ]'
+              };
+              my $p = $x->($v);
+              "$_=$p" #\@x".@$v.(@$v < 9 && slim(19, join", ",@$v))
+        }
+        : "$_=".slim(150,"$v")
     } @keys;
 kk: |
     my ($s,$lum) = @_;
