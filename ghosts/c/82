@@ -1,59 +1,8 @@
 
 
 
-trows: | # osc at 5 fillin at time 2, goat cheese
-    u allact
-    n UpPg
-    
-    n Arow =>32,<<'','%code:U,v:scJ'
-        if (0) {
-            G&tyable,@$_
-            for 
-            [goat => 's,ts:timestamptz,jid:serial:primary:key,jup:int'],
-            [cheese => 's,ts:timestamptz,jid:int:references:goat:on:delete:cascade']
-        }
-        my $o = {t=>C.t};
-        o.jup = C.c.W ? \'is null' : do {
-            my $up = J.Jiter.trow || die "No trow upin ".ki J.Jiter;
-            up.jid
-        };
-        J.trow = G&pet,goat=>$o;
-        
-        J.wz = {map{_.t=> G&decj,$_ } G&qh,<<'',J.trow.jid };
-            select * from cheese where jid = ?
-        
-        J.pich.trows = {any=>1,u=>'trows'};
-    
-    # grab current (just past) things we said
-    n rows =>5,<<'','%code:Sev,v:yat'
-        my $V = C.c.V;
-        my $J = C.c.J;
-        if (C.y.cv == 0.9) {
-            return if delete J.lies;
-            my @bu = map { V.ta->{$_} || die "No $_ on V f ".ki$C }
-                C.y.k, sort keys %{at.V};
-            
-            G&qp,<<'',J.trow.jid;
-                delete from cheese where jid = ?
-            
-            for (@bu) {
-                if (_.sc.wassame) {
-                    $_ = J.wz.>_.t || die "No _.t to same";
-                }
-                my ($t,$s,$c,$sc) = (_.t,_.c.s,sjson(_.c),sjson(_.sc));
-                G&qp,<<'',J.trow.jid,$t,$s,$c,$sc;
-                    insert into cheese (jid,t,s,c,sc) values (?,?,?,?,?)
-            }
-        }
-    
-    
-    
-    
-    
-    
-    
-    #
-Pinup: | # 
+
+Pinup: | # on a host, receive pins that need
     my $wake = {};
     for my $p (@$m) {
         my $o = J.supins.>$p || next;
@@ -99,7 +48,7 @@ Pins: |
     my $new = [grep { !$la.>$_ } keys %$pins];
     if (@$new) {
         G.GW || return;
-        say "pin listenings: + @$new";
+        #say "pin listenings: + @$new";
         $A = G.GW.lA || die "GW no .lA :".wdump 2, G.W;
         Rw AddPins $A $J $new;
         $la.>$_ = 1 for @$new;
@@ -118,6 +67,7 @@ AddPins: |
             delete from gw where w = ?
     }
     my $h = G&pet,gw=>$o;
+    sayyl "Adding h.w -> ".join',  ', @$new;
     G&qp,<<'',h.w,$_ for @$new;
         insert into gw_pin (w,t) values (?,?)
 Goh: |
@@ -155,8 +105,8 @@ Gohup: |
             insert into gho (file,t,s,dig,ts) values (?,?,?,?,?)
     }
     c.ts = $ts;
-    Rw w_way_file $k:c.t $v:c.s;
     Rw Gonews $J $c;
+    Rw w_way_file $k:c.t $v:c.s;
     
 Gohdown: | # read pins from gho where t=$p, chucks in G.way
     my $J = G.GW || die "No GW";
@@ -174,7 +124,7 @@ Gohdown: | # read pins from gho where t=$p, chucks in G.way
     write_file('/tmp/gohdon',w.s);
     sayre "WAOKs out $p: ". `diff /tmp/gohgon /tmp/gohdon`;
 Gonews: |
-    # look at hosts->host_pins table, invents from Gohup ! ! !!!! ! ! !!!!!!
+    # look at hosts->host_pins table, invents from Gohup
     if (!ar.do) {
         push @{J.todo||=[]}, ar.c || die "No arc! ".wdump 1, $ar;
         Rw wayty $J $p=Gonews $do=1 $woping=3oe;
@@ -185,6 +135,7 @@ Gonews: |
     my $wh={};
     acum $wh, _.w, _.t for G&qh,<<''.$where,@pins;
         select * from gw_pin where 
+    # Go
     while (my ($Wid,$pins) = each %$wh) {
         my $m = "Pinup;".join',',@$pins;
         say "$Wid -> $m";
@@ -193,21 +144,20 @@ Gonews: |
 Goat: |
     n GW
     n Ghost
-    # 
+    #  !
     J.times++ > 20 &&
         Rw exit refork;
     Rw waito + $d=27;
 Ghost: | # farm # #
     u trows
     y.in=y.out=0.3;
-    my @c = map {"Ghost/c/$_"} qw'* 83';# 1* 8* ඬ 11 61 43'; #####!###
+    J.VV.N = 1;
+    my @c = map {"Ghost/c/$_"} qw'8*';# 1* 8* ඬ 11 61 43'; #####!###
     $A=
     n C.t=>9=>{}
-    #
+    # #
     my $cmd = "ls -rt --full-time --inode @c";
     J.fast ||= do {
-        my $cmd = $cmd;
-        $cmd .= " | tail -3";
         Rw recur $d=0.5 $cb:_ for sub {
             my $stuff = G&batik,$cmd;
             return if J.fast_stuff eq $stuff;
@@ -219,17 +169,20 @@ Ghost: | # farm # #
         1
     };
     my @z = grep {!/(?!8)\d\d\d$/} G&batik,$cmd;
-    #
+    # #
     $A=
     n sha=>1=>slm(20,dig(join"\n",@z))
     my ($sha) = @{A.M};
     #
-    if (sha.c.s eq J.wz.sha.c.s && J.El.Duv) {
+    if (sha.c.s eq J.wz.sha.c.s) {
         J.lies = 1; # 
         y.ope = T.nose = 1;
         return saybl"------- C.t    sha.c.s";
     }
-    # !!!! !!
+    else {
+        saygr "ls sha off:\n sha.c.s \n J.wz.sha.c.s"; ##
+    }
+    # !!!! !! !!! # # # # # # #
     for (@z) {
         chomp;
         s/^\s+|\s+$//sg;
@@ -241,12 +194,20 @@ Ghost: | # farm # #
             ino=>$ino,
             size=>$size
         };
-        my $oC = J.wz.>$file
-            || say("No find $file in: ".wdump 1, J.wz) && {};
+        my $oC = J.wz.>$file;
+        my $was = 1 && $oC;
+        $was || say "No find $file amung: ".join ', ', sort keys %{J.wz};
         
         my @dif = G&hesl,oC.sc,$o;
-        sayre "Nodif $file" if !@dif;
         
+        if ($was && !@dif) {
+            y.ope = 1;
+            J.lie.>$file = 1;
+            say "Nexting  /  lie $file";
+            next;
+            
+        }
+        #
         m $file=>-Ghost=>$o
     }
     y.ope = 1;
@@ -254,17 +215,17 @@ Ghost: | # farm # #
 pi/Ghost: | # paddock #
     y.at.>$_ = c&$_ || die "no $_ givec" for qw'ts ino size';
     y.in=y.out=0.3;
-    
+    #  # #
     $A=
     n sha=>1=>(`sha1sum $s` =~ /^(\S+)/)[0]
     my ($sha) = @{A.M};
     
-    if (J.El.Duv && sha.c.s eq J.wz.sha.c.s) {
+    if (sha.c.s eq J.wz.sha.c.s) {
+        J.lies = 1; # 
         saybl"Skiping same C.t"; # #
-        y.ope = T.nose = 1;
+        y.ope = 1;
         return;
     }
-    
     
     my $file = $s;    
     my $am = LoadFile($file);
@@ -274,6 +235,7 @@ pi/Ghost: | # paddock #
         # should be on sev somewhere, impose new ts by s/dig change, maintain this W ##
         my $s = $am.>$_;
         my $wa = J.wz.>$_;
+        
         sayre("Jaws missing: $_") if !$wa;
         my $dig = slm(9,dig($s));
         if ($dig ne wa.sc.dig) {
@@ -297,8 +259,60 @@ pi/Ghost: | # paddock #
         G&zen,Goh=>@ch if @ch;
         Rw waito $J:J.mo.J $W=Sefission;
     }
-    # sev fold 3 - !
+    # sev fold 3 - ! #
     
+trows: | # osc at 5 fillin at time 2, goat cheese
+    u allact
+    n UpPg
+    
+    n Arow =>32,<<'','%code:U,v:scJ'
+        if (0) {
+            G&tyable,@$_
+            for 
+            [goat => 's,ts:timestamptz,jid:serial:primary:key,jup:int'],
+            [cheese => 's,ts:timestamptz,jid:int:references:goat:on:delete:cascade']
+        }
+        my $o = {t=>C.t};
+        o.jup = C.c.W ? \'is null' : do {
+            my $up = J.Jiter.trow || die "No trow upin ".ki J.Jiter;
+            up.jid
+        };
+        J.trow = G&pet,goat=>$o;
+        
+        J.wz = {map{_.t=> G&decj,$_ } G&qh,<<'',J.trow.jid };
+            select * from cheese where jid = ?
+        
+        J.pich.trows = {any=>1,u=>'trows'};
+    
+    # grab current (just past) things we said
+    n rows =>5,<<'','%code:Sev,v:yat'
+        my $V = C.c.V;
+        my $J = C.c.J;
+        if (C.y.cv == 0.9) {
+            return if delete J.lies;
+            my @bu = map { V.ta->{$_} || die "No $_ on V f ".ki$C }
+                C.y.k, sort keys %{at.V};
+            
+            G&qp,<<'',J.trow.jid;
+                delete from cheese where jid = ?
+            
+            for (@bu) {
+                if (delete J.lie.>_.t ) {
+                    $_ = J.wz.>_.t || die "No _.t to same";
+                }
+                my ($t,$s,$c,$sc) = (_.t,_.c.s,sjson(_.c),sjson(_.sc));
+                G&qp,<<'',J.trow.jid,$t,$s,$c,$sc;
+                    insert into cheese (jid,t,s,c,sc) values (?,?,?,?,?)
+            }
+        }
+    
+    
+    
+    
+    
+    
+    
+    #
 So: | # gonish vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     #u urw #
     u Deso
