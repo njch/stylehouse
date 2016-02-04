@@ -190,7 +190,7 @@ Siendo: | # send instruct (to forked) between G
     
 waitme: | # 
     use POSIX ':sys_wait_h';
-    if (G.forked) {
+    if (G.forked && !delete G.foo) {
         sayre "waitme already forked" for 1..3;
         return;
         exit;

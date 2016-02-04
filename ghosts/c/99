@@ -8,6 +8,21 @@ Tp: | # execution, comes with depth unlimits
     }
     n \'W:This,isle:Ve'
     
+DD: | # pile status
+    u urw
+    
+    y.at.ws = 1;
+    y.at.mean = 'Pgiter';
+    y.at.hs = '893';
+    y.in = 0.03;
+    y.out = 6;
+        J.VV.N = 1;
+    y.ert = 20;
+    
+    y.at.anch = 'Noteal';
+    
+    m wu=>-Joien
+    
 JJ: | # pile status
     u urw
     
@@ -21,12 +36,12 @@ JJ: | # pile status
     
     
     #G.oin.A.tid += 3;
-    Mn("Ve"=>-Joien);
+    Mn("ju"=>-Joien);
     
 Pgiter: | # Dug bunch target, make travel intent
     sayyl "Jiterating ! C.t   on J.name";
     # not =>$E properly, C is first C,c.e $E is from before $E
-    my @Js = A.e&_hJ;
+    my @Js = @{ e&hJ };
     my ($tW,$tl) = @Js[0,-1];
     tW.mo.J eq $tW || die "not most 1: ".ki $tW;
     my $ing = tl.C;
@@ -59,9 +74,9 @@ Pgiter: | # Dug bunch target, make travel intent
             
             my $h = G&qh,<<'',ip.onto,$l,$r;
                 select * from t where isle = ? and l = ? and t = ?
-            h.c = djson h.c if !ref h.c;
-            h.c.doopla = 1;
-            h.c = sjson h.c;
+            h.c = djson h.c if h.c && !ref h.c;
+            h.c.todo = 1;
+            h.c = sjson(h.c||{});
             my $h = G&qp,<<'',h.c,ip.onto,$l,$r;
                 update t set c = ? where isle = ? and l = ? and t = ?
             
@@ -90,42 +105,7 @@ Inter: | # make Pg travel manually?
         if
     my $d = G&qp,<<'',sjson({some=>1}),'More';
         update t set c = ? where t = ?
-trowal: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
-    my $tw = {};
-    my $et = {};
-    for my $f (@$N) {
-        my $t = f.t || f.wt;
-        $et.>$t = $f;
-        my $l = f.l || sayre("No l on f.t") && next;
-        $tw->{$l}->{n}->{$t} = 1;
-        $tw->{$t}->{u}->{$l} = 1;
-    }
-    $tw->{$_}->{e} = $et->{$_} for keys %$et;
-    my $wt = {};
-    $wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
-    keys %$wt || die "No top level! Circular?";
-    my @ne = $wt;
-    my $i;
-    while (@ne) {
-        $i++ > 600 && die "join wanders for $i from lines, maybe circular?";
-        my @m = @ne;
-        @ne = ();
-        for $wt (@m) {
-            for my $k (sort keys %$wt) {
-                my $t = $tw->{$k};
-                if (t.n) {
-                    my $n = $wt->{$k};
-                    $n->{$_} = {} for sort keys %{t.n};
-                    push @ne, $n;
-                }
-                else {
-                    #
-                }
-            }
-        }
-    }
-    J.mo.jes.tower = $tw;
-    J.mo.jes.trowl = $wt;
+
 pi/Joien: |
     u UpPg
     
@@ -138,27 +118,26 @@ pi/Joien: |
         far
     my $N = [ G&qh,<<'',($s)x4 ];
         select t.l,t.t,t.isle as tisle,
-          g.t as gt,
+          gho.t as gt,
           w.t as wt,
           w.isle, w.c::text,
           t.c::text as tc, t.sc::text as tsc,
-        extract(epoch from g.ts) as gts,
+        extract(epoch from gho.ts) as gts,
         extract(epoch from w.ts) as wts
-        from t left join w using (t) left join g using (t)
+        from t left join w using (t,isle) right join gho using (t)
         where t.isle = ? or w.isle = ?
        union
         select t.l,t.t,t.isle as tisle,
-          g.t as gt,
+          gho.t as gt,
           w.t as wt,
-          --g.ts as gts,
           w.isle,w.c::text,
-          --w.ts as wts,
           t.c::text as tc, t.sc::text as tsc,
-        extract(epoch from g.ts) as gts,
+        extract(epoch from gho.ts) as gts,
         extract(epoch from w.ts) as wts
-        from w left join t using (t) left join g using (t)
+        from w left join t using (t,isle) right join gho using (t)
         where t.isle = ? or w.isle = ?
     
+    say ki $_ for @$N;
     my $jes = J.mo.jes = $J;
     Rw trowal $J $N;
     #Mn('JIOI'=>-gejo=>{}=>'%dis');
@@ -184,7 +163,7 @@ notlel: |
         Mn($N);
         $M;
     };
-    _.c.s = $tow->{_.t}->{e} || die "_.t no have tow" for @$N;
+    _.c.s = $tow->{_.t}->{e} || {noe=>{}} for @$N;
     _.c.pi = 'tgw' for @$N;
     _.sc.dis = 1 for @$N;
     _.sc.ml = _.c.ind * 3 for @$N;
@@ -197,6 +176,42 @@ notlel: |
     n o=>62=>"s҉",'%fs:60,blr:1,opa:3'
     saybl "J.name on";
     # and so
+trowal: | # make two forms of hierarchy from eg $s=w/u/J -> w/u/J/*/*
+    my $tw = {};
+    my $et = {};
+    for my $f (@$N) {
+        my $t = f.t || f.wt;
+        $et.>$t = $f;
+        my $l = f.l || sayre("No l on f.t") && next;
+        $tw->{$l}->{n}->{$t} = 1;
+        $tw->{$t}->{u}->{$l} = 1;
+    }
+    $tw->{$_}->{e} = $et->{$_} for keys %$et;
+    my $wt = {};
+    $wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
+    keys %$wt || die "No top level! Circular? ".wdump 3, [sort keys %$tw];
+    my @ne = $wt;
+    my $i;
+    while (@ne) {
+        $i++ > 600 && die "join wanders for $i from lines, maybe circular?";
+        my @m = @ne;
+        @ne = ();
+        for $wt (@m) {
+            for my $k (sort keys %$wt) {
+                my $t = $tw->{$k};
+                if (t.n) {
+                    my $n = $wt->{$k};
+                    $n->{$_} = {} for sort keys %{t.n};
+                    push @ne, $n;
+                }
+                else {
+                    #
+                }
+            }
+        }
+    }
+    J.mo.jes.tower = $tw;
+    J.mo.jes.trowl = $wt;
 pi/tgw: |
     my $f = Rw indbefore $C;
     
@@ -206,6 +221,23 @@ pi/tgw: |
         $d = Rw samv $d;
         $d;
     };
+    
+    
+    if (!s.gts) {
+        n nog=>32=>" !G",'%hs:757'
+    }
+    for ([c=>493],[tsc=>689]) {
+        my ($k,$hs) = @$_;
+        $s.>$k || next;
+        my $d = $s.>$k = djson $s.>$k;
+        delete d.yam if d.yam =~ /^s.tisle/;
+        n "cjam$k",34, ki($d),{hs=>$hs}
+    }
+    my $lost = s.tsc && s.tsc.src;
+    if (!s.wts && !$lost) {
+        n now=>22=>" !W",'%hs:457'
+    }
+    
     
     my $o; # todo tell if we n...
     if ($f && s.wts > f.wts) { 
@@ -217,18 +249,11 @@ pi/tgw: |
     
     if (s.gts > s.wts) {
         # to the ghost of our W
-        n tog => 3=>" G ".$sa->(s.wts - s.gts)
+        n tog => 3=>" G ".$sa->(s.wts - s.gts).($lost&&"? "),($lost&&'%sha:4 4 4 486,fs:7')
         $o=1;
     }
     if (!$o) {
         n t=>1=>{}=>'%fs:8,hs:228'
-    }
-    
-    if (!s.gts) {
-        n nog=>32=>" !G",'%hs:757'
-    }
-    if (!s.wts) {
-        n now=>22=>" !W",'%hs:457'
     }
     
 indbefore: |
@@ -495,7 +520,6 @@ DiskTravel: |
         `cat /dev/null > s.j`;
         saybl ki $s;
     
-
 Traweil: | # uses localeo
     u allvse
     #n DiskTravel
@@ -596,8 +620,8 @@ Traweil: | # uses localeo
             for (grep{ D.sc.>$_ }keys %$sco) {
                 my $coder = $sco.>$_;
                 my $v = {};
-                Rw $coder $C:D $v;
-                
+                my $C = G&hup,$D;
+                Rw $coder $C $v;
                 D.sc.X && die "D.t al; $_";
                 D.sc.X = $v;
             }

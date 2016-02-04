@@ -360,7 +360,8 @@ ym/jscoi: |
     C.c.s = "a.".C.t." = function(".C.sc.args.") {\n".C.c.s."};\n";
     C.sc.dige = slm 12, dig C.c.s;
     delete C.c.from; # as 7, S over
-    $v->{js}->{C.y.cv}->{C.t} = $C;
+    my $cv = ref C.y ? C.y.cv : C.y;
+    $v->{js}->{$cv}->{C.t} = $C;
 JSpots: |
     my @sup;
     for my $K (sort keys %$II) {
@@ -373,12 +374,14 @@ JSpots: |
             for my $t (sort keys %$ts) {
                 my $D = $ts->{$t};
                 my $s = {%{D.sc}};
+                sayyl ki $s;
                 die "collajsee s.args".ki $D if s.args ne 'A,C,G,T,s';
                 delete $s->{$_} for qw'of acgt args dige lines js';
                 push @ts, [$t,$s];
             }
             push @cvs, [$cv, \@ts];
         }
+        #saybl "$K: ". wdump 6, \@cvs;
         push @sup, sjson({eine=>[$K,\@cvs]});
     }
     @sup
