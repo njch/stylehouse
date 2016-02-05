@@ -253,6 +253,10 @@ forked: |
         J.me = '';
         return;
     }
+    if (J.me =~ /^(\w+);(.+)$/) {
+        my $m = [split',',$2];
+        Rw $1 $J:G.oin $m;
+    }
     if (J.me =~ /^(\w+):(\S+)(\s|$)/) {
         my $o;
         my ($is,$ul) = ($1,$2);
@@ -317,6 +321,8 @@ exit: |
         }
     }
     exit;
+restar: |
+    Rw exit refork;
 Sl: |
     G.U = $J;
     J.fti ||= 0;
@@ -511,11 +517,47 @@ Wuts: |
     
 Web_up: |
     use Mojolicious::Lite;
+    use MIME::Base64;
     push @{app->static->paths}, '/home/s/styleshed/public';
     app->secrets([readlink '/home/s/stylehouse/msecret']);
     
-    my $s = "http://s:10094";
+    my $s = G.c.listen || "http://s:10094";
 
+    get '/hello' => sub {
+        my $c = shift;
+        $c->render(text => 'Hello World!');
+      };
+
+    0 && <<'';
+        require Image::Magick;
+        my $cand_photo = Image::Magick->new;
+        #my $decoded = decode_base64($args{image_string});
+        $cand_photo->read(blob=>$decoded);
+
+        #save original
+        $cand_photo->Write($f.".igk\.jpg");
+
+        #resize
+        $cand_photo->Set( Gravity => 'Center' );
+        $cand_photo->Resize( geometry => '120x120' );
+        $cand_photo->Extent( geometry => '120x120' );
+        #save thumbnail
+        $cand_photo->Write($f.".gth\.jpg");
+
+    
+    put '/tism' => sub {
+        my $m = shift;
+        my $c = $m->req->body;
+        sayyl "IN TISM: ".slim($c);
+        my $decoded= MIME::Base64::decode_base64($c);
+        my $f = sprintf "znap/tism.%s.%04d\.jpg", slm(4,G.oin.id), G.tismi++;
+        say "Go to $f for ".length $c;
+        write_file($f,{binmode=>':raw'},$decoded);
+        $f =~ s/tism\./mime\//;
+        $f =~ s/\.jpg//;
+        write_file($f,$c);
+        $m->render(text => 'yup');
+    };
     websocket '/s' => sub {
         my $mojo = shift;
         sayyl "Connect!";
@@ -523,10 +565,13 @@ Web_up: |
         G.Websock->($mojo);
     };
     
+    
+    
     G.clockon = sub {
         saybl "Starting  G.t     listens: $s";
         app->start('daemon', '--listen' => "$s");
     };
+    
 Web: |
     u UpPg
     $A=
@@ -583,13 +628,39 @@ Web: |
             say "$s: $m";
             J.Websen->($m);
         });
-        $db->listen('Js');
+        $db->listen(G.c.in || 'Js');
     };
     $ya->();
     saybl "Web done";
     
     
     
+Wob_up: |
+    use Mojolicious::Lite;
+    use MIME::Base64;
+    push @{app->static->paths}, '/home/s/styleshed/public';
+    app->secrets([readlink '/home/s/stylehouse/msecret']);
+    
+    my $s = "http://localhost:10096";
+
+    get '/hello' => sub {
+        my $c = shift;
+        $c->render(text => 'Hello World!');
+      };
+
+    
+    put '/tism' => sub {
+        my $m = shift;
+        my $c = $c->req->body;
+    };
+    
+    G.clockon = sub {
+        saybl "Starting  G.t     listens: $s";
+        app->start('daemon', '--listen' => "$s");
+    };
+Wob: |
+    G.c.in = "Ws";
+    Rw Web;
 goche: |
     my $m = "g/c/".($n||8);
     Rw ghosch $m
