@@ -76,6 +76,7 @@ Sen: | # next net, fork catchee on stdin listened puur
     
     Rw End
 GW: | # star listening !
+    G.c.b &&
     u UpPg
     u Bubble
     J.lA=$A=
@@ -88,21 +89,22 @@ GW: | # star listening !
     G.GW = G.W = $J;
     $J.>$_ = $ear.>$_ for keys %{$ear||{}};
     
-    if (0) {
-        my $f = "life/W/y.at.Wid\.e";
-        J.taile = $f;
-        `cat /dev/null > $f` if !-f $f;
-        G&dlin,'life/W',"J.at.Wid\.e","J.at.Mid\.e";
-        # =>{ac=>{create=>1}} # ac/asc/etc involvers slide into the experiment from E
-        n $f =>-sol
-    }
     
     
     n rmold =>2=> "\n\$('ww[title=\"".y.at.Mid."\"]').remove();",'%js'
     
     n skfdo =>3=> "\$('#ux').append('<ww id=\"".y.at.Wid."\" style=\"position:absolute;height:100%;width:100%;pointer-events:none;\" title=\"".y.at.Mid."\"></ww>');",'%js'
     
-
+    if (!G.c.b) {
+        my $f = "life/W/y.at.Wid\.e";
+        J.taile = $f;
+        `cat /dev/null > $f` if !-f $f;
+        G&dlin,'life/W',"J.at.Wid\.e","J.at.Mid\.e";
+        # =>{ac=>{create=>1}} # ac/asc/etc involvers slide into the experiment from E
+        n $f =>-sol
+        return;
+    }
+    
     my $ya = G.onfork.GW = sub {
         my $db = G&db;
         my $not = G.W.noti ||= {};
@@ -369,6 +371,7 @@ SevWo: |
     u allacgts
     
     dlin: %acgt:dir to it
+        return readlink $dir if !defined $to;
         my $l = "$dir/$it";
         my $is = -l $l;
         return if $is && readlink($l) eq $to;
@@ -527,37 +530,9 @@ Web_up: |
         my $c = shift;
         $c->render(text => 'Hello World!');
       };
-
-    0 && <<'';
-        require Image::Magick;
-        my $cand_photo = Image::Magick->new;
-        #my $decoded = decode_base64($args{image_string});
-        $cand_photo->read(blob=>$decoded);
-
-        #save original
-        $cand_photo->Write($f.".igk\.jpg");
-
-        #resize
-        $cand_photo->Set( Gravity => 'Center' );
-        $cand_photo->Resize( geometry => '120x120' );
-        $cand_photo->Extent( geometry => '120x120' );
-        #save thumbnail
-        $cand_photo->Write($f.".gth\.jpg");
-
     
-    put '/tism' => sub {
-        my $m = shift;
-        my $c = $m->req->body;
-        sayyl "IN TISM: ".slim($c);
-        my $decoded= MIME::Base64::decode_base64($c);
-        my $f = sprintf "znap/tism.%s.%04d\.jpg", slm(4,G.oin.id), G.tismi++;
-        say "Go to $f for ".length $c;
-        write_file($f,{binmode=>':raw'},$decoded);
-        $f =~ s/tism\./mime\//;
-        $f =~ s/\.jpg//;
-        write_file($f,$c);
-        $m->render(text => 'yup');
-    };
+    Rw Tism;
+    
     websocket '/s' => sub {
         my $mojo = shift;
         sayyl "Connect!";
@@ -641,26 +616,54 @@ Wob_up: |
     push @{app->static->paths}, '/home/s/styleshed/public';
     app->secrets([readlink '/home/s/stylehouse/msecret']);
     
-    my $s = "http://localhost:10096";
+    my $s = "http://c:10096";
 
     get '/hello' => sub {
         my $c = shift;
         $c->render(text => 'Hello World!');
       };
 
-    
-    put '/tism' => sub {
-        my $m = shift;
-        my $c = $c->req->body;
-    };
+    Rw Tism;
     
     G.clockon = sub {
         saybl "Starting  G.t     listens: $s";
         app->start('daemon', '--listen' => "$s");
     };
+Tism: |
+    0 && <<'';
+        require Image::Magick;
+        my $cand_photo = Image::Magick->new;
+        #my $decoded = decode_base64($args{image_string});
+        $cand_photo->read(blob=>$decoded);
+
+        #save original
+        $cand_photo->Write($f.".igk\.jpg");
+
+        #resize
+        $cand_photo->Set( Gravity => 'Center' );
+        $cand_photo->Resize( geometry => '120x120' );
+        $cand_photo->Extent( geometry => '120x120' );
+        #save thumbnail
+        $cand_photo->Write($f.".gth\.jpg");
+
+    
+    put '/tism' => sub {
+        my $m = shift;
+        my $c = $m->req->body;
+        $c =~ s/^data:image\/jpeg;base64,// && say "ok";
+        my $decoded= MIME::Base64::decode_base64($c);
+        my $f = sprintf "znap/tism.%s.%04d\.jpg", substr($G->{id},0,4), $G->{tismi}++;
+        say "Go to $f for ".length $c;
+        $f = "/home/s/shed/$f";
+        write_file($f,{binmode=>':raw'},$decoded);
+        $f =~ s/tism\./mime\//;
+        $f =~ s/\.jpg//;
+        write_file($f,$c);
+        $m->render(text => 'yup');
+    };
 Wob: |
     G.c.in = "Ws";
-    Rw Web;
+    #Rw Web;
 goche: |
     my $m = "g/c/".($n||8);
     Rw ghosch $m
