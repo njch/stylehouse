@@ -1,7 +1,7 @@
 Vind: |
     G.oin.A.tid += 3;
     J.koe++;
-    my $d = 7;
+    my $d = 9;
     my $dont;
     
     if (J.koe > 2) {
@@ -25,8 +25,8 @@ Vind: |
             J.koe = 0;
         }
     }
-    if (J.rem++ > 4) {
-        #n uncan
+    if (J.rem++ == 0) {
+        n uncan
         saybl "wipe" for 1..9;
         J.rem = 1;
     }
@@ -190,6 +190,13 @@ stylepap: |
                 a.m('rm: '+r.image.src.substr(-20,20))
                 v.remove();
             }
+            if (C.sc.zm) {
+                r.zm = C.sc.zm;
+                $.each(A.W.raz, function(k,v){
+                    !v.zm and return;
+                    v.position.x += 10 * v.zm;
+                });
+            }
             a.m('c');
             
             A.bb.pa = r;
@@ -206,7 +213,7 @@ Tarp: |
     
     #@$M = @{J.AM||=[]};
     
-        J.tea ||= [shuffle grep /^[\/\-\.\w]+jpg$/i, glob 'eye/*/*'];
+        J.tea ||= [shuffle grep {s/\n$//;/^[\/\-\.\w]+jpe?g$/gi} `find -L eye`];
 
         my $pg = 'w/Tarpig';
         J.slow = readlink($pg) || 0;
@@ -221,7 +228,7 @@ Tarp: |
         $i++;
 
         #
-        my $f = J.tea->[$n + J.slow];
+        my $f = J.tea->[4 * $n + J.slow];
         $f || next;
 
         my $sc = {};
@@ -233,14 +240,11 @@ Tarp: |
     }
     delete J.El.>$_ for Pre=>'Duv';
     
-    say "M hasth: _.t" for @$M;
     J.VV.N = 1;
     
     shift @$M while @$M > 8;
     J.AM = [@$M];
-    ni 8:
-        again
-
+    
     
 Sjum: |
     u urw
@@ -304,16 +308,19 @@ pi/pape: |
     
     C.sc.src || sayre "no src..";
     delete C&src if C.t eq C&src;
-    C.sc.poxop = 270 * rand(2);
-    C.sc.poyop = 270 * rand(2);
+    C.sc.poxop = 270 * (rand(2)-1);
+    C.sc.poyop = 270 * (rand(2)-1);
     C.sc.sca = 3.421 * rand(3) ^ 2;
+    #C.sc.zm = int(rand 10);
     C.sc.sca += 3;
     C.sc.opa = 0.6 * (0.5 + rand 0.9);
     C.sc.b = (shuffle 'darken', 'lighten', 'normal',
-    'exclusion', 'hue', 'saturation', 'luminosity',
-    
+    'exclusion', 'hue', 'saturation',# 'luminosity',
+     'color', 'add', 'subtract',
+     'color', 'add', 'subtract','subtract','subtract',
     #'normal', 'normal', 'normal', 'normal', 'normal', 
-    #'multiply','multiply',, 'multiply',, 'multiply',, 'multiply',, 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten',
+    'multiply','multiply',, #'multiply',, 'multiply',, 'multiply',,
+    # 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten',
     # 'pin-light', 'pin-light', 'pin-light', 
     #'difference',
     
