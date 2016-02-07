@@ -50,8 +50,19 @@ stylehut: |
         d == "." and e = '<span style="font-size:66%">'+e+'</span>';
         a.c(e);
 
-    n c =>''=><<'','%args:e'
-        $('#msgs').prepend(e+"\n");
+    c: %args:s e
+        e ||= [];
+        var says = [];
+        $.each(e,function(i,v){
+            typeof v === 'string' and says.push(v);
+            else {
+                says.push('%'+typeof v);
+            }
+        });
+        a.log ||= [];
+        a.log.push([s,e]);
+        says.length and s = s+': '+says.join(' ');
+        $('#msgs').prepend(s+"\n");
     
     n yl =>''=><<'',{args=>'delay,func'}
         setTimeout(func, delay);
@@ -63,8 +74,7 @@ stylehut: |
         }
         return ks.join(',');
     
-    peel: %args:s e
-        e ||= [',',':'];
+    peel:
         var c = {};
         $.each(s.split(','), function(i,kv) {
             kv = kv.split(':');
@@ -159,13 +169,21 @@ styclick: |
 styleomi: |
     u alljs
     
-    n sca =>''=><<''
-        while (s > 1) {
-            s = s / 10;
-        }
+    # A falls, A.on taps each-for thing, A.W holst selves, usu not
+    A:
+        var A = $.extend({},A);
+        A.I = {};
+        A.mo ||= A;
+        A.up = A;
+        T.d ||= 1;
+        s and var k = 'e_'+s; A.e = G[k];
+        return A
+    
+    sca:
+        while (s > 1) { s = s / 10 }
         return s;
     
-    n f =>''=><<''
+    f:
         var t = '';
         s and t=s
         var at = '';
@@ -173,7 +191,7 @@ styleomi: |
         t || at || console.log("No attach: "+T.alk);
         return $(A.on).find(t+at);
     
-    n inC =>''=><<''
+    inC:
         C = s;
         C.constructor == Array and C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
         else
@@ -187,28 +205,17 @@ styleomi: |
         C.sc ||= {};
         return C;
 
-    n h =>''=><<'',{acgt=>'way,s'}
-        if (!G[way])
-            throw "No way: "+way
+    h: %acgt:way s
+        !G[way] and throw "No way: "+way
         return G[way](A,C,G,T,s);
     
-    # A falls, A.on taps each-for thing, A.W holst selves, usu not
-    n A =>''=><<''
-        var A = $.extend({},A);
-        A.I = {};
-        A.mo ||= A;
-        A.up = A;
-        T.d ||= 1;
-        s and var k = 'e_'+s; A.e = G[k];
-        return A
-    
-    n t =>''=><<''
+    t:
         T.not and return 0;
         A.I.cv = G&sca,s;
         G&ex,A.I;
         return !T.not;
     
-    n ex =>''=><<''
+    ex:
         s.ei ||= 0;
         while (1) {
             T.not and return
@@ -229,12 +236,12 @@ styleomi: |
             });
         }
     
-    n Win =>''=><<''
+    Win:
         var W = ww[s];
         if (!W) {
             a.c("new W: "+s);
             W = ww[s] = {};
-            W.Wid = s;
+            W.t = s;
             W.A = {};
             W.A.W = W;
             //W.A.p = new paper.Project();
@@ -242,7 +249,12 @@ styleomi: |
         //W.A.p.activate();
         return W;
     
-    n eine =>''=><<''
+    Wout:
+        var W = ww[A.W.t];
+        delete ww[W.t];
+        ~leaves W.t
+    
+    eine:
         var K = s[0];
         var e = s[1];
         var k = 'e_'+K;
@@ -255,7 +267,7 @@ styleomi: |
     # which ins ww (G.Wid for Oth), J.id (Wid)
     # and the difference is you
     
-    n om =>''=><<''
+    om:
         A = G&A,'om';
         C = G&inC,C;
         t&2;
@@ -265,21 +277,21 @@ styleomi: |
         C.sc.anc ||= {};
         t&7;
     
-    n nn =>''=><<''
+    # on last A.b
+    nn:
         !A.W and a.c("no aW");
-        A.W.bb ||= {};
-        A.bb ||= A.W.bb;
-        if (s) {
-            a.c("Cinfdo");
-        }
-        A.bb[C.y.cv] ||= {};
-        A.bb[C.y.cv][C.t] ||= {};
-        A.bb.t ||= {};
-        A.bb.t[C.t] ||= {};
-        A.bb.t[C.t][C.y.cv] ||= A.bb[C.y.cv][C.t];
-        return A.bb[C.y.cv][C.t];
+        A.W.b ||= {};
+        A.b ||= A.W.b;
+        A.b[C.y.cv] ||= {};
+        A.b[C.y.cv][C.t] ||= {};
+        A.b.t ||= {};
+        A.b.t[C.t] ||= {};
+        A.b.t[C.t][C.y.cv] ||= A.b[C.y.cv][C.t];
+        var b = A.b[C.y.cv][C.t];
+        b.A = A;
+        return b;
     
-    n tcl =>''=><<''
+    tcl:
         var t = C.t.replace(/\W/g,'e');
         t = 'n'+t+'n';
         return t;
@@ -290,18 +302,18 @@ stylation: |
     #
     # $(A.on).fadeOut(delay, function() { $(this).remove(); });
     
-    n W =>28=><<''
+    W 28:
         A.on = $('#'+C.c.W);
         !$(A.on).length and a.c(T.alk+"  noW: "+C.c.W);
         var W = G&Win,C.c.W;
         $.extend(A,W.A);
     
-    n nobody =>31=><<''
+    nobody 31:
         A.on = $('#'+C.c.nobody);
         !$(A.on).length and a.c("no nobody at "+C.c.nobody);
     
     # whole time... (make whote, A.t&4 ex inness..
-    n el =>333=><<''
+    el 333:
         C.sc.attr ||= {};
         if (C.sc.atr) {
             var h = G&peel,C.sc.atr;
@@ -309,13 +321,15 @@ stylation: |
                 v ||= C.sc[k];
                 C.sc.attr[k] = v;
             });
+        }
         var last;
         var t = G&tcl;
         s == '2' and $(A.on).find('[t="'+C.t+'"]').remove();
         s == '2' and s = '1';
         var el = G&f,t;
+        s == '9' && A.mo == A and G&Wout;
         s == '1' || s == '9' and $(el).remove();
-        s == '8' and return A.on.aft = el;
+        s == '8' and return T.aft = el; // last on for next v
         if (s == '1') {
             C.sc.attr.cv = C.y.cv;
             C.sc.attr.t = C.t;
@@ -325,11 +339,11 @@ stylation: |
         }
         delete C.sc.attr;
         .
-        A.bb = G&nn;
-        if (A.bb.cod) {
+        A.b = G&nn;
+        if (A.b.cod) {
             C.c.cod ||= '3';
         }
-        if (A.bb.pa) {
+        if (A.b.pa) {
             C.sc.pa ||= '3';
         }
         if (typeof C.c.s === 'string' && !C.c.cod && !C.sc.pa) {
@@ -339,7 +353,7 @@ stylation: |
         }
         A.on = el;
    
-    n el =>4=><<''
+    el 4:
         var f = ['id','src','dig'];
         var fl = function (v,z) {
             C.sc.attr and C.sc.attr[v] = z;
@@ -355,12 +369,12 @@ stylation: |
 stylers: |
     u alljse
     
-    n e =>32=><<''
+    e 32:
         s == '1' and s = C.c.s;
         a.e(s);
         T.not = 1;
     
-    n geo =>5=><<''
+    geo 5:
         s = s.split(' ');
         var aung = s[0].match('^a(\\d+)');
         if (aung) {
@@ -377,14 +391,14 @@ stylers: |
         s.rad and C.sc.css['transform-rotate'] = s.rad+'rad';
         s.scale and C.sc.css['transform-scale'] = s.scale;
     
-    n ab =>51=><<''
+    ab 51:
         if (s === '100') {
             C.sc.css.width = '100%';
             C.sc.css.height = '100%';
         }
         C.sc.css.position = 'absolute';
     
-    n z =>6=><<''
+    z 6:
         var del = 0;
         $.each(s, function(i,v) {
             var c = G&inC,v;
@@ -395,11 +409,11 @@ stylers: |
             else { ub() }
         });
     
-    n cssdel =>589=><<''
+    cssdel 589:
         var re = s.split(',');
         $.each(re,function(i,v){ delete C.sc.css[v] });
     
-    n css =>59=><<''
+    css 59:
         if (typeof s === 'string') {
             var re = s.split(';');
             s = {};
@@ -421,25 +435,25 @@ stylers: |
             $(A.on).css(i, v);
         });
     
-    n anc =>59=><<''
+    anc 59:
         $(A.on).animate(C.sc.anc, (C.sc.ant||900));
     
 stylext: |
     u alljs
     
-    n codsav =>''=><<''
+    codsav:
         var cm = s;
         var d = {};
         a.entag(d, $(A.on));
-        A.bb.jus = d.code = cm.getValue();
+        A.b.jus = d.code = cm.getValue();
         d.dig = $(A.on).attr('dig');
         a.ethro(d, ws);
     
     u alljse
-    n '','','%nk:c'
+    n \'%nk:c'
     
-    n cod =>59=><<''
-        var cm = A.bb.cod;
+    cod:
+        var cm = A.b.cod;
         .
         if (typeof s === 'string') {
             if (s === '3') {
@@ -456,10 +470,10 @@ stylext: |
         var set = $.extend(def, s);
         cm and $.each(set,function(k,v){ cm.setOption(k,v) });
         !cm and cm = CodeMirror(A.on, set);
-        A.bb.cod = cm;
+        A.b.cod = cm;
         .
         if (C.c.s) {
-            C.c.s !== A.bb.jus and cm.setValue(C.c.s);
+            C.c.s !== A.b.jus and cm.setValue(C.c.s);
             else { a.c('vv vv'+C.t); }
         }
         cm.refresh();
