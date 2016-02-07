@@ -263,7 +263,7 @@ forked: |
         my $o;
         my ($is,$ul) = ($1,$2);
         my $t = $1 if $ul =~ /^(\w+)/ || die "niul $ul";
-        if (!-f "w/$is/$t") {
+        if (0 && !-f "w/$is/$t") {
             my @op = glob "w/$is/$t*";
             sayre "Many options: ".ki @op if @op > 1;
             my $o = shift @op;
@@ -317,14 +317,16 @@ forked: |
     J.me = '';
 exit: |
     for (@{ar.m||[]}) {
+        $_ eq 'refork' &&
+            Rw restar $keep=1;
         if ($_ eq 'refork') {
-            G.forked eq $$ && die "You are forked: $$";
-            kill HUP=>G.forked;
         }
     }
     exit;
 restar: |
-    Rw exit refork;
+    G.forked eq $$ && die "You are forked: $$";
+    kill HUP=>G.forked;
+    exit unless ar.keep;
 Sl: |
     G.U = $J;
     J.fti ||= 0;
@@ -652,7 +654,11 @@ Tism: |
         my $c = $m->req->body;
         $c =~ s/^data:image\/jpeg;base64,// && say "ok";
         my $decoded= MIME::Base64::decode_base64($c);
-        my $f = sprintf "znap/tism.%s.%04d\.jpg", substr($G->{id},0,4), $G->{tismi}++;
+        my $run = substr($G->{id},0,4);
+        my $dir = "znap";
+        my $rundir = "znap/$run";
+        `mkdir $rundir` unless -d $rundir;
+        my $f = sprintf "$rundir/%06d\.jpg", $G->{tismi}++;
         say "Go to $f for ".length $c;
         $f = "/home/s/shed/$f";
         write_file($f,{binmode=>':raw'},$decoded);

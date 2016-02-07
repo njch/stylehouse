@@ -63,6 +63,16 @@ stylehut: |
         }
         return ks.join(',');
     
+    peel: %args:s e
+        e ||= [',',':'];
+        var c = {};
+        $.each(s.split(','), function(i,kv) {
+            kv = kv.split(':');
+            var k = kv[0];
+            var v = kv[1];
+            c[k] = v;
+        });
+        return c;
 styclick: |
     u alljs
     y.at.jsl = 1;
@@ -159,9 +169,9 @@ styleomi: |
         var t = '';
         s and t=s
         var at = '';
-        C.y.cv and at += "cv='"+C.y.cv+"'";
+        C.y.cv and at += "[cv='"+C.y.cv+"']";
         t || at || console.log("No attach: "+T.alk);
-        return $(A.on).find(t+'['+at+']');
+        return $(A.on).find(t+at);
     
     n inC =>''=><<''
         C = s;
@@ -293,7 +303,12 @@ stylation: |
     # whole time... (make whote, A.t&4 ex inness..
     n el =>333=><<''
         C.sc.attr ||= {};
-        C.sc.atr and C.sc.attr[C.sc.atr] = C.sc[C.sc.atr];
+        if (C.sc.atr) {
+            var h = G&peel,C.sc.atr;
+            $.each(h, function(k,v){
+                v ||= C.sc[k];
+                C.sc.attr[k] = v;
+            });
         var last;
         var t = G&tcl;
         s == '2' and $(A.on).find('[t="'+C.t+'"]').remove();

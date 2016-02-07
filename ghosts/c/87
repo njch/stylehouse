@@ -1,12 +1,13 @@
 Vind: |
     G.oin.A.tid += 3;
     J.koe++;
-    my $d = 9;
+    my $d = 12;
     my $dont;
     
     if (J.koe > 2) {
         my $h = {};
-        for (`ssh v sensors`) {
+        my @l;
+        for (@l=`ssh v sensors`) {
             my ($k,$v) = /^(Core 0|temp1):\s+\+(\d+)\./;
             $k || next;
             $k =~ s/\W//g;
@@ -14,7 +15,11 @@ Vind: |
             $h.>$k = $v;
         }
         saybl "SEnse: ".ki $h;
-        die "nonsense" if !keys %$h;
+        if (!keys %$h) {
+            sayre "nonsense ".wdump \@l;
+            $dont = 1;
+            $d = 20;
+        }
         if (grep{$h.>$_ > ('temp12'eq$_?88:84)}keys %$h) {
             sayre "Hot: ".ki $h;
             sleep 6;
@@ -30,6 +35,7 @@ Vind: |
         saybl "wipe" for 1..9;
         J.rem = 1;
     }
+    J.rem > 100 && Rw restar;
     
     
         saybl "---------" for 1..4;
@@ -46,8 +52,6 @@ Alsi: |
     u urw
     n ifra %ifr:http://st33v.tumblr.com/
     J.VV.N = 1;
-Zup: |
-    #
 Zb: |
     u Traweil
     #Stripes
@@ -81,8 +85,9 @@ Zee: |
 Zoy: |
     y.at.jsl = 1;
     Rw Sefara;
-    `cd w/ju; rm -f Hut Zoy stylers stylepap`;
+    `cd w/ju; rm -f Hut Zoy stylers stylation stylehut stylepap`;
     n Hut
+    n Tjs
 Hit: |
     y.at.sq = 'jsle';
     # isle Mo747s after sq em24 v
@@ -107,7 +112,7 @@ jsle: |
         C.sc.Wc = 1;
         em.lines
     
-Swemp: | # the Ang for js
+Swemp: | # the Ang for js styles
     n s=>'',<<''
         Nothing
     #
@@ -117,6 +122,7 @@ Swemp: | # the Ang for js
 stylepap: |
     u alljse
     y.at.jsl = 1;
+    
     
     
     tism 36:
@@ -140,19 +146,17 @@ stylepap: |
     
     # push to codcoil the paper scope grab to build into the dome
     pa 34:
-        delete C.c.el;
         with (paper) {
             s = C.sc;
+            var src;
             var r;
-            if (C.sc.pa > 2) {
-                r = A.bb.pa;
-                !r && a.c("no rasmeemmber "+C.t);
-            }
-            else {
-                !s === 'ra' and a.c('nom ra: '+s);
-                var src;
+            s.typ = s.pa;
+            s.typ ||= 'R';
+            !(C.c.el <3) and r = A.bb.pa; !r && a.c("no rasmeemmber "+C.t);
+            
+            else if (s.typ === 'R') {
                 s.src and src = s.src;
-                src ||= C.t;
+                src ||= 'th/'+C.t;
                 if (!src) {
                     s.jfi ||= 'img';
                     var find = $(s.jfi);
@@ -160,6 +164,16 @@ stylepap: |
                     src = $(find).last().attr('src');
                 }
                 r = new Raster(src);
+            } 
+            else if (s.typ === 'T') {
+                r = new PointText(view.center);
+                r.fillColor = 'white';
+                r.justification = 'center'
+            }
+            if (s.typ==='T') {
+                C.c.s and r.content = C.c.s;
+                C.c.el <3 && !s.fs and s.fs = '30';
+                s.fs and r.fontSize = s.fs;
             }
             C.sc.an && a.uplg and n = r.animate(C.sc.an, a.uplg);
             s.poes and r.position = eval(s.poes);
@@ -178,27 +192,24 @@ stylepap: |
             }
             
             A.W ||= {};
-            A.W.ras ||= {};
-            A.W.ras[src] = r;
-            
-            A.W.raz ||= [];
-            !C.sc.pa >3 and A.W.raz.push(r);
-            var rzl = A.W.raz.length;
-            while (rzl > 9) {
-                var v = A.W.raz.shift();
-                rzl--;
-                a.m('rm: '+r.image.src.substr(-20,20))
-                v.remove();
+            if (C.c.el <3) {
+                var ha = s.typ+'s';
+                var ar = s.typ+'z';
+                A.W[ha] ||= {};
+                A.W[ha][C.t] = r;
+
+                A.W[ar] ||= [];
+                var raz = A.W[ar];
+                raz.push(r);
+                var rzl = raz.length;
+                while (rzl > 9) {
+                    var v = raz.shift();
+                    delete A.W[ha][v.Ct];
+                    rzl--;
+                    v.remove();
+                }
+                r.Ct = C.t;
             }
-            if (C.sc.zm) {
-                r.zm = C.sc.zm;
-                $.each(A.W.raz, function(k,v){
-                    !v.zm and return;
-                    v.position.x += 10 * v.zm;
-                });
-            }
-            a.m('c');
-            
             A.bb.pa = r;
         }
     
@@ -211,17 +222,16 @@ Tarp: |
     y.in = 0.3;
     y.out = 0.4;
     
-    #@$M = @{J.AM||=[]};
-    
-        J.tea ||= [shuffle grep {s/\n$//;/^[\/\-\.\w]+jpe?g$/gi} `find -L eye`];
+    J.tea ||= [shuffle grep {s/\n$//;/^[\/\-\.\w]+jpe?g$/gi} `find -L eye`];
 
         my $pg = 'w/Tarpig';
         J.slow = readlink($pg) || 0;
         J.slow += 1;
+        J.slow -= 20 if J.slow > 30 && rand(10) > 9.8;
         J.slow = 0 if J.slow >= @{J.tea};
         G&dlin,w=>J.slow=>'Tarpig';
     
-    my @for = (1..4);
+    my @for = (1..3);
     my $dealin = 1;
     while (@for) {
         my $n = shift @for;
@@ -238,7 +248,7 @@ Tarp: |
         
         m $f=>-pape=>{s=>'mild'},$sc;
     }
-    delete J.El.>$_ for Pre=>'Duv';
+    #delete J.El.>$_ for Pre=>'Duv';
     
     J.VV.N = 1;
     
@@ -284,49 +294,53 @@ wave: | #
         $z &&
         Rw wave $N:z $i;
     }@$N];
-    #my $J = G.oin;
-    #n Disp=>\$M
-    
     
     $N;
 pi/pape: |
-    C.sc.pa = J.keo++ + 2;
-    C.sc.qz = 1;
-    C.c.thumb ||= C.t;
-    if (C.c.thumb) {
-        m th=>-thumb=>C.c.thumb
-        my $th = pop @$M;
-        C.sc.src = th.sc.src;
-    }
-    C.sc.oc = 1;
-    
+    C&pa = 'R';
+    C&qz = 1;
+    c&thumb ||= C.t if !C&src;
+    c&thumb &&
+    Rw pi/thumb + $s:c&thumb;
+    C&oc = 1;
+    C&src || die "No src? ".ki $C;
     
     my ($no,$i,$se) = ($1,$2,$3)
         if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
     my $fo = $no - $i;
-    shuffle 1, 2, 3 for 1..int($no);
     
     C.sc.src || sayre "no src..";
     delete C&src if C.t eq C&src;
+    
     C.sc.poxop = 270 * (rand(2)-1);
     C.sc.poyop = 270 * (rand(2)-1);
+    map { C.sc.>$_ * 0.3 if C.sc.>$_ > 100 } qw'poxop poyop';
     C.sc.sca = 3.421 * rand(3) ^ 2;
     #C.sc.zm = int(rand 10);
     C.sc.sca += 3;
     C.sc.opa = 0.6 * (0.5 + rand 0.9);
-    C.sc.b = (shuffle 'darken', 'lighten', 'normal',
-    'exclusion', 'hue', 'saturation',# 'luminosity',
-     'color', 'add', 'subtract',
-     'color', 'add', 'subtract','subtract','subtract',
+    C.sc.b = (shuffle 
+    'negation',# 'source-over', 'source-in',
+    #'source-out',
+    #'source-atop',
+    'darken', 'lighten',
+    #'color-dodge', 'color-burn',
+    'normal', 'normal',
+    #'exclusion',
+    'hue', 'saturation',# 'saturation',# 'saturation', 'saturation',# 'luminosity',
+    # 'color', 'add', 'subtract',
+    # 'color', 'add',# 'subtract','subtract','subtract',
     #'normal', 'normal', 'normal', 'normal', 'normal', 
-    'multiply','multiply',, #'multiply',, 'multiply',, 'multiply',,
-    # 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten',
-    # 'pin-light', 'pin-light', 'pin-light', 
-    #'difference',
+    'multiply',#'multiply',, #'multiply',, 'multiply',, 'multiply',,
+    # 'multiply', 'screen', 'overlay', 'soft-light', 
+    #'hard-light', # 'darken', 'lighten',
+    # 'pin-light', 'pin-light', 'pin-light', #
+    'difference',
     
     #
     #'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract'
-    #, 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 'xor'
+    #, 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 
+    'xor'
     )[0];
     C.sc.r = int(700 * $fo);
     
