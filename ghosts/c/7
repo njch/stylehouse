@@ -448,7 +448,7 @@ Yod: |
     
 Ydo: |
     u allovse
-    n '','','%of:Sev'
+    n \'%of:Sev'
     # togethered with force=el or so
     # tee to 4 sc ^T.* to T looks compinkgk 6
     # this alternating data, which brings in middle terms
@@ -474,20 +474,23 @@ Ydo: |
     
     n cnew =>4321=><<'',{Td=>'c/*/new'}
         sayre "how inject a c $gk" if $vl;
-        lv.op.c->{$gk} = 9;
-        
+        lv.op.c.>$gk = 9;
+    
     n cgone =>4321=><<'',{Td=>'c/*/gone'}
         sayre "how delete a c $gk";
-        lv.op.c->{$gk} = 9;
+        lv.op.c.>$gk = 9;
+    
+    n cqdiff =>4323=><<'',{Td=>'c/q/diff'}
+        lv.pur.c.>$gk = 1;
     
     n csdiff =>4323=><<'',{Td=>'c/s/diff'}
-        lv.pur.c->{$gk} = 1;
+        lv.pur.c.>$gk = 1;
         lv.pur.c.ht = 1 if at.c.ht;
     
     # ^ should avoid v (matched paths)
     n cdiff =>4324=><<'',{Td=>'c/*/diff'}
         sayre "how to c dif $gk".slim(30,$v)." <--- ".slim(30,$o);
-        lv.op.c->{$gk} = 9;
+        lv.op.c.>$gk = 9;
     
     n cstill =>4324=><<'',{Td=>'c/*/still'}
         # ya
@@ -495,14 +498,14 @@ Ydo: |
     
     
     n scnew =>4331=><<'',{Td=>'sc/*/new'}
-        lv.pur.sc->{$gk} = 1;
+        lv.pur.sc.>$gk = 1;
         
     n scgone =>4332=><<'',{Td=>'sc/*/gone'}
         sayre "how delete a sc $gk";
-        lv.op.sc->{$gk} = 9;
+        lv.op.sc.>$gk = 9;
     
     n scdiff =>4333=><<'',{Td=>'sc/*/diff'}
-        lv.pur.sc->{$gk} = 1;
+        lv.pur.sc.>$gk = 1;
     
     n scstill =>4334=><<'',{Td=>'sc/*/still'}
         # ya
@@ -643,6 +646,7 @@ VOD: |
             # el:1 will replace the old by t/y or something
             # chuck ids on everything?
             #saybl "Everything under C.t supposed: ".wdump 6, [iv.c,iv.sc];
+            saybl "Usposed under C.t: ".ki $_ for @{iv.c}, @{iv.sc};
             push @$z, grep{defined} @{iv.c}, @{iv.sc};
         }
         elsif (lv.od.ll->{$ea}) {
