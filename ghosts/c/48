@@ -1,6 +1,6 @@
 
 
-Jergen: |
+Jurglin: |
     u alljs
     y.at.jsl = 1;
     
@@ -48,24 +48,17 @@ Hit: |
     #
     
 Hut: |
+    n StylePhone
+    n StyleThroat
+    n Ocean
+    n Tjs
+    n And
+    
+    
+StylePhone: | # must have net
     n stylehut
     n styclick
-    n styleomi
-    n stylation
-    n stylers
-    n stylext
-    n stylepap
-    n Swemp
-    n Tjs
-    
-    
-Swemp: | # the Ang for js styles
-    n s=>'',<<''
-        Nothing
-    #
-    my ($X,$N) = Rw Xisle wu Ang;
-    Rw Csse + $N;
-    
+    #n stysocket # see lowcal websockety
 stylehut: |
     u alljs
     y.at.jsl = 1;
@@ -222,6 +215,17 @@ styclick: |
               }
           }
           ws.reply({event: d});
+    
+    dscam: %args:d ev
+        d.type = ev.type;
+        d.S = 0+ev.shiftKey;
+        d.C = 0+ev.ctrlKey;
+        d.A = 0+ev.altKey;
+        d.M = 0+ev.metaKey;
+    
+StyleThroat: | # light conse and their users
+    n styleomi
+    n stylation
 styleomi: |
     u alljs
     
@@ -356,7 +360,7 @@ styleomi: |
     
 stylation: |
     u alljse
-    n '','','%nk:c'
+    n \'%nk:c'
     #
     # $(A.on).fadeOut(delay, function() { $(this).remove(); });
     
@@ -424,12 +428,24 @@ stylation: |
             else
             C.c[v] and fl(v, C.c[v])
         });
+Ocean: | # styles, thingies
+    n stylers
+    n Swemp
+    
+    n stylext
+    n stylepap
+    
 stylers: |
     u alljse
     
     e 32:
         s == '1' and s = C.c.s;
         a.e(s);
+        T.not = 1;
+    
+    doo 32:
+        !a[s] and throw "missing doo: "+s
+        a[s](A,C,G,T);
         T.not = 1;
     
     geo 5:
@@ -496,6 +512,12 @@ stylers: |
     anc 59:
         $(A.on).animate(C.sc.anc, (C.sc.ant||900));
     
+Swemp: | # the Ang for js stylers
+    s:
+        Nothing
+    my ($X,$N) = Rw Xisle wu Ang;
+    Rw Csse + $N;
+    
 stylext: |
     u alljs
     
@@ -554,7 +576,7 @@ Canvasc: |
     u alljs
     # & sitting
     
-    n ps =>''=><<'','%args:s'
+    ps: %args:s
         with (paper) {
           try {
             eval(s);
@@ -566,13 +588,13 @@ Canvasc: |
     
     # https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
     
-    n pzl =>''=><<''
+    pzl:
         with(paper){
             var shape = new Path.RegularPolygon(view.center,3, 100);
             .
             shape.fillColor = '#8C8A00';
             a.N ||= {};
-            a.N.pzl = function (event) {
+            A.W.N.pzl = function (event) {
                 shape.rotate(1);
                 shape.fillColor.hue += 1;
                 .
@@ -583,7 +605,7 @@ Canvasc: |
             }
         }
     
-    n sitandspin =>''=><<''
+    sitandspin:
         with (paper) {
             var mousePoint = view.center;
             var amount = 44;
@@ -607,7 +629,7 @@ Canvasc: |
                 a.m('mm!');
             }
             var children = gop.children;
-            a.N.sitandspin = function (event) {
+            A.W.N.pzl = function (event) {
                 for (var i = 1, l = children.length; i < l; i++) {
                     var item = children[i];
                     var delta = (mousePoint - item.position) / (i + 5);
