@@ -12,7 +12,7 @@ Jergen: |
                 height: 2em;
             }
             ::-webkit-scrollbar-thumb {
-                background: url(th/eye/o/greencush.jpg);
+                background: url(eye/o/greencush.jpg);
             }
             ::-webkit-scrollbar-track {
                 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
@@ -24,32 +24,47 @@ Jergen: |
                 border-radius: 10px;
                 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
             }
+            input[type=range] {
+                -webkit-appearance: none;
+                background: black;
+                height: 2px;
+            }
+            input[type=range]::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              background: url(eye/o/copper_anodes.jpg);
+              height: 12px;
+              width: 12px;
+              border-radius: 6px;
+              cursor: crosshair;
+              box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            }
         </style>
     
 stylehut: |
     u alljs
     y.at.jsl = 1;
     
-    n e =>''=><<'',{args=>'e'}
+    e: %args:e
         !q and console.log("xut "+e);
         var m = 
         eval(e);
         return m
     
-    n er =>''=><<'',{args=>'e,er'}
+    er: %args:e er
         console.log("xutbang: ", e, er);
         var ej = {er: {e: e}};
         er && er.message and ej.er.m = er.message;
         s.reply(ej);
         a.m("!"+ (ej.er.m || e));
     
-    n m =>''=><<'','%args:e'
+    # see M
+    m: %args:e
         var d = e.substr(0,1);
         d == " " and return a.e(e);
         d == "[" || d == "{"  and return a.om({},$.parseJSON(e),a,{});
         d == "." and e = '<span style="font-size:66%">'+e+'</span>';
         a.c(e);
-
+    
     c: %args:s e
         e ||= [];
         var says = [];
@@ -60,14 +75,29 @@ stylehut: |
             }
         });
         a.log ||= [];
-        a.log.push([s,e]);
+        a.log.unshift([s,e]);
+        a.lim(a.log,-9);
         says.length and s = s+': '+says.join(' ');
         $('#msgs').prepend(s+"\n");
     
-    n yl =>''=><<'',{args=>'delay,func'}
+    lim: %args:s lim cb
+        var len = s.length;
+        lim ||= 9;
+        var rev;
+        lim < 0 and rev = 1; lim *= -1;
+        while (len > lim) {
+            var v;
+            rev and v = s.pop()
+            else {  v = s.shift() }
+            cb and cb(v);
+            len--;
+        }
+        
+    
+    yl: %args:delay func
         setTimeout(func, delay);
 
-    n ks =>''=><<'','%args:s'
+    ks: %args:s
         var ks = [];
         for (var k in s) {
             ks.push(k);
@@ -266,7 +296,8 @@ styleomi: |
     # top level mirage is o(ww,Wid,$s) 
     # which ins ww (G.Wid for Oth), J.id (Wid)
     # and the difference is you
-    
+    M:
+        typeof 
     om:
         A = G&A,'om';
         C = G&inC,C;
