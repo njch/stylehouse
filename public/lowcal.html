@@ -52,21 +52,13 @@
    function onFrame(e) {
         a.uplg = uplg;
         a.proj = project;
-        if (a.stut) {
+        if (a.stut)
           return;
-        }
-        //try {
         uplg.update(e);
-        //}
-        //catch (er) {
-         // a.m('tho '+er);
-        //}
-        var N = a.N;
-        if (N !== undefined) {
-            $.each(a.N, function(k,on) {
-                on(e);
-            });
-        }
+        if (a.frame)
+            a.frame(e);
+        if (a.yl) {
+            a.frame(e);
         if (a.yl) {
           a.stut = 1;
           if (!a.stul) {
@@ -75,6 +67,12 @@
           a.yl(a.stul,function(){ 
               delete(a.stut);
           });
+        }
+        var N = a.N;
+        if (N !== undefined) {
+            $.each(a.N, function(k,on) {
+                on(e);
+            });
         }
    }
    
