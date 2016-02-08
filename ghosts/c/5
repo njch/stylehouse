@@ -19,10 +19,7 @@ Run: |
     }
     
     my $ta = G.cv <3 ? 'K/Stable' : 'K/Feel';
-    
-    G.IIII = [map{'G/T/'.$_}split /\s+/,
-        "H/Boat H/Rest Chang ".$ta
-    ];
+    G.IIII = [map{'G/T/'.$_}'H/Boat','H/Rest','p/Ang',$ta];
     
     G.y = $G;
     $C = $G;
@@ -92,9 +89,7 @@ We: |
 All: | # together active ambience
     J.mo.s.al = $J;
     n Check
-    n @$_ for map{[$_=>W=>{}]} map {_.name}
-        map { J.mo.s.bb->{"$_\tJ"} } 
-        grep {$_} map { /^(.+)\tall$/ && $1 } keys %{J.mo.s.bb};
+    n _.name for @{G.all};
     
 Check: | # always ambient ambulance
     Rw Loading;

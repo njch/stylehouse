@@ -209,12 +209,13 @@ MkSle: |
     
 Dwive: | # @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @
     J.A.IIII = [@{G.IIII}, 'G/T/TestI'];
-    n '','','%runs'
+    n \'runs'
     G.asap = 1;
     G.Jlone = 1;
     y.ope = 1;
     my $n = J.fsjoi++;
-    my $d = ar.d || 7;
+    my $d = ar.d || ar.m && ar.m->[0] || 3;
+    $d--; # since now is a run and spec looks like yay many lumps
     $n || Rw loopby $b=0.2 $d $p=Top;
     $n || `rm life/W/{JStestlines,Sltest,Detailtest}`;
     T.nose = 1; # dont thing the test vector
@@ -261,21 +262,21 @@ followtest: |
     J.ever = 1;
 loadfollow: |
     n So =>'3'.(1+J.dkoo++)=>"something say: E.c.s"
-Slt: | # W outputting
-    my $n = Rw Dwive + $d=18;
+Slt: | # W outputting, pi line Follower ing, Follower rusted, see pi/sol, opel
+    my $n = Rw Dwive 18;
     
     #J.mo.s.al.opt.fole = [Followe=>W=>"life/W/J.mo.s.id\.e"];
     
     if ($n == 0) {
-        n Sltest =>W=>'%test:1,West:1'
+        n Sltest =>W=>'%test:1,West:1,tac'
     }
     elsif ($n == 1) {
         n Sltest =>W=>'%test:2'
-        n Detailtest =>W=>'%test:2,West:1,noJ',{l=>'empty eventuat'}
+        n Detailtest =>W=>'%test:2,West:1,noJ,tac',{l=>'empty eventuat'}
     }
     elsif ($n == 2) {
         Rw MkSle G-Slt Detailtest;
-        n Detailtest =>W=>'%test:3,West:2,noJ'
+        n Detailtest =>W=>'%test:3,West:2,noJ,tac'
         n Follower =>W=>'%test:3,noJ',{l=>'following empty file'}
         Rw UnPreDuv $J:J.foll;
     }
@@ -306,22 +307,13 @@ Slt: | # W outputting
         ok(0, "Runtomuch: $n");
     }
     ok(1,"Run over: $n");
-JSlt: | # W outputting
-    my $n = Rw Dwive;
-    
-    if ($n == 0) {
-        n Wightest =>W=>'%test:1'
-    }
-    elsif ($n == 1) {
-        n JStestlines =>W=>'%test:2,West:1,noJ',{l=>'jslines have'}
-    }
-Elt: | # LV shuffling stuff
-    my $n = Rw Dwive;
+Elt: | # LV shuffling stuff # Feb 9 2016
+    my $n = Rw Dwive 3;
     
     if ($n == 0) {
         n qqreps =>W=>'%test:1'
         
-        n DwightSmall =>W=>'%test:1'
+        #n DwightSmall =>W=>'%test:1'
 
         n CarSmall =>W=>'%test:1'
 
@@ -362,59 +354,18 @@ Detailtest: |
     n latelo => '12', '12-'.J.icker
     J.icker > 2 &&
     n hade => '3'.J.icker => "Seen some J.icker .."
-Wightest: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    n JStestuff
-    # could ahh...
-    n JStestlines =>$J
-JStestlines: |
-    Rw JSlines;
-JStestuff: |
-    u alljs
-
-    n inC =>''=><<'','%args:s'
-        C = s;
-        if (C.constructor == Array) {
-            C.length !== 4 && a.er("no4y", C);
-            C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
-        }
-        else if (typeof C === 'string') {
-            C = {c: C};
-        }
-        if (typeof C.c === 'string') {
-            C.c = {s: C.c};
-        }
-        return C;
-
-    n yl =>''=><<'',{args=>'delay,func'}
-        setTimeout(func, delay);
-
-    n ks =>''=><<'','%args:s'
-        var ks = [];
-        for (var k in s) {
-            ks.push(k);
-        }
-        return ks.join(',');
-    
-    
-    n sc_ab =>''=><<''
-        if (C.c === '100') {
-            C.sc.css.width = '100%';
-            C.sc.css.height = '100%';
-        }
-        C.sc.css.position = 'absolute';
-    
 qqreps: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     J.V = 1;
     u allacgts
-    n acgtsish =>''=><<''
+    acgtsish:
         # this is acgt=s
     
     u allvse
-    n vasey =>''=><<''
+    vasey 2:
         # this is a vase
     
-    n '','','%of:Zoy'
-    n vazoyy =>''=><<''
+    n \'of:Zoy'
+    n vazoyy =>3=><<''
         # this is another vase
     
     u allacgt
@@ -425,6 +376,7 @@ qqreps: | # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 DwightSmall: |
     J.A.IIII = [@{G.IIII},'G/T/Draw'];
     n s=>''=>t
+    # way awol v 
     my $lot = "g/G/on g/G/way";# g/0/G g/G/cis";
     n shedful => '0.1-0.7', {pi=>'seas',s=>$lot}
     
