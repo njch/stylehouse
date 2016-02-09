@@ -3,26 +3,7 @@ Disp: |
     J.VV.N = 1;
     sayyl "ON!G";
     n pre=>-pre=>'kla;'.wdump(3,$C)
-papernoise: |
-    my ($no,$i,$se) = ($1,$2,$3)
-        if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
-    my $fo = $no - $i;
-    shuffle 1, 2, 3 for 1..int($no);
-    
-    C.sc.src || sayre "no src..";
-    delete C&src if C.t eq C&src;
-    C.sc.poxop = -70 * (rand(2) -1.9);
-    C.sc.poyop = -70 * (rand(2) -1.9);
-    C.sc.sca = 3.421 * rand(3) ^ 2;
-    C.sc.sca += 3;
-    C.sc.opa = 0.6 * (0.5 + rand 0.9);
-    C.sc.b = (shuffle 'normal', 'multiply','multiply',, 'multiply',, 'multiply',, 'multiply',, 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten', 'difference',
-    'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract'
-    #, 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 'xor'
-    )[0];
-    C.sc.r = int(700 * $fo);
-    
-    C.sc->{$_} = I.d&ron,C.sc->{$_} for grep{C.sc->{$_}} qw'poxop poyop sca opa r';
+
 recan: |
     u urw
     blag: %doo:sitandspin
@@ -45,15 +26,18 @@ wave: |
         ki(7, $s);
     };
     my $M = [map{
-        my $c = G&tC,$_;
-        $c = G&hup,$c;
-        my $z = delete c.sc.z;
+        my $C = G&tC,$_;
+        $C = G&hup,$C;
+        my $z = delete C&z;
+        delete C&J;
+        delete C&geo;
+        
     
     
-        c.c = $try->(c.c);
-        c.sc = $try->(c.sc);
+        C.c = $try->(C.c);
+        C.sc = $try->(C.sc);
     
-        say join "\t","$i".c.t, c.y.cv, c.c, c.sc;
+        say join "\t","$i".C.t, C.y.cv, C.c, C.sc;
         $z &&
         Rw wave $N:z $i;
     }@$N];
@@ -61,32 +45,7 @@ wave: |
     $N;
 Zup: |
     #
-jsle: |
-    my $X = C.sc.X || C.c.J.C.sc.X || die "NoC X: ".ki($C)."\n".ki(C.c.J.C);
-        #A.nj.C.sc.X || die "No x on ".ki A.nj.C;
-    
-        my $N = [];
-    
-        sayyl "jsle C.t: ".
-            Rw sumX $X $N;
-        my $S = Rw humms $J $N spots;
-        my $l = em.lines = [];
-        push @$l, map{" a\.e(".sjson($_).");"} @{S.z};
-        push @$l, Rw JSpots $II:S.X;
-    
-        C.c.os = 1 if !grep {/\S/} @{S.z};
-        C.sc.Wc = 1;
-        em.lines
-Sumphoto: |
-    u urw
-    y.at.anch = 'Noteal';
-    e&C && return sayre "Tkad90!".
-        Rw talkzyh;
-    
-    J.wali++;
-    J.VV.N = 1;
-    
-    n "ha:J.wali"=>''=>'fudo'=>'%tism'
+
 Tarp: |
     u urw
     y.at.sq = 'wave';
@@ -123,8 +82,6 @@ Tarp: |
         m $f=>-pape=>{s=>'mild'},$sc;
     }
     #delete J.El.>$_ for Pre=>'Duv';
-    
-    J.VV.N = 1;
     
     shift @$M while @$M > 8;
     J.AM = [@$M];
@@ -234,6 +191,8 @@ stylepap: |
         return 0
     
     # rassimilato
+    # needs to put in background and do before dealings
+    # maybe the Cs become for compression somehow
     rasunify:
         s and A.mo.rasgo = s;
         !G&Time,'rasunify',700 and return
@@ -245,12 +204,18 @@ stylepap: |
             r.alive and li.push(r)
             else { de.push(r) }
         });
+        while (li.length > 9) {
+            ~liingot
+            de.push(li.shift());
+        }
+        if (0) {
         $.each(li, &i,r{ r.liopacity = r.opacity; r.opacity = 0 });
         var m = s[0].canvas.toDataURL('image/jpeg');
         $.each(de, &i,r{ r.remove() });
         $.each(li, &i,r{ r.opacity = r.liopacity; delete r.liopacity });
     
         a.om(A.up,['cmb',9,{el:2},{src:m,pa:'R'}],a,{});
+        }
     
         s.splice(0,s.length);
         $.each(li, &i,r{ s.push(r) });
@@ -266,7 +231,6 @@ stylepap: |
             go(1,v);
             rzl--;
         }
-        ~rasunif: de.length
     
     u alljse
     # take some photo
@@ -368,8 +332,8 @@ pi/pape: |
     C.sc.src || sayre "no src..";
     delete C&src if C.t eq C&src;
     
-    C&poxop = 270 * (rand(2)-1);
-    C&poyop = 270 * (rand(2)-1);
+    C&pxp = 270 * (rand(2)-1);
+    C&pyp = 270 * (rand(2)-1);
     map { C.sc.>$_ * 0.3 if C.sc.>$_ > 100 } qw'poxop poyop';
     C&sca = 3.421 * rand(3) ^ 2;
     #C.sc.zm = int(rand 10);
@@ -399,6 +363,8 @@ pi/pape: |
     #, 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 
     'xor'
     )[0];
-    C.sc.r = int(700 * $fo);
+    C&r = int(700 * $fo);
     
-    C.sc->{$_} = I.d&ron,C.sc->{$_} for grep{C.sc->{$_}} qw'poxop poyop sca opa r';
+    C.sc->{$_} = G&ron,C.sc->{$_}
+        for grep{C.sc->{$_}} qw'pxp pyp sca opa r';
+
