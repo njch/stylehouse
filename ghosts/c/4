@@ -361,6 +361,7 @@ ym/jscoi: |
     }
     die "wonky C.t   of ".ki $C if C.t =~ /\W/;
     C.sc.args =~ s/ /,/g;
+    delete C.sc.com;
     Rw ym/jsbabz;
     C.c.s = "a.".C.t." = function(".C.sc.args.") {\n".C.c.s."};\n";
     C.sc.dige = slm 12, dig C.c.s;
@@ -369,23 +370,24 @@ ym/jscoi: |
     $v->{js}->{$cv}->{C.t} = $C;
 ym/jsbabz: |
     my $poing = qr/\w+(?:\.\w+)?/;
+    my $nlp = qr/[^\n]+/;
     C.c.s =~ s/^t\&([^\s;]+)(;)?/!G\&t,$1 and return;/gm;
     C.c.s =~ s/($poing)\&(\$)?(\w+)(,[^\s;]+)?(;)?/
         my $t = $2 ? "$3" : "'$3'";
         my $h = $1 eq 'G' ? ".h(A,C,G,T,$t" : "\[$t\](A,C,G,T";
         $1.$h."$4)$5"
     /smge;
-    C.c.s =~ s/^\s*(.+) \|\|\= (.+)(;)?$/if (!$1) {
+    C.c.s =~ s/^\s*($nlp) \|\|\= ($nlp)(;)?$/if (!$1) {
         $1 = $2
     }/gm;
-    C.c.s =~ s/^\s*(.+?) and (.+)(;)?$/if ($1) {
+    C.c.s =~ s/^\s*([^\n]+?) and ($nlp)(;)?$/if ($1) {
         $2
     }/gm for 1..3;
     
-    C.c.s =~ s/[^G&]&(\w(,\w+)+)\{/function($1){/gm;
+    C.c.s =~ s/[^G&]&(\w+(,\w+)*)\{/function($1){/gm;
     
     
-    C.c.s =~ s{^~(\w+(?:[^\n]+:)?)(?: (.+))?$}{
+    C.c.s =~ s{^~(\w+(?:$nlp:)?)(?: ($nlp))?$}{
         my$s=$1;my$e=$2;$s=~s/:$//; "a\.c('$s',[$e]);"}sem;
     
 jsdeck: |
@@ -393,7 +395,10 @@ jsdeck: |
         G&something
         $.each(h, &k,v{ delete h.k });
         ~leaves
-    
+        G&nothing,is,over
+        var s = &c{ that.it.is };
+    #
+
     Rw ym/jsbabz;
     
     #is(c&s,<<'',"G& and ~");

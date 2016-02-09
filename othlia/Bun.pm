@@ -121,7 +121,8 @@ else {
     say "For $D->{t} $D->{y}->{cv}: ".ki $D->{sc};
     saybl "Call: $l->{sc}->{call}";
     my $line = $s =~ /line (\d+)/ ? $1 : $l->{sc}->{line};
-    my @lines = $l->{c}->{w} ? `cat w/way/$l->{c}->{w}` :
+    (my $lucow = $l->{c}->{w}) =~ s/\W/-/g if $l->{c}->{w};
+    my @lines = $lucow ? `cat w/way/$lucow` :
         $l->{sc}->{file} =~ /^\(eval/ ? split "\n", $D->{c}->{s} :
         "???";
     $line += $l->{c}->{w} ? -4 : -1;
@@ -156,7 +157,7 @@ I:
         args: 1
         bab: ~
         code: I
-        dige: fefd32ee01d1
+        dige: e0788bbf0219
         eg: Bun
         of: I
       t: sigstackend

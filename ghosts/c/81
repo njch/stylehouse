@@ -154,15 +154,21 @@ UpPg: |
             select * from names where t = ?
     
     # select and then insert somewhat, osc updates it
-    # with o {k=>v}, scalar ref v is sql hack
+    # with o {k=>v}, scalar ref v is sql hack #
     decj:
-        $s = G&hup,$s;
-        $s.>$_ = djson $s.>$_ for 'c', 'sc';
-        $s;
+        $s = G&hup,$s unless @Me;
+        my $auto = @Me == 1 && $Me[0] eq '';
+        for (c=>sc=>@Me) {
+            $_ || next;
+            $s.>$_ ||= {} if $auto;
+            $s.>$_ && !ref $s.>$_ || next;
+            $s.>$_ = djson $s.>$_;
+        }
+        $s
     encj:
         $s = G&hup,$s;
         $s.>$_ = sjson $s.>$_ for 'c', 'sc';
-        $s;
+        $s
     
     pet: %acgt:s o
         my @ks = sort keys %$o;
@@ -208,8 +214,6 @@ UpPg: |
         G&db ->notify($s,$m);
 
         
-
-
 EYZ: |
     u urw
     u curv =>pi=><<''

@@ -86,9 +86,11 @@ urw: | # the pointyclick, curved probablW, %dos do w
         
 GW: | # star listening !
     G.c.b &&
-    u UpPg
+        u UpPg
     u Bubble
+    u Meta
     J.VV.N = 1;
+    
     #y.at.jslines = 1;
     J.ev.th = 'middle';
     y.at.ux = 2;
@@ -98,12 +100,10 @@ GW: | # star listening !
     J.lA=$A=
     n GW=>9=>{},'%ab:100,poi:0,tag:ww'
     
+    say "INside of GW";
     my $ear = G.W;
     G.GW = G.W = $J;
     G&xot,$J,$ear if $ear;
-    
-    #n rmold =>2=> "\n\$('ww[title=\"".y.at.Mid."\"]').remove();",'%js'
-    #n skfdo =>3=> "\$('#ux').append('<ww id=\"".y.at.Wid."\" style=\"position:absolute;height:100%;width:100%;pointer-events:none;\" title=\"".y.at.Mid."\"></ww>');",'%js'
     
     if (!G.c.b) {
         my $f = "life/W/y.at.Wid\.e";
@@ -268,6 +268,7 @@ forked: | # me enters stufff
     if (J.me =~ /^(\w+);(.*)$/) {
         my $m = [split',',$2];
         Rw $1 $J:G.oin $m;
+        return;
     }
     if (J.me =~ /^(\w+):(\S+)(\s|$)/) {
         my $o;
@@ -452,7 +453,9 @@ Meta: |
         my $J = G.oin;
         if (ref em.lines) {
             my $M = em.lines;
-            $M = ['','',{W=>J.id},{z=>em.lines}] if $ux < 2;
+            $M = $ux < 2 ? ['','',{W=>G.oin.id},{z=>$M}]
+                : @$M == 1 ? $M->[0]
+                : die "Canot ux=$ux C.t: ".wdump 3, $M;
             em.lines = [sjson($M)];
         }
         C.sc.Wc = 1;
