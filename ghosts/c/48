@@ -54,6 +54,7 @@ Zb: | # acTruate updates
     #n \'isle:ju,W:Hit'
 Hit: |
     y.at.sq = 'jsle';
+    y.at.extrajs = 'clon();keon();';
     if (!C.c.isle) {
         y.at.X = LoadFile('w/jw/Hut');
         sayre "Sno: ".ki y.at.X;
@@ -101,6 +102,7 @@ stylehut: |
         d == "." and e = '<span style="font-size:66%">'+e+'</span>';
         a.c(e);
     
+    # #msgs message
     c: %args:s e
         e ||= [];
         var says = [];
@@ -121,13 +123,16 @@ stylehut: |
         lim ||= 9;
         var rev;
         lim < 0 and rev = 1; lim *= -1;
+        var rem = [];
         while (len > lim) {
             var v;
             rev and v = s.pop()
             else {  v = s.shift() }
             cb and cb(v);
+            rem.push(v);
             len--;
         }
+        rem.length and return rem
         
     
     yl: %args:delay func
@@ -243,7 +248,7 @@ styclick: |
 StyleThroat: | # light conse and their users
     n styleomi
     n stylation
-styleomi: |
+styleomi: | # the not-loop and indifferent parts
     u alljs
     
     # A falls, A.on taps each-for thing, A.W holst selves, usu not
@@ -364,7 +369,7 @@ styleomi: |
         if (!W) {
             a.c("new W: "+s);
             W = ww[s] = {};
-            W.t = s;
+            W.id = s;
             W.A = {};
             W.A.W = W;
             //W.A.p = new paper.Project();
@@ -373,9 +378,14 @@ styleomi: |
         return W;
     
     Wout:
-        var W = ww[A.W.t];
-        delete ww[W.t];
-        ~leaves W.t
+        var W = ww[A.W.id];
+        delete ww[W.id];
+        
+        ~leaves W.t, W.id
+    
+    die: %acgt:s etc
+        ~dead: s, etc, A, C
+        throw s
     
 stylation: |
     u alljse
@@ -383,6 +393,14 @@ stylation: |
     #
     # $(A.on).fadeOut(delay, function() { $(this).remove(); });
     # also Mid comes the name
+    # piles easy once GW (an om) actuates
+    #       W (an om) line input as already in GW/dialect
+    # something could also default something to Mid-ness, name comp
+    Mid 26:
+        C.t == 'GW' and C.t = s
+        !C.c.Wid and G&die,"noWID!"
+        delete C.c.s;
+    
     Wid 27:
         A.on = $('#ux');
         C.c.id = s;
@@ -392,9 +410,10 @@ stylation: |
         ~made Wid: s
     
     W 28:
-        A.on = $('#'+C.c.W);
-        !$(A.on).length and a.c(T.alk+" noW: "+C.c.W);
         var W = G&Win,C.c.W;
+        !W.W.on and G&die,'noton',W
+        A.on = W.W.on;
+        !$(A.on).length and a.c(T.alk+" noW: "+C.c.W);
         ~got: A, W
         $.extend(A,W.A);
     
