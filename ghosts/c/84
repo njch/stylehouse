@@ -538,37 +538,41 @@ pi/edr: | # thing in a group
     C.sc.dos = 'getcated';
     ts.win && $ts->{C.sc->{ts.k}} ne ts.win &&
         n move=>3=>"ƾ",'%dos:getcated,id:whatu'
-getcated: | # moves
+getcated: | # moves on the noise splitter
     my @h = e&_hC;
-    my $p = shift @h;
+    my $p = shift @h; # J
     my ($ic,$edr,@etc) = reverse @h;
+    # ic is clicked, edr may not be edr...
     p.c.J.mo.J eq p.c.J || die "Nomop: ".ki $p;
-    my $jugs = sub {
-        my $u = shift;
-        return (grep{ _.sc.id eq u.sc.id}@{J.UG})[0];
-    };
     $edr = edr.c.J.C if edr.y.cv == 0.9;
     shift @etc if $etc[0] == $edr; # ^ yeah
     sayyl " HAs: ".ki $ic;
     saybl "Se edr: ".ki $edr;
+    
+    # broke since hiding all outgoing ids
+    my $jugs = sub {
+        my $u = shift;
+        my @f = grep{ _.sc.id eq u.sc.id}@{J.UG};
+        $f[0];
+    };
     my $co = $jugs->($edr);
     sayyl "Self: ".ki $co;
-    if ($ic && ic.y.cv < 0.9) {
-        my $_ = ic.c.s;
-        /\;/ ? do {
-            
-        }:
-        /ƾ/ ? do {
-            co.sc.etc++;
-            # another layer of how to do increments, Jtinue split into sorts ops
-            sayyl "Shifted  to co.s.etc";
-        }
-        : die " nO $_";
+    
+    my ($it) = grep { _.c.s eq ic.c.s } @{J.UG};
+    
+    my $rm;
+    if (ic.t eq 'for') {
+        $rm = $it;
+    }
+    elsif (ic.t eq 'instr') {
+        it.sc.etc++;
+        sayyl "Shifted  to it.sc.etc: ".ki$it;
     }
     else {
-        sayre "Guess you want to unJUG ".ki $co;
-        @{J.UG} = grep{ $_ ne $co } @{J.UG};
+        die "no doing for a: ".ki$ic;
     }
+    @{J.UG} = grep { _.c.s eq ic.c.s } @{J.UG};
+    
     saybl " _ _ _ ".ki $_ for $p,$edr,$ic;
     sayre " _ _ _ ".ki $_ for @etc;
     # Rw UnPreDuv $J; # opposite of help until c/sc inner properly VOD

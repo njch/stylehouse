@@ -72,20 +72,34 @@ And: | # animation loops
         });
 stylepap: |
     u alljs
-    # dead rasters unify
-    Wto: %acgt:s t d
-        A.W.time ||= {};
-        A.W.time[s] and return a.c("ti++ "+s);
-        A.W.time[s] = t;
-        a.yl(d
+    # first is only resumed e
+    Time: %acgt:s d e
+        A.W.Time ||= {};
+        var i = A.W.Time;
+        i[s][0] == 2 and delete i[s]; return e
+        i[s] and return
+        i[s] = [1,e];
+        a.yl(d, &{
+            i[s][0] = 2;
+            G&$s,i[s][1];
+        });
     
+    # rassimilator
     rasunify:
+        s = G&Time,'rasunify',700,s;
+        !s and return;
         var de = [];
         var li = [];
-        $.each(s, %i,v{
-            r.amgoner and de.push(v)
-            else { li.push(v) }
+        $.each(s, &i,r{
+            r.alive and li.push(v)
+            else { de.push(v) }
         });
+        $.each(li, &i,r{ r.liopacity = r.opacity; r.opacity = 0 });
+        var m = h.toDataURL('image/jpeg');
+        $.each(de, &i,r{ r.remove() });
+        $.each(li, &i,r{ r.opacity = r.liopacity; delete r.liopacity });
+        A = A.up;
+        a.om(A.up,['','',{pa:'R'},{src:m}],a,{});
         
         r.omily and r.amgoner = 1;
         
@@ -105,9 +119,9 @@ stylepap: |
         var h = $('canvas#display').get()[0];
         var m = h.toDataURL('image/jpeg');
         $.ajax({url: '/tism',type: 'PUT',data: m});
-        
-        return;
-        
+    
+    0&&
+    notism:
         $('body').append('<a id="tism" download="ti_'+s+'_sm.jpg">o</a>');
         var l = $('body > a#tism:last');
         l.attr('href',m);
@@ -121,67 +135,65 @@ stylepap: |
     
     pa 34:
         with (paper) {
-            s = C.sc;
             var src;
             var r;
-            s.typ = s.pa;
-            s.typ ||= 'R';
-            !(C.c.el <3) and r = A.b.pa; !r && a.c("no rasmeemmber "+C.t);
-            
-            else if (s.typ === 'R') {
-                s.src and src = s.src;
+            C&typ ||= 'R';
+            !(c&el <3) and r = A.b.pa; !r && a.c("no rasmeemmber "+C.t);
+            else if (C&typ === 'R') {
+                C&src and src = C&src;
                 src ||= 'th/'+C.t;
                 if (!src) {
-                    s.jfi ||= 'img';
-                    var find = $(s.jfi);
-                    !find.length and a.c('no find '+s.jfi);
+                    C&jfi ||= 'img';
+                    var find = $(C&jfi);
+                    !find.length and a.c('no find '+C&jfi);
                     src = $(find).last().attr('src');
                 }
                 r = new Raster(src);
             } 
-            else if (s.typ === 'T') {
+            else if (C&typ === 'T') {
                 r = new PointText(view.center);
                 r.fillColor = 'white';
                 r.justification = 'center';
             }
-            if (s.typ==='T') {
-                C.c.s and r.content = C.c.s;
-                C.c.el <3 && !s.fs and s.fs = '30';
-                s.fs and r.fontSize = s.fs;
+            if (C&typ==='T') {
+                c&s and r.content = c&s;
+                c&el <3 && !C&fs and C&fs = '30';
+                C&fs and r.fontSize = C&fs;
             }
-            //C.sc.an && a.uplg and n = r.animate(C.sc.an, a.uplg);
-            s.poes and r.position = eval(s.poes);
+            C&src && C&src != r.image.src and r.image.src = C&src;
+            C&an && a.uplg and n = r.animate(C&an, a.uplg);
+            C&poes and r.position = eval(C&poes);
             else
-            C.sc.pa !== '3' and r.position = view.center;
-            s.poxop and r.position.x += s.poxop;
-            s.poyop and r.position.y += s.poyop;
-            s.sca and     r.scale = s.sca;
-            s.b and     r.blendMode = s.b;
-            s.r and     r.rotate(s.r);
-            if (s.opa) {
-                //r.opacity = s.opa * 0.5;
+            c&el <3 and r.position = view.center;
+            C&pxp and r.position.x += C&pxp;
+            C&pyp and r.position.y += C&pyp;
+            C&sca and r.scale = C&sca;
+            C&b and r.blendMode = C&b;
+            C&r and r.rotate(C&r);
+            if (C&opa) {
+                //r.opacity = C&opa * 0.5;
                 //a.yl(700, function(){
-                    r.opacity = s.opa;
+                    r.opacity = C&opa;
                 //});
             }
-            
             A.W ||= {};
-            if (C.c.el <3) {
-                var ha = s.typ+'s';
-                var ar = s.typ+'z';
+            if (c&el <3) {
+                var ha = C&typ+'s';
+                var ar = C&typ+'z';
                 A.W[ha] ||= {};
                 A.W[ha][C.t] = r;
 
                 A.W[ar] ||= [];
                 var raz = A.W[ar];
                 raz.push(r);
-                raz.length > 5 and G&rasunify,raz;
+                raz.length > 5 and G&rasunify,raz
                 r.Ct = C.t;
                 r.omily = 1;
+                r.alive = 1;
             }
-            if (C.c.el == '9') {
-                r.omily and r.amgoner = 1;
-                else { r.remove(); }
+            if (c&el == '9') {
+                r.omily and delete r.alive
+                else { r.remove() }
             }
             A.b.pa = r;
         }
