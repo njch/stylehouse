@@ -358,7 +358,7 @@ styleomi: | # the not-loop and indifferent parts
         typeof C === 'string' and C = {c: {s: C}};
         
         typeof C.c === 'string' and C.c = {s: C.c};
-        typeof C.y === 'string' and C.y = {cv: G&sca,C.y };
+        typeof C.y === 'string' || typeof C.y === 'number' and C.y = {cv: G&sca,C.y };
         !typeof C.t === 'string' and console.log('queda',C);
         C.c ||= {};
         C.sc ||= {};
@@ -370,6 +370,7 @@ styleomi: | # the not-loop and indifferent parts
             a.c("new W: "+s);
             W = ww[s] = {};
             W.id = s;
+            c&Mid and W.t = c&Mid;
             W.A = {};
             W.A.W = W;
             //W.A.p = new paper.Project();
@@ -398,23 +399,21 @@ stylation: |
     # something could also default something to Mid-ness, name comp
     Mid 26:
         C.t == 'GW' and C.t = s
-        !C.c.Wid and G&die,"noWID!"
-        delete C.c.s;
+        !c&Wid and G&die,"noWID!"
+        delete c&s;
     
     Wid 27:
         A.on = $('#ux');
-        C.c.id = s;
-        var W = G&Win,C.c.id;
+        c&id = s;
+        var W = G&Win,c&id;
         W.W = A;
         $.extend(A,W.A);
         ~made Wid: s
     
     W 28:
         var W = G&Win,C.c.W;
-        !(W.W && W.W.on) and G&die,'noton',W
+        !(W.W && W.W.on) and G&die,'nottunedin',W
         A.on = W.W.on;
-        !$(A.on).length and a.c(T.alk+" noW: "+C.c.W);
-        ~got: A, W
         $.extend(A,W.A);
     
     nobody 31:
@@ -422,7 +421,7 @@ stylation: |
         !$(A.on).length and a.c("no nobody at "+C.c.nobody);
     
     e 32:
-        s == '1' and s = C.c.s;
+        s == '1' and s = c&s;
         a.e(s);
         T.not = 1;
     
@@ -638,18 +637,16 @@ Canvasc: |
     pzl:
         with(paper){
             var shape = new Path.RegularPolygon(view.center,3, 100);
-            .
             shape.fillColor = '#8C8A00';
-            a.N ||= {};
-            A.W.N.pzl = function (event) {
+            var al = function (event) {
                 shape.rotate(1);
                 shape.fillColor.hue += 1;
-                .
                 shape.position.x += shape.bounds.width / 50;
                 if (shape.bounds.left > view.size.width) {
                     shape.position.x = -shape.bounds.width;
                 }
             }
+            G&nim,al;
         }
     
     sitandspin:
@@ -676,7 +673,7 @@ Canvasc: |
                 a.m('mm!');
             }
             var children = gop.children;
-            A.W.N.pzl = function (event) {
+            var al = &event{
                 for (var i = 1, l = children.length; i < l; i++) {
                     var item = children[i];
                     var delta = (mousePoint - item.position) / (i + 5);
@@ -691,6 +688,7 @@ Canvasc: |
                     } 
                 }
             }
+            G&nim,al;
         }
     
 Funstuff: |

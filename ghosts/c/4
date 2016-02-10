@@ -378,8 +378,9 @@ ym/jsbabz: |
     
     C.c.s =~ s/[^G&]&(\w*(,\w+)*)\{/function($1){/gm;
     
-    C.c.s =~ s{^~(\w+~)?(\w+(?:$nlp:)?)(?: ($nlp))?$}{
-        my$c=$1||'c';my$s=$2;my$e=$3;$s=~s/:$//; "a\.$c('$s',[$e]);"}sem;
+    C.c.s =~ s{^\s*~(?:(\w+)~)?(\w+(?:$nlp:)?)(?: ($nlp))?;?$}{
+        my $r = 'A,C,G,T,' if $1;
+        my$c=$1||'c';my$s=$2;my$e=$3;$s=~s/:$//; "a\.$c($r'$s',[$e]);"}segm;
     
 jst: |
     c&s = <<'';
@@ -391,12 +392,15 @@ jst: |
         c&see = c&know;
         C&tell = C&B;
         var s = &c{ that.it.is };
+        ~rasunify: re.length
+        ~dothis~fourly: f
+        
     #
 
     Rw ym/jsbabz;
     
-    #is(c&s,<<'',"G& and ~");
-    c&s eq <<'' || saybl("Was off:\n\n".c&s."\n\n") && sleep 4;
+    #c&s eq <<'' || saybl("Was off:\n\n".c&s."\n\n") && sleep 4;
+    is(c&s,<<'',"G& and ~");
         if (!G.h(A,C,G,T,'Time','rasunify',700,s)) {
             return
         }
@@ -407,6 +411,8 @@ jst: |
         C.c.see = C.c.know;
         C.sc.tell = C.sc.B;
         var s =function(c){ that.it.is };
+        a.c('rasunify',[re.length]);
+        a.dothis(A,C,G,T,'fourly',[f]);
 JSpots: |
     my @sup;
     for my $K (sort keys %$II) {

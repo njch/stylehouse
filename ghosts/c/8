@@ -201,6 +201,10 @@ Siendo: | # send instruct (to forked) between G
     
 waitme: | # 
     use POSIX ':sys_wait_h';
+    for (@{ar.m||[]}) {
+        G.fasting = 1 if /fr/;
+        G.reing = 1 if /re/;
+    }
     G.reing = 1 if ar.m && ar.m->[0] eq 're';
     if (G.forked && !G.reing) {
         sayre "waitme already forked" for 1..3;
@@ -233,8 +237,9 @@ waitme: | #
             return
             Rw waitme
         }
-        
-        saybl G.reing ? "Remiddle? <" : "Restart? <";
+        my $gen = G.reing ? "Remiddle" : "Restart";
+        saybl $gen.(G.fasting ? "d" : "? <");
+        unless (delete G.fasting) {
         my $IN = \*STDIN;
         while (my $k = <$IN>) {
             chomp $k;
@@ -248,12 +253,13 @@ waitme: | #
             Rw waitme;
             return 2;
         }
+        }
     }
     else {
         G.forked = $parent;
     }
     delete G.reing;
-    return 0;
+    return !G.forked;
 forked: | # me enters stufff
     J.me = ar.m->[0] if ar.m;
     # etc

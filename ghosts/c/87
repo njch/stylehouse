@@ -61,6 +61,11 @@ Zoy: |
 And: | # animation loops
     u alljs
     
+    nim:
+        A.W.N ||= [];
+        A.W.N.push(nim);
+        ~nimbly: A.W.t;
+    
     # W.next && W.next > Date() and return
     frame: %args:e
         var now = Date();
@@ -70,48 +75,55 @@ And: | # animation loops
                 on(e);
             });
         });
-stylepap: |
+stylepap: | #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     u alljs
     # first is only resumed e
     Time: %acgt:s d e
         A.W.Time ||= {};
         var i = A.W.Time;
-        i[s] && i[s][0] == 2 and delete i[s]; return e
-        i[s] and return
-        i[s] = [1,e];
+        i[s] == 2 and delete i[s]; return 1
+        i[s] and return 0
+        i[s] = 1;
         a.yl(d, &{
-            i[s][0] = 2;
-            G&$s,i[s][1];
+            i[s] = 2;
+            G&$s
         });
+        return 0
     
-    # rassimilator
+    # rassimilato
     rasunify:
         s and A.mo.rasgo = s;
-        !G&Time,'rasunify',700,s and return
+        !G&Time,'rasunify',700 and return
+        s ||= A.mo.rasgo;
+        
         var de = [];
         var li = [];
         $.each(s, &i,r{
-            r.alive and li.push(v)
-            else { de.push(v) }
+            r.alive and li.push(r)
+            else { de.push(r) }
         });
         $.each(li, &i,r{ r.liopacity = r.opacity; r.opacity = 0 });
-        var m = h.toDataURL('image/jpeg');
+        var m = s[0].canvas.toDataURL('image/jpeg');
         $.each(de, &i,r{ r.remove() });
         $.each(li, &i,r{ r.opacity = r.liopacity; delete r.liopacity });
         A = A.up;
-        a.om(A.up,['','',{pa:'R'},{src:m}],a,{});
+        a.om(A.up,['cmb',9,{el:2},{src:m,pa:'R'}],a,{});
         
-        r.omily and r.amgoner = 1;
-        
-                a.lim(raz,9);
-                var rzl = raz.length;
-                while (rzl > 9) {
-                    var v = raz.shift();
-                    delete A.W[ha][v.Ct];
-                    rzl--;
-                    v.remove();
-                }
-    
+        s.splice(0,s.length);
+        $.each(li, &i,r{ s.push(r) });
+        var go = &i,r{
+            delete A.W.Rs[r.Ct];
+            r.remove();
+        };
+        $.each(de, go);
+        var rzl = s.length;
+        while (rzl > 9) {
+            var v = s.shift();
+            ~rasquishout: v
+            go(1,v);
+            rzl--;
+        }
+        ~rasunif: de.length
     
     u alljse
     # take some photo
