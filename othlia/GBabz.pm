@@ -36,7 +36,7 @@ my $angt = '<'.'<';
 for my $l (split "\n", $s) {
     my $s = $l;
     # things:
-    $s =~ s/^(\w+)(?: (-?\w+))?:(?: (%.+))?$/n $1 =>'$2',$angt'','$3'/smg;
+    $s =~ s/^(\w+)(?: (-?\w+))?:(?: (%.+))?$/n $1 =>'$2',$angt'',"$3"/smg;
     if ($indbe) {
         if ($indun eq 'NEXT') {
             $s =~ /^(\s+)/ || die "Must Indunext:\n$s[-1]\n$s";
@@ -93,15 +93,6 @@ for my $l (split "\n", $s) {
     $s =~ s/($p->{mwall})(m) (.+?)(;| for .+?)?$/
         "${1}J\.$2->(\$A,\$C,\$G,\$T,\$M,$3=>'')".($4||';')/smeg;
 
-    # should all gone now - comp comps
-    # close side ourselves, likely to gobble suro if, etc.
-    #$s =~ s/($p->{mwall})(m) (\w+)\(/${1}J\.$3->(\$M, /smg;
-    $s =~ s/\$J->\{m\}->\(\$M,/J\.m->(\$A,\$C,\$G,\$T,\$M,/g && warn "Used 3";
-    $s =~ s/\$J->\{n\}->\(\$J,/J\.n->(\$A,\$C,\$G,\$T,/g && warn "Used 4";
-    $s =~ s/\$J->\{n\}->\(/J\.n->(\$A,\$C,\$G,\$T,/g && warn "Used 5";
-    $s =~ s/\$I->\{d\}->\("([^\s"]+)"(?:(,[^\s\)]+))?\)/G\&$1$2/g && warn "Used 6";
-    $s =~ s/\$G->\{w\}->\("([^\s"]+)", \{([^\)]+)?\}, \$G\)/\$G->{w}->(\$A,\$C,\$G,\$T,"$1",$2)/g && warn "Used gwnoacgt";
-
     $s =~ s/I\.d\&($p->{oint})/G\&$1/g;
 
     # $C->{sc}->{hs} = 388 # $C->{sc}.>hs
@@ -110,7 +101,9 @@ for my $l (split "\n", $s) {
     $s =~ s/\b([e])&(\w+)\b/G\&$1,"$2"/g;
 
     # also $G->{h}->($A,$C,$G,$T,"e","so") -> $G->{h}->($A,$C,$G,$T,"e","so"...)  generalised name pickup, spiral slumping
+    # $G->{h}->($A,$C,$G,$T,"us","hJ") works sometimes somehow?
     $s =~ s/ ((?!G)\w+)\&($p->{oint})/ G\&$1,"$2"/g;
+
     # lma quack $not->('tag');? from $G->{h}->($A,$C,$G,$T,"pui",$s)
     $s =~ s/($p->{oing}|\w+)\&($p->{oint})(,[^\s;]+)?(;)?/
         my ($on,$p,$e,$t) = ($1,$2,$3,$4);
@@ -215,7 +208,7 @@ I:
         args: A,C,G,T,s
         bab: ~
         code: I
-        dige: 7269bd59294f
+        dige: bc9e7fef8017
         eg: GBabz
         of: I
       t: parse_babbl

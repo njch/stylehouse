@@ -133,11 +133,10 @@ stylehut: |
             len--;
         }
         rem.length and return rem
-        
     
     yl: %args:delay func
         setTimeout(func, delay);
-
+    
     ks: %args:s
         var ks = [];
         for (var k in s) {
@@ -154,6 +153,7 @@ stylehut: |
             c[k] = v;
         });
         return c;
+    
 styclick: |
     u alljs
     y.at.jsl = 1;
@@ -467,7 +467,7 @@ stylation: |
         if (C&atr) {
             var h = G&peel,C&atr;
             $.each(h, &k,v{
-                v ||= C.sc[k];
+                v === undefined and v = C.sc[k];
                 C&attr[k] = v;
             });
         }
@@ -484,7 +484,13 @@ stylation: |
             C&attr.t = C.t;
             c&tag and t = c&tag;
             C&attr.title ||= C.t+' '+C.y.cv;
-            var div = $("<"+t+">", C&attr);
+            var con = [];
+            $.each(C&attr, &k,v{ 
+                v == '!' and con.push(k)
+            });
+            con.length and con.unshift('');
+            con = con.join(' ');
+            var div = $("<"+t+con+">", C&attr);
             $(div).appendTo(A.on).each(function(i,v){el=v});
         }
         delete C&attr;

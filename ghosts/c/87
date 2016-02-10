@@ -14,6 +14,7 @@ Zoy: |
     #n Hit
 Vind: |
     G.oin.A.tid += 3;
+    
     J.koe++;
     my $d = 17;
     my $dont;
@@ -57,17 +58,16 @@ Vind: |
     return if $dont;
     
     n Tarp
-Wind: |
-    G.oin.A.tid += 3;
-    J.koe++;
-    my $d = 6;
-        saybl "GOt\n".`ssh v sensors | grep Core\.0\\\|temp1`;
-    if (J.koe > 3) {
-    }
-    Rw waito $J $d;
+Ti: |
+    my $t = J.Ti ||= {};
+    my $now = hitime();
+    t.last ||= $now;
+    t.now = $now;
     
-    n Sumphoto
-    n Tarp
+    y.at.int = t.now - t.last;
+    y.at.ini = t.ini++;
+    
+    t.last = t.now
 wave: |
     my $i = ar.i."  ";
     my $try = sub {
@@ -92,10 +92,9 @@ wave: |
     }@$N];
     
     $N;
-Zup: |
-    #
 Tarp: |
     u urw
+    Rw Ti;
     y.at.sq = 'wave';
     #y.at.dis = 0;
     #
@@ -133,14 +132,59 @@ Tarp: |
     
     shift @$M while @$M > 8;
     J.AM = [@$M];
-Alsi: |
-    u urw
-    n ifra %ifr:http://st33v.tumblr.com/
-    J.VV.N = 1;
-Movo: |
-    my ($seq,$to) = (fdae => "fideo");
-    `cd znap/; mkdir $to; mv *$seq* $to`;
-Sjum: |
+pi/pape: |
+    C&pa = 'R';
+    C&qz = 1;
+    c&thumb ||= C.t if !C&src;
+    c&thumb &&
+    Rw pi/thumb + $s:c&thumb;
+    C&oc = 1;
+    C&src || die "No src? ".ki $C;
+    
+    my ($no,$i,$se) = ($1,$2,$3)
+        if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
+    my $fo = $no - $i;
+    
+    C.sc.src || sayre "no src..";
+    delete C&src if 'th/'.C.t eq C&src;
+    
+    C&pxp = 270 * (rand(2)-1);
+    C&pyp = 270 * (rand(2)-1);
+    map { C.sc.>$_ * 0.3 if C.sc.>$_ > 100 } qw'pxp pyp';
+    
+    C&sca = 3.421 * rand(3) ^ 2;
+    #C.sc.zm = int(rand 10);
+    C.sc.sca += 3;
+    C&sca *= 0.2 until C&sca < 0.4;
+    C&opa = 0.6 * (0.5 + rand 0.9);
+    C&b = (shuffle 
+    'negation',# 'source-over', 'source-in',
+    #'source-out',
+    #'source-atop',
+    'darken', 'lighten',
+    #'color-dodge', 'color-burn',
+    'normal', 'normal',
+    #'exclusion',
+    'hue', 'saturation',# 'saturation',# 'saturation', 'saturation',# 'luminosity',
+    # 'color', 'add', 'subtract',
+    # 'color', 'add',# 'subtract','subtract','subtract',
+    #'normal', 'normal', 'normal', 'normal', 'normal', 
+    'multiply',#'multiply',, #'multiply',, 'multiply',, 'multiply',,
+    # 'multiply', 'screen', 'overlay', 'soft-light', 
+    #'hard-light', # 'darken', 'lighten',
+    # 'pin-light', 'pin-light', 'pin-light', #
+    'difference',
+    
+    #
+    #'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract'
+    #, 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 
+    'xor'
+    )[0];
+    C&r = int(700 * $fo);
+    
+    C.sc->{$_} = G&ron,C.sc->{$_}
+        for grep{C.sc->{$_}} qw'pxp pyp sca opa r';
+Sjum: | # make nice js line protocol
     u urw
     delete J.El.>$_ for qw'Duv Pre';
     J.VV.N = 1;
@@ -153,6 +197,10 @@ Sjum: |
                      s.split("\n")
         ];
         console.log($('ndkon'),  M);
+Alsi: | # surf the web
+    u urw
+    # http://st33v.tumblr.com/
+    n AnimLines=>''=>''=>"%ifr:paperjs/examples/Animated/Smoothing\.html"
 And: |
     u alljs
     
@@ -161,7 +209,7 @@ And: |
         A.W.N.push(s);
         ~nimbly: A.W.t
     
-    # W.next && W.next > Date() and return
+    # W.next && W.next > Date() and return !
     frame: %args:e
         var now = Date.now();
         $.each(ww, function(t,W){
@@ -170,10 +218,47 @@ And: |
                 on(e);
             });
         });
+Tjs: | #
+    u alljs
+    crn:
+        a.om(A.om,['','',{},{sat:A.on.value}],a,{});
+        ~cornerbit sat: A.mo, A.on.value
+    
+    u alljse
+    ifr:
+        c&tag = 'iframe';
+        C&atr = 'width:560,height:315,frameborder:0,allowfullscreen:!';
+        c&src = s;
+    
+    on 4:
+        var h = G&peel,s;
+        var el = $(A.on);
+        $.each(h, &k,v{
+            k === 'c' and k = 'change';
+            el.on(k, &e{
+                G&$v,e
+            });
+        });
+    
+    lid 3: %nk:c
+        s == '1' and s = '';
+        var l = s.split(' ');
+        var step = l[0];
+        step ||= '0.25';
+        var max = l[1];
+        max ||= '9';
+        var min = l[2];
+        min ||= '0';
+        C&atr = ['type:range', 'value:'+c&s,
+            'min:'+min, 'max:'+max, 'step:'+step].join(',');
+        c&tag = 'input';
+        delete C.c.s;
+    
 stylepap: |
     u alljs
+    #
     # first is only resumed e
-    Time: %acgt:s d e
+    Time:
         A.W.Time ||= {};
         var i = A.W.Time;
         i[s] == 2 and delete i[s]; return 1
@@ -303,7 +388,6 @@ stylepap: |
                         r.remove();
                     });
                 }
-                
                 r.Ct = C.t;
                 r.omily = 1;
                 r.alive = 1;
@@ -314,55 +398,4 @@ stylepap: |
             }
             A.b.pa = r;
         }
-pi/pape: |
-    C&pa = 'R';
-    C&qz = 1;
-    c&thumb ||= C.t if !C&src;
-    c&thumb &&
-    Rw pi/thumb + $s:c&thumb;
-    C&oc = 1;
-    C&src || die "No src? ".ki $C;
-    
-    my ($no,$i,$se) = ($1,$2,$3)
-        if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
-    my $fo = $no - $i;
-    
-    C.sc.src || sayre "no src..";
-    delete C&src if C.t eq C&src;
-    
-    C&pxp = 270 * (rand(2)-1);
-    C&pyp = 270 * (rand(2)-1);
-    map { C.sc.>$_ * 0.3 if C.sc.>$_ > 100 } qw'poxop poyop';
-    C&sca = 3.421 * rand(3) ^ 2;
-    #C.sc.zm = int(rand 10);
-    C.sc.sca += 3;
-    C&sca *= 0.2 until C&sca < 0.4;
-    C&opa = 0.6 * (0.5 + rand 0.9);
-    C&b = (shuffle 
-    'negation',# 'source-over', 'source-in',
-    #'source-out',
-    #'source-atop',
-    'darken', 'lighten',
-    #'color-dodge', 'color-burn',
-    'normal', 'normal',
-    #'exclusion',
-    'hue', 'saturation',# 'saturation',# 'saturation', 'saturation',# 'luminosity',
-    # 'color', 'add', 'subtract',
-    # 'color', 'add',# 'subtract','subtract','subtract',
-    #'normal', 'normal', 'normal', 'normal', 'normal', 
-    'multiply',#'multiply',, #'multiply',, 'multiply',, 'multiply',,
-    # 'multiply', 'screen', 'overlay', 'soft-light', 
-    #'hard-light', # 'darken', 'lighten',
-    # 'pin-light', 'pin-light', 'pin-light', #
-    'difference',
-    
-    #
-    #'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract'
-    #, 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 
-    'xor'
-    )[0];
-    C&r = int(700 * $fo);
-    
-    C.sc->{$_} = G&ron,C.sc->{$_}
-        for grep{C.sc->{$_}} qw'pxp pyp sca opa r';
 
