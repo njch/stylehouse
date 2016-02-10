@@ -88,7 +88,7 @@ alljse: |
     
 
 
-trWs: | # old travel, ALL top, as in me: isle:Way, interpimess makes W lies
+trWs: | # OLD travel, ALL top, as in me: isle:Way, interpimess makes W lies
     u allvse
     n '','','%of:Mo'
     n W =>3211,<<''
@@ -324,7 +324,7 @@ qsp: | # ensure II underneath I, no-9 X stretcher (jslines alljsers when jslines
 jsle: | # js encoders and this line maker (for y.at.sq=jsle) vvvvv 
     my $X = C.sc.X || C.c.J.C.sc.X || die "NoC X: ".ki($C)."\n".ki(C.c.J.C);
         #A.nj.C.sc.X || die "No x on ".ki A.nj.C;
-    
+    ##
         my $N = [];
         
         sayyl "jsle C.t: ".
@@ -332,6 +332,7 @@ jsle: | # js encoders and this line maker (for y.at.sq=jsle) vvvvv
         my $S = Rw humms $J $N spots;
         my $l = em.lines = [];
         push @{S.z}, C&extrajs if C&extrajs;
+        
         push @$l, map{" a\.e(".sjson($_).");"} @{S.z};
         push @$l, Rw JSpots $II:S.X;
         
@@ -378,10 +379,12 @@ ym/jsbabz: |
     
     C.c.s =~ s/[^G&]&(\w*(,\w+)*)\{/function($1){/gm;
     
-    C.c.s =~ s{^\s*~(?:(\w+)~)?(\w+(?:$nlp:)?)(?: ($nlp))?;?$}{
-        my $r = 'A,C,G,T,' if $1;
-        my$c=$1||'c';my$s=$2;my$e=$3;$s=~s/:$//; "a\.$c($r'$s',[$e]);"}segm;
+    C.c.s =~ s{(^|\{)\s*~(?:(\w+)~)?(\w+(?:$nlp:)?)(?: ($nlp))?;?$}{
+        my $ope = $1;
+        my $r = 'A,C,G,T,' if $2;
+        my$c=$2||'c';my$s=$3;my$e=$4;$s=~s/:$//; $ope."a\.$c($r'$s',[$e]);"}segm;
     
+    C.c.s =~ s/^\s*\$(\w+)\b/var $1/gm;
 jst: |
     c&s = <<'';
         !G&Time,'rasunify',700,s and return
@@ -394,13 +397,15 @@ jst: |
         var s = &c{ that.it.is };
         ~rasunify: re.length
         ~dothis~fourly: f
+            C&attr.title ||= C.t+' '+C.y.cv;
+            
         
     #
 
     Rw ym/jsbabz;
     
-    # c&s eq <<'' || saybl("Was off:\n\n".c&s."\n\n") && sleep 4;
-    is(c&s,<<'',"G& and ~");
+    #is(c&s,<<'',"G& and ~");
+     c&s eq <<'' || saybl("Was off:\n\n".c&s."\n\n") && sleep 4;
         if (!G.h(A,C,G,T,'Time','rasunify',700,s)) {
             return
         }

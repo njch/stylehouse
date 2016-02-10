@@ -254,6 +254,7 @@ styleomi: | # the not-loop and indifferent parts
     # A falls, A.on taps each-for thing, A.W holst selves, usu not
     A:
         var V = $.extend({},A);
+        delete V.C;
         V.up = A;
         var A = V;
         A.I = {};
@@ -349,6 +350,7 @@ styleomi: | # the not-loop and indifferent parts
         t || at || console.log("No attach: "+T.alk);
         return $(A.on).find('> '+t+at);
     
+    #
     inC:
         C = s;
         C.constructor == Array and C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
@@ -363,27 +365,38 @@ styleomi: | # the not-loop and indifferent parts
         C.c ||= {};
         C.sc ||= {};
         return C;
-
-    Win:
-        var W = ww[s];
-        if (!W) {
-            a.c("new W: "+s);
-            W = ww[s] = {};
-            W.id = s;
-            c&Mid and W.t = c&Mid;
-            W.A = {};
-            W.A.W = W;
-            //W.A.p = new paper.Project();
-        }
-        //W.A.p.activate();
+    
+    Xi:
+        !s and s = C.c.W;
+        !s and s = C.c.M;
+        $W = ww[s];
+        W ||= mm[s];
+        !(W && W.W && W.W.on) and ~die~nottunedin: s
+        return W;
+        
+    Xin:
+        $W = ww[s];
+        W ||= G&Win;
         return W;
     
+    Win:
+        !(c&Wid && c&Mid) and ~die~noWMC: C
+        $W = ww[c&Wid] = {};
+        W.id = c&Wid;
+        W.t = c&Mid;
+        mm[W.t] = W;
+        W.A = {};
+        W.A.W = W;
+        ~newW: W.t, W.id, W
+        return W
+        
     Wout:
         var W = ww[A.W.id];
+        W.t and mm[W.t] = W;
         delete ww[W.id];
-        
         ~leaves W.t, W.id
     
+    # etc is chopped by G.h, make G.ha accessorie
     die: %acgt:s etc
         ~dead: s, etc, A, C
         throw s
@@ -397,22 +410,28 @@ stylation: |
     # piles easy once GW (an om) actuates
     #       W (an om) line input as already in GW/dialect
     # something could also default something to Mid-ness, name comp
+    
+    
     Mid 26:
         C.t == 'GW' and C.t = s
         !c&Wid and G&die,"noWID!"
         delete c&s;
     
     Wid 27:
-        A.on = $('#ux');
         c&id = s;
-        var W = G&Win,c&id;
+        $W = G&Xin,s;
         W.W = A;
+        A.on = $('#ux');
         $.extend(A,W.A);
         ~made Wid: s
     
+    M 28:
+        $W = G&Xi,s;
+        A.on = W.W.on;
+        $.extend(A,W.A);
+    
     W 28:
-        var W = G&Win,C.c.W;
-        !(W.W && W.W.on) and G&die,'nottunedin',W
+        $W = G&Xi,s;
         A.on = W.W.on;
         $.extend(A,W.A);
     
@@ -443,12 +462,13 @@ stylation: |
     
     # whole time... (make whote, A.t&4 ex inness..
     el 333:
-        C.sc.attr ||= {};
-        if (C.sc.atr) {
-            var h = G&peel,C.sc.atr;
-            $.each(h, function(k,v){
+        A.C ||= {};
+        C&attr ||= {};
+        if (C&atr) {
+            var h = G&peel,C&atr;
+            $.each(h, &k,v{
                 v ||= C.sc[k];
-                C.sc.attr[k] = v;
+                C&attr[k] = v;
             });
         }
         var last;
@@ -460,25 +480,26 @@ stylation: |
         s == '1' || s == '9' and $(el).remove();
         s == '8' and return T.aft = el; // last on for next v
         if (s == '1') {
-            C.sc.attr.cv = C.y.cv;
-            C.sc.attr.t = C.t;
-            C.c.tag and t = C.c.tag;
-            var div = $("<"+t+">", C.sc.attr);
+            C&attr.cv = C.y.cv;
+            C&attr.t = C.t;
+            c&tag and t = c&tag;
+            C&attr.title ||= C.t+' '+C.y.cv;
+            var div = $("<"+t+">", C&attr);
             $(div).appendTo(A.on).each(function(i,v){el=v});
         }
-        delete C.sc.attr;
+        delete C&attr;
         .
         A.b = G&nn;
         if (A.b.cod) {
-            C.c.cod ||= '3';
+            c&cod ||= '3';
         }
         if (A.b.pa) {
-            C.sc.pa ||= '3';
+            C&pa ||= '3';
         }
-        if (typeof C.c.s === 'string' && !C.c.cod && !C.sc.pa) {
-            C.c.ht and $(el).html(C.c.s);
+        if (typeof c&s === 'string' && !c&cod && !C&pa) {
+            c&ht and $(el).html(c&s);
             else
-            $(el).text(C.c.s);
+            $(el).text(c&s);
         }
         A.on = el;
    

@@ -5,7 +5,7 @@
 Pinup: | # on a host, receive pins that need
     my $wake = {};
     for my $p (@$m) {
-        my $o = J.supins.>$p || next;
+        my $o = J.supins.>$p;
         say "Waking $p would do: ".wdump 2, $o;
         $wake.>$_ ++ for keys %$o;
         Rw Gohdown $p;
@@ -128,9 +128,11 @@ Gohdown: | # read pins from gho where t=$p, chucks in G.way
     
     G.way.>$fi = w.s;
     
-    write_file('/tmp/gohgon',$was);
-    write_file('/tmp/gohdon',w.s);
-    sayre "WAOKs out $p: ". `diff /tmp/gohgon /tmp/gohdon`;
+    if ($was) {
+        write_file('/tmp/gohgon',$was);
+        write_file('/tmp/gohdon',w.s);
+        sayre "WAOKs out $p: ". `diff /tmp/gohgon /tmp/gohdon`;
+    }
 Gonews: |
     # look at hosts->host_pins table, invents from Gohup
     if (!ar.do) {
