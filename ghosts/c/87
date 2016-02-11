@@ -62,38 +62,62 @@ Vind: | # View boat / live generator /
     
     # Tarps for us
     n SurlyWaver=>W=>{pin=>'Tarp',for=>29}
+Sloba: |
+    
 Viow: |
     G.c.i = 1;
     J.rem++;
     # Views for View
-    J.rem == 1 && 
-        n EarlyCoast=>W=>{pin=>'View',s=>'eye'}
+    #J.rem == 1 && 
+    #    n EarlyCoast=>W=>{pin=>'View',s=>'eye'}
 View: | # oncer, makes paddocks of images, as pin for some random W, looking in $s
     u urw
-    c&atusc = A.J.name;
-    Rw Ti;
+    # c&atusc = A.J.name;
+    # Rw Ti;
     y.at.sq = 'wave';
     my $lis = "w/list/J.name";
     J.tea ||= -f $lis ? LoadFile($lis) : do {
-        my $s = [grep {s/\n$//;/^[\/\-\.\w]+jpe?g$/gi} `find -L $s`];
+        my $s = [shuffle grep {s/\n$//;/^[\/\-\.\w]+jpe?g$/gi} `find -L $s`];
         DumpFile($lis, $s);
         $s
     };
-    my @h = @{J.tea};
     
-    my $page = 0;
-    c&pagesof = 100;
-    c&lin = $page * c&pagesof;
-    c&lout = c&lin + c&pagesof;
-    
-    @h = grep {defined} @h[c&lin .. c&lout];
-    die "Nothing left from $s ".ki $C if !@h;
-    @h = shuffle @h if c&shuf;
-    for (@h) {
-        Rw pi/thumb $s:_;
-        m $_=>''=>{s=>''} for delete C&src;
+    my $page = 30;
+    while (1) {
+        c&pagesof = 100;
+        c&lin = $page * c&pagesof;
+        c&lout = c&lin + c&pagesof;
+
+        my @h = grep {defined} @{J.tea}[c&lin .. c&lout];
+        if (!@h) {
+            sayyl "Nothing left from $s   (c&lin -> c&lout of ".h.")";
+            exit;
+        }
+        my @l;
+        my $thd;
+        for my $s (@h) {
+            unless (-f "th/$s") {
+                $thd++;
+                Rw pi/thumb $s;
+                $s = delete C&src;
+            }
+            push @l, $s;
+        }
+        sayyl "Thumbed: ".
+        my $in = A.J.name;
+        my $name = J.name;
+        
+        my $s = join'',map{"$_\n"}@l;
+        
+        my $din = "$name\.$page\.c";
+        G&wraf,"life/W/$din",$s;
+        G&wraf,"life/W/$in\.sc",$din;
+        say "Make $din";
+        #saybl ''.`head life/W/$din`;
+        sayre "Done?";
+        #exit;
+        $page++;
     }
-    #
     
 Ti: |
     my $t = J.Ti ||= {};
@@ -117,6 +141,7 @@ wave: |
     my $i = ar.i."  ";
     my $try = sub {
         my $s = shift;
+        
         ki(7, $s);
     };
     my $M = [map{
@@ -260,42 +285,7 @@ And: |
                 on(e);
             });
         });
-Tjs: | #
-    u alljs
-    crn:
-        a.om(A.om,['','',{},{sat:A.on.value}],a,{});
-        ~cornerbit sat: A.mo, A.on.value
-    
-    u alljse
-    ifr:
-        c&tag = 'iframe';
-        C&atr = 'width:560,height:315,frameborder:0,allowfullscreen:!';
-        c&src = s;
-    
-    on 4:
-        var h = G&peel,s;
-        var el = $(A.on);
-        $.each(h, &k,v{
-            k === 'c' and k = 'change';
-            el.on(k, &e{
-                G&$v,e
-            });
-        });
-    
-    lid 3: %nk:c
-        s == '1' and s = '';
-        var l = s.split(' ');
-        var step = l[0];
-        step ||= '0.25';
-        var max = l[1];
-        max ||= '9';
-        var min = l[2];
-        min ||= '0';
-        C&atr = ['type:range', 'value:'+c&s,
-            'min:'+min, 'max:'+max, 'step:'+step].join(',');
-        c&tag = 'input';
-        delete C.c.s;
-    
+
 stylepap: |
     u alljs
     #
@@ -382,7 +372,7 @@ stylepap: |
             !(c&el <3) and r = A.b.pa; !r && a.c("no rasmeemmber "+C.t);
             else if (C&typ === 'R') {
                 C&src and src = C&src;
-                !src && C.t.length < 4 and src = G&pull,'View';
+                !src && C.t.length < 4 and src = G&pull,'Viow';
                 src ||= 'th/'+C.t;
                 if (!src) {
                     C&jfi ||= 'img';

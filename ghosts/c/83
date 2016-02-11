@@ -156,6 +156,88 @@ yamin: |
     saybl "edit to: ".ki$l;
     G.edit = l.t;
     J.mo.J.se.cod = 1;
+Hoo: | # sliders and content actuator wormhole
+    u urw
+    y.out = 2;
+    m Vind=>-sliT
+    m Viow=>-sliT
+    
+pi/sliT: |
+    my $sc;
+    sc.fsc = 'Tac';
+    Rw pi/slid + $sc;
+    
+Tjs: | # webis
+    u alljs
+    crn:
+        $sc = {};
+        var t = '';
+        var fsc = C.t;
+        C&fsc and t = C.t; fsc = C&fsc
+        
+        sc[fsc] = A.on.value;
+        a.om(A.om,['','',{},sc],a,{});
+        ~cornerbit adju: C.t, A.on.value, A.mo
+    
+    # circle back into A z #
+    get:
+        $.ajax({url: '/W/'+s,type:'GET',cb: &e{
+            e.status != 200 and ~die~gotf: e.statusText, e
+            ~got W: s
+            $l = e.responseText.split("\n");
+            a.om(A.up,[C.t,C.y.cv,{},{zoo:l}],a,{});
+        }});
+    
+    #
+    pull:
+    
+    u alljse
+    Tac 3:
+        ~wewould: s, A
+        A.W.sc ||= G&get,C.t+'.sc';
+    
+    doo 32: %nk:sc
+        !a[s] and throw "missing doo: "+s
+        a[s](A,C,G,T);
+        T.not = 1;
+    
+    # chip away at big things
+    zoo 5: %nk:sc
+        c&i ||= 0;
+        c&line = s[c&i];
+        console.log("hihi "+c&line);
+        
+
+    
+    ifr:
+        c&tag = 'iframe';
+        C&atr = 'width:560,height:315,frameborder:0,allowfullscreen:!';
+        c&src = s;
+    
+    on 4:
+        var h = G&peel,s;
+        var el = $(A.on);
+        $.each(h, &k,v{
+            k === 'c' and k = 'change';
+            el.on(k, &e{
+                G&$v,e
+            });
+        });
+    
+    lid 3: %nk:c
+        s == '1' and s = '';
+        var l = s.split(' ');
+        var step = l[0];
+        step ||= '0.25';
+        var max = l[1];
+        max ||= '9';
+        var min = l[2];
+        min ||= '0';
+        C&atr = ['type:range', 'value:'+c&s,
+            'min:'+min, 'max:'+max, 'step:'+step].join(',');
+        c&tag = 'input';
+        delete C.c.s;
+    
 Sho: | #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     u urw
     J.zesat = 1 if !defined J.zesat;
@@ -168,9 +250,10 @@ Sho: | #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     J.VV.N = 1;
 pi/slid: |
     y.at.qs = 1;
+    y.clos = 1;
     n t=>1=>C.t,'%fs:11'
     
-    n sat=>22=>1,{pc=>lid=>lid=>1,on=>'c:crn'};
+    m C.t=>22=>1,{pc=>lid=>lid=>1,on=>'c:crn',%{ar.sc||{}}};
     
 pi/vid: |
     my $di = 'public/art/';
