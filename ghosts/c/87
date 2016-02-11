@@ -85,7 +85,7 @@ Vind: | # View boat / live generator /
     return if $dont;
     
     # Tarps for us
-    n SurlyWaver=>W=>{pin=>'Tarp',for=>29}
+    n Surl=>W=>{pin=>'Tarp',for=>29}
 Sloba: |
     
 Viow: |
@@ -161,12 +161,17 @@ Ti: |
     !c&for || y.at.ini < c&for;
     
     
+dolp: |
+    my $junk = "gji\tksdooodskoo\tkd=de,f=d";
+    my $oe = "ksfoi\t".sjson($junk)."\tsko";
+    saybl "Zea: $oe ".wdump 3, [split "\t", $oe];
 wave: |
     my $i = ar.i."  ";
     my $try = sub {
         my $s = shift;
-        
-        ki(7, $s);
+        return sjson($s) if grep{/\n|\t|,|:/}
+            keys(%$s), values(%$s);
+        join ',', map { join':', $_, $s.>$_ } sort keys %$s;
     };
     my $M = [map{
         my $C = G&tC,$_;
@@ -177,8 +182,9 @@ wave: |
         
         C.c = $try->(C.c);
         C.sc = $try->(C.sc);
-    
-        say join "\t","$i".C.t, C.y.cv, C.c, C.sc;
+        my $y = C.y.cv;
+        $y =~ s/^0\.//;
+        say join "\t","$i".C.t, $y, C.c, C.sc;
         $z &&
         Rw wave $N:z $i;
     }@$N];
@@ -207,7 +213,7 @@ Tarp: |
     return if $dont;
     
     my @for = (1..3);
-    my $dealin = 1;
+    my $dealin = 2;
     while (@for) {
         my $n = shift @for;
         $i++;
@@ -228,7 +234,6 @@ Tarp: |
     J.AM = [@$M];
 pi/pape: |
     C&pa = 'R';
-    C&qz = 1;
     c&thumb ||= C.t unless C&src || C&I || length(C.t) < 4;
     c&thumb &&
     Rw pi/thumb + $s:c&thumb;
@@ -272,9 +277,10 @@ pi/pape: |
     'xor'
     )[0];
     C&r = int(700 * $fo);
-    
+    C&pxp = int C&pxp if C&pxp;
+    C&pyp = int C&pyp if C&pyp;
     C.sc->{$_} = G&ron,C.sc->{$_}
-        for grep{C.sc->{$_}} qw'pxp pyp sca opa r';
+        for grep{C.sc->{$_}} qw'sca opa r';
 Sjum: | # make nice js line protocol
     u urw
     delete J.El.>$_ for qw'Duv Pre';
@@ -309,7 +315,6 @@ And: |
                 on(e);
             });
         });
-
 stylepap: |
     u alljs
     #
