@@ -6,8 +6,32 @@ uncan: |
     y.at.jslines = 1;
     blag 4: %js
         paper.project.clear();
-Zo: | # tumblr2workroom, whereever
-    
+Zo: |
+    use WWW::Mechanize;
+    my $m = new WWW::Mechanize;
+    use YAML::Syck;
+
+    my $url = "http://st33v.tumblr.com/";
+    my @posts;
+    my $page = 1;
+    while ($page && 0) {
+        say "getting page $page";
+        my $url = "$url".($page>1?"page/$page":"");
+        $m->get($url);
+            my $next = $page + 1;
+        push @posts, $m->content =~ /<a href="([^"]+\/post\/\d+)"/sg;
+        last unless $m->content =~ m{<a href="(/page/$next)">};
+        $page++;
+    }
+    @posts = @{LoadFile("posts.yml")};
+    my $i = 1;
+    my @photos = 1;
+    for my $post (@posts) {
+        $m->get($post);
+        push @photos, $m->content =~ m{"([^"]+?jpg)"}smg;
+    }
+    DumpFile("photos.yml", \@photos);
+    exit;
 Zoy: |
     #y.at.jsl = 1;
     Rw Sefara;
@@ -17,8 +41,6 @@ Zoy: |
 Vind: | # View boat / live generator / 
     G.oin.A.tid += 3;
     G.c.i = 1;
-    
-    
     
     J.koe++;
     my $d = 17;
