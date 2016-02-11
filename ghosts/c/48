@@ -396,10 +396,19 @@ styleomi: | # the not-loop and indifferent parts
         delete ww[W.id];
         ~leaves W.t, W.id
     
-    # etc is chopped by G.h, make G.ha accessorie
-    die: %acgt:s etc
+    die: %args:A C G T s etc
         ~dead: s, etc, A, C
         throw s
+    
+    # circle back into A z #
+    get:
+        $.ajax({url: '/W/'+s,type:'GET',cb: &e{
+            e.status != 200 and ~die~gotf: e.statusText, e
+            ~got W: s
+            $l = e.responseText.split("\n");
+            a.om(A.up,[C.t,C.y.cv,{},{zoo:l}],a,{});
+        }});
+    
     
 stylation: |
     u alljse
@@ -410,8 +419,7 @@ stylation: |
     # piles easy once GW (an om) actuates
     #       W (an om) line input as already in GW/dialect
     # something could also default something to Mid-ness, name comp
-    
-    
+    # # # #
     Mid 26:
         C.t == 'GW' and C.t = s
         !c&Wid and G&die,"noWID!"
@@ -419,10 +427,15 @@ stylation: |
     
     Wid 27:
         c&id = s;
+        c&Mid ||= C.t;
         $W = G&Xin,s;
+        c&el == '6' and c&el = '2'; c&scub = 1;
         W.W = A;
         A.on = $('#ux');
         $.extend(A,W.A);
+        c&tag ||= 'ww';
+        C&ab ||= '100';
+        C&poi ||= 'none';
         ~made Wid: s
     
     M 28:
@@ -434,6 +447,9 @@ stylation: |
         $W = G&Xi,s;
         A.on = W.W.on;
         $.extend(A,W.A);
+    
+    scub 3:
+        G&get,c&Mid+'.sc'
     
     nobody 31:
         A.on = $('#'+C.c.nobody);
@@ -449,16 +465,29 @@ stylation: |
         a[s](A,C,G,T);
         T.not = 1;
     
+    # chip away at big things
+    zoo 5: %nk:sc
+        c&i ||= 0;
+        c&line = s[c&i];
+        console.log("hihi "+c&line);
+        
+    ##
     z 6: %nk:sc
         var del = 0;
+        $B = {bac:{}};
+        
         $.each(s, function(i,v) {
+            B.last and return
             var c = G&inC,v;
-            var ub = function () {
-                G.om(A,v,G,{d:T.d+1});
+            var ub = &{
+                var tee = $.extend({d:T.d+1},B);
+                G.om(A,v,G,tee);
             };
             c.sc.deal and del += 1000 * c.sc.deal; a.yl(del, ub);
             else { ub() }
         });
+        B.bac.length and ~gotm: B.bac
+    
     
     # whole time... (make whote, A.t&4 ex inness..
     el 333:

@@ -12,13 +12,16 @@ Zoy: |
     my @hose = split /\s+/, 'Hit Hut StyleThroat styleomi stylation';
     `cd w/jw; rm -f @hose` if @hose;
     #n Hit
-Vind: |
+Vind: | # View boat / live generator / 
     G.oin.A.tid += 3;
+    G.c.i = 1;
+    
+    
     
     J.koe++;
     my $d = 17;
+    # sleep if hot
     my $dont;
-    
     if (J.koe > 2) {
         my $h = {};
         my @l;
@@ -57,17 +60,59 @@ Vind: |
     
     return if $dont;
     
-    n Tarp
+    # Tarps for us
+    n SurlyWaver=>W=>{pin=>'Tarp',for=>29}
+Viow: |
+    G.c.i = 1;
+    J.rem++;
+    # Views for View
+    J.rem == 1 && 
+        n EarlyCoast=>W=>{pin=>'View',s=>'eye'}
+View: | # oncer, makes paddocks of images, as pin for some random W, looking in $s
+    u urw
+    c&atusc = A.J.name;
+    Rw Ti;
+    y.at.sq = 'wave';
+    my $lis = "w/list/J.name";
+    J.tea ||= -f $lis ? LoadFile($lis) : do {
+        my $s = [grep {s/\n$//;/^[\/\-\.\w]+jpe?g$/gi} `find -L $s`];
+        DumpFile($lis, $s);
+        $s
+    };
+    my @h = @{J.tea};
+    
+    my $page = 0;
+    c&pagesof = 100;
+    c&lin = $page * c&pagesof;
+    c&lout = c&lin + c&pagesof;
+    
+    @h = grep {defined} @h[c&lin .. c&lout];
+    die "Nothing left from $s ".ki $C if !@h;
+    @h = shuffle @h if c&shuf;
+    for (@h) {
+        Rw pi/thumb $s:_;
+        m $_=>''=>{s=>''} for delete C&src;
+    }
+    #
+    
 Ti: |
     my $t = J.Ti ||= {};
-    my $now = hitime();
-    t.last ||= $now;
-    t.now = $now;
+    if (c&for) {
+        my $now = hitime();
+        t.last ||= $now;
+        t.now = $now;
+
+        y.at.int = int((t.now - t.last)*10)*0.1;
+        y.at.ini = t.ini++;
+
+        t.last = t.now;
+    }
+    say "Jidder: J.id";
+    c&atusc && !y.at.ini && G&wraf,"life/W/c&atusc\.sc","J.id\.c";
+    # extents of time with a pour out at the end.
+    !c&for || y.at.ini < c&for;
     
-    y.at.int = t.now - t.last;
-    y.at.ini = t.ini++;
     
-    t.last = t.now
 wave: |
     my $i = ar.i."  ";
     my $try = sub {
@@ -81,8 +126,6 @@ wave: |
         delete C&J;
         delete C&geo;
         
-    
-    
         C.c = $try->(C.c);
         C.sc = $try->(C.sc);
     
@@ -92,41 +135,43 @@ wave: |
     }@$N];
     
     $N;
+Jig: | # a J.tea into J.slow ...
+    my $n = J.name.'ig';
+    J.slow = readlink("w/$n") || 0;
+    J.slow += 1;
+    J.slow -= 20 if J.slow > 30 && rand(10) > 9.8;
+    J.slow = 0 if J.slow >= $lim;
+    G&dlin,'w'=>J.slow=>$n;
 Tarp: |
     u urw
+    c&atusc = A.J.name;
+    my $dont = !
     Rw Ti;
     y.at.sq = 'wave';
     #y.at.dis = 0;
     #
     my $i = 0;
     y.in = 0.3;
-    y.out = 0.4;
+    y.in += 0.03 if J.od++ && do{J.od=0;1};
+    y.out = y.in + 0.3;
     
-    J.tea ||= [shuffle grep {s/\n$//;/^[\/\-\.\w]+jpe?g$/gi} `find -L eye`];
-    
-        my $pg = 'w/Tarpig';
-        J.slow = readlink($pg) || 0;
-        J.slow += 1;
-        J.slow -= 20 if J.slow > 30 && rand(10) > 9.8;
-        J.slow = 0 if J.slow >= @{J.tea};
-        G&dlin,w=>J.slow=>'Tarpig';
+    return if $dont;
     
     my @for = (1..3);
     my $dealin = 1;
     while (@for) {
         my $n = shift @for;
         $i++;
-    
-        #
-        my $f = J.tea->[4 * $n + J.slow];
-        $f || next;
-    
+        
         my $sc = {};
+        
         sc.tism = sprintf '%s%06d', slm(4,G.oin.id), J.oini++;
-            #if $i == @for;
+        
         sc.deal = G&ron,0.4+$dealin;
+        
+        sc.I = 'Viow';
     
-        m $f=>-pape=>{s=>'mild'},$sc;
+        m $n=>''=>{pi=>'pape'},$sc;
     }
     #delete J.El.>$_ for Pre=>'Duv';
     
@@ -135,17 +180,16 @@ Tarp: |
 pi/pape: |
     C&pa = 'R';
     C&qz = 1;
-    c&thumb ||= C.t if !C&src;
+    c&thumb ||= C.t unless C&src || C&I || length(C.t) < 4;
     c&thumb &&
     Rw pi/thumb + $s:c&thumb;
-    C&oc = 1;
-    C&src || die "No src? ".ki $C;
+    delete C&I if C&I eq 'Viow';
     
     my ($no,$i,$se) = ($1,$2,$3)
         if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
     my $fo = $no - $i;
     
-    C.sc.src || sayre "no src..";
+    #C.sc.src || sayre "no src..";
     delete C&src if 'th/'.C.t eq C&src;
     
     C&pxp = 270 * (rand(2)-1);
@@ -174,8 +218,6 @@ pi/pape: |
     #'hard-light', # 'darken', 'lighten',
     # 'pin-light', 'pin-light', 'pin-light', #
     'difference',
-    
-    #
     #'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract'
     #, 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 
     'xor'
@@ -340,6 +382,7 @@ stylepap: |
             !(c&el <3) and r = A.b.pa; !r && a.c("no rasmeemmber "+C.t);
             else if (C&typ === 'R') {
                 C&src and src = C&src;
+                !src && C.t.length < 4 and src = G&pull,'View';
                 src ||= 'th/'+C.t;
                 if (!src) {
                     C&jfi ||= 'img';
