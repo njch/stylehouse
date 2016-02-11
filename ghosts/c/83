@@ -169,45 +169,102 @@ pi/sliT: |
     
 Tjs: | # webis
     u alljs
+    nw: %args:dp
+        var now = Date.now();
+        now /= 1000;
+        return now;
+    
     crn:
         $sc = {};
         var t = '';
         var fsc = C.t;
         C&fsc and t = C.t; fsc = C&fsc
-        
         sc[fsc] = A.on.value;
-        a.om(A.om,['','',{},sc],a,{});
+        a.om(A.mo,[t,'',{},sc],a,{});
         ~cornerbit adju: C.t, A.on.value, A.mo
     
-    # circle back into A z #
+    # circle back into A z #1
     get:
-        $.ajax({url: '/W/'+s,type:'GET',cb: &e{
-            e.status != 200 and ~die~gotf: e.statusText, e
-            ~got W: s
-            $l = e.responseText.split("\n");
-            a.om(A.up,[C.t,C.y.cv,{},{zoo:l}],a,{});
-        }});
+        a.WW ||= {};
+        a.WW.Wa ||= {};
+        a.WW.Wa[s] ||= {};
+        $Was = a.WW.Wa[s];
+        $cb = &e{
+            $l = e.split("\n");
+            Was.l = l;
+            ~got W: s, l.length
+            Was.last = a.nw();
+            if (s.match('\\\.sc$')) {
+                C&zoo = l;
+                a.om(A,C,a,{});
+            }
+        };
+        if (Was.last + 90 < a.nw()) {
+            ~cached: s
+            C&zoo = Was.l;
+            return 1;
+        }
+        $.ajax('/W/'+s).done(cb);
     
-    #
+    # cur short list of image list Wa[s], sol list line wanderings
     pull:
+        a.WW ||= {};
+        a.WW.sol ||= {};
+        a.WW.sol[s] ||= {};
+        $sol = a.WW.sol[s];
+        sol.i++;
+        if (sol.fs && sol.fs.length > 9 && (sol.i % 3) < 2) {
+            ~serv3: sol.ii
+            return sol.fs[sol.ii++]
+        }
+        a.WW.cur ||= {};
+        a.WW.cur[s] ||= {};
+        $cur = a.WW.cur[s];
+        !cur and ~NO CUR: s
+        !cur.l and ~NO CURl: s
+        if (!cur.ol) {
+            cur.ol = [];
+            $.each(cur.l, &i,v{ cur.ol.push(a.WW.Wa[v]) });
+        }
+        
+        cur.i ||= 0;
+        $ol = cur.ol[cur.i];
+        cur.i++;
+        cur.i >= cur.ol.length and cur.i = 0
+        ol.i ||= 0;
+        ol.i++;
+        $f = ol.l[ol.i];
+        sol.fs ||= [];
+        sol.fs.push(f);
+        ~pullwanted: s, f, A, C
+        return f
     
     u alljse
     Tac 3:
         ~wewould: s, A
-        A.W.sc ||= G&get,C.t+'.sc';
+        !C&zoo && !G&get,C.t+'.sc' and return T.not = 1;
+        c&zooi = (s / 9) * C&zoo.length;
+        $lo = [];
+        $.each(C&zoo, &i,v{
+            $abouts = i+2;
+            abouts = abouts > c&zooi;
+            abouts && (lo.length <3) and lo.push(v)
+        });
+        $.each(lo, &i,v{
+            G&get,v;
+        });
+        a.WW ||= {};
+        a.WW.cur ||= {};
+        $cur = a.WW.cur[C.t] = {};
+        cur.l = lo;
+        ~way: C.t, C
+    
+    # makes zoo:$l lines
     
     doo 32: %nk:sc
         !a[s] and throw "missing doo: "+s
         a[s](A,C,G,T);
         T.not = 1;
-    
-    # chip away at big things
-    zoo 5: %nk:sc
-        c&i ||= 0;
-        c&line = s[c&i];
-        console.log("hihi "+c&line);
-        
-
     
     ifr:
         c&tag = 'iframe';

@@ -294,8 +294,10 @@ trows: | # osc at 5 fillin at time 2, goat cheese
         };
         J.trow = G&pet,goat=>$o;
         
-        J.wz = {map{_.t=> G&decj,$_ } G&qh,<<'',J.trow.jid };
+        J.aws = {map{_.t=> $_} G&qh,<<'',J.trow.jid };
             select * from cheese where jid = ?
+        
+        J.wz = {map{_.t=> G&decj,$_ }values %{J.aws}};
         
         J.pich.trows = {any=>1,u=>'trows'};
     
@@ -308,15 +310,43 @@ trows: | # osc at 5 fillin at time 2, goat cheese
             my @bu = map { V.ta->{$_} || die "No $_ on V f ".ki$C }
                 C.y.k, sort keys %{at.V};
             
-            G&qp,<<'',J.trow.jid;
-                delete from cheese where jid = ?
+            my @ea = map {
+                {t=>_.t, s=>_.c.s, c=>sjson(_.c), sc=>sjson(_.sc)}
+            } @bu;
             
-            for (@bu) {
+            
+            my @gone;
+            my @put;
+            my $tw = {};
+            for (@ea) {
+                my $o = J.aws.>_.t;
+                next if J.lie.>_.t;
+                if (G&heq,$o,$_ ) {
+                    $tw.>_.t = 1;
+                }
+                else {
+                    push @put, $_;
+                }
+            }
+            while (my ($k,$v) = each %{J.aws}) {
+                next if delete J.lie.>$k;
+                push @gone, $v unless $tw.>$k;
+            }
+            
+            my @ts;
+            my $and = join(" or ",map{push@ts,_.t;'t = ?'}@gone);
+            
+            my $qa = <<'';
+                delete from cheese where jid = ?
+            $qa .= " and ($and)" if @ts;
+            unshift @ts, J.trow.jid;
+            G&qp,$qa,@ts;
+            
+            for (@put) {
                 if (delete J.lie.>_.t ) {
                     $_ = J.wz.>_.t || die "No _.t to same";
                 }
-                my ($t,$s,$c,$sc) = (_.t,_.c.s,sjson(_.c),sjson(_.sc));
-                G&qp,<<'',J.trow.jid,$t,$s,$c,$sc;
+                G&qp,<<'',J.trow.jid,_.t,_.s,_.c,_.sc;
                     insert into cheese (jid,t,s,c,sc) values (?,?,?,?,?)
             }
         }
@@ -327,7 +357,7 @@ trows: | # osc at 5 fillin at time 2, goat cheese
     
     
     
-    #
+    # #
 So: | # gonish vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     #u urw #
     u Deso

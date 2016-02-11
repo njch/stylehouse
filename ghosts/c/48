@@ -355,7 +355,10 @@ styleomi: | # the not-loop and indifferent parts
         C = s;
         C.constructor == Array and C = {t:C[0],y:C[1],c:C[2],sc:C[3]};
         else
-        C.constructor == Object and $.each(C, &k,v{ G&$k,v }); T.not = 1;
+        if (C.constructor == Object &&
+            !C.t && !C.y && !C.c && !C.sc) {
+            $.each(C, &k,v{ G&$k,v }); T.not = 1;
+        }
         else
         typeof C === 'string' and C = {c: {s: C}};
         
