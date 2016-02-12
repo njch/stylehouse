@@ -107,7 +107,7 @@ stylehut: |
         e ||= [];
         var says = [];
         $.each(e,function(i,v){
-            typeof v === 'string' and says.push(v);
+            typeof v === 'string' || typeof v === 'number' and says.push(v);
             else {
                 says.push('%'+typeof v);
             }
@@ -146,13 +146,14 @@ stylehut: |
     
     peel:
         var c = {};
+        !s.length and return c
         $.each(s.split(','), function(i,kv) {
             kv = kv.split(':');
             var k = kv[0];
             var v = kv[1];
             c[k] = v;
         });
-        return c;
+        return c
     
 styclick: |
     u alljs
@@ -365,7 +366,6 @@ styleomi: | # the not-loop and indifferent parts
         }
         else
         typeof C === 'string' and C = {c: {s: C}};
-        
         typeof C.c === 'string' and C.c = {s: C.c};
         typeof C.y === 'string' || typeof C.y === 'number' and C.y = {cv: G&sca,C.y };
         !typeof C.t === 'string' and console.log('queda',C);
@@ -431,8 +431,8 @@ stylation: |
         A.on = $('#ux');
         $.extend(A,W.A);
         c&tag ||= 'ww';
-        C&ab ||= '100';
-        C&poi ||= 'none';
+        s&ab ||= '100';
+        s&poi ||= 'none';
         ~made Wid: s
     
     M 28:
@@ -473,13 +473,13 @@ stylation: |
     
     # whole time... (make whote, A.t&4 ex inness..
     el 333:
-        A.C ||= {};
-        C&attr ||= {};
-        if (C&atr) {
-            var h = G&peel,C&atr;
+        A.C ||= C;
+        s&attr ||= {};
+        if (s&atr) {
+            var h = G&peel,s&atr;
             $.each(h, &k,v{
                 v === undefined and v = C.sc[k];
-                C&attr[k] = v;
+                s&attr[k] = v;
             });
         }
         var last;
@@ -491,29 +491,29 @@ stylation: |
         s == '1' || s == '9' and $(el).remove();
         s == '8' and return T.aft = el; // last on for next v
         if (s == '1') {
-            C&attr.cv = C.y.cv;
-            C&attr.t = C.t;
+            s&attr.cv = C.y.cv;
+            s&attr.t = C.t;
             c&tag and t = c&tag;
-            C&attr.title ||= C.t+' '+C.y.cv;
+            s&attr.title ||= C.t+' '+C.y.cv;
             var con = [];
-            $.each(C&attr, &k,v{ 
+            $.each(s&attr, &k,v{ 
                 v == '!' and con.push(k)
             });
             con.length and con.unshift('');
             con = con.join(' ');
-            var div = $("<"+t+con+">", C&attr);
+            var div = $("<"+t+con+">", s&attr);
             $(div).appendTo(A.on).each(function(i,v){el=v});
         }
-        delete C&attr;
+        delete s&attr;
         .
         A.b = G&nn;
         if (A.b.cod) {
             c&cod ||= '3';
         }
         if (A.b.pa) {
-            C&pa ||= '3';
+            s&pa ||= '3';
         }
-        if (typeof c&s === 'string' && !c&cod && !C&pa) {
+        if (typeof c&s === 'string' && !c&cod && !s&pa) {
             c&ht and $(el).html(c&s);
             else
             $(el).text(c&s);
@@ -523,7 +523,7 @@ stylation: |
     el 4:
         var f = ['id','src','dig'];
         var fl = function (v,z) {
-            C.sc.attr and C.sc.attr[v] = z;
+            s&attr and s&attr[v] = z;
             else {
                 $(A.on).attr(v,z);
             }
