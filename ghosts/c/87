@@ -43,7 +43,7 @@ Vind: | # View boat / live generator /
     G.c.i = 1;
     
     J.koe++;
-    my $d = 17;
+    my $d = 14;
     # sleep if hot
     my $dont;
     if (J.koe > 2) {
@@ -150,6 +150,8 @@ wave: |
         my $z = delete C&z;
         delete C&J;
         delete C&geo;
+        delete C&z;
+        delete C.sc.pi;
         
         C.c = $try->(C.c);
         C.sc = $try->(C.sc);
@@ -168,6 +170,7 @@ wave: |
     else {
         J.Wayout || die "Wayout wave J.name";
         say "Wave tabulated: J.name ".@$M;
+        @$M = grep {!/nosc:1$/}@$M;
         G&wraf,"life/W/J.Wayout",$M;
     }
     $N;
@@ -204,6 +207,7 @@ Tarp: |
     my $dont = !
     Rw Ti;
     J.donts++ && exit if $dont;
+    
     y.at.sq = 'wave';
     #y.at.dis = 0;
     #
@@ -212,7 +216,9 @@ Tarp: |
     y.in += 0.03 if J.od++ && do{J.od=0;1};
     y.out = y.in + 0.3;
     
-    return if $dont;
+    # one more to clear
+    $dont && return # doesnt work? ack Yuni
+        n nosc=>''=>{}=>"%nosc"
     
     my @for = (1..3);
     my $dea = 2;
@@ -303,7 +309,7 @@ Alsi: | # surf the web
     u urw
     # http://st33v.tumblr.com/
     n AnimLines=>''=>''=>"%ifr:paperjs/examples/Animated/Smoothing\.html"
-And: |
+And: | # andimation
     u alljs
     
     nim:
@@ -406,6 +412,7 @@ stylepap: |
             !(c&el <3) and r = A.b.pa; !r && a.c("no rasmeemmber "+C.t);
             else if (C&typ === 'R') {
                 C&src and src = C&src;
+                !src && C.t.length < 4 and src = G&pull,'Viow';
                 !src && C.t.length < 4 and src = G&pull,'Viow';
                 src ||= 'th/'+C.t;
                 if (!src) {
