@@ -117,13 +117,25 @@ yamin: |
 Hoo: | # sliders and content actuator wormhole
     u urw
     y.out = 2;
-    m Vind=>-sliT
-    m Viow=>-sliT
-    
+    m Vind=>-sliT=>{sc=>'%play'}=>
+    # use random <= 5 to start, make 3 in-sc-issions at a time
+    m Viow=>-sliT=>{sc=>'%stoneto:5,qfa:3'}
+    # start off, 
+    m Movy=>-sliT=>{sc=>'%vid',s=>0}
+    J.VV.N = 1;
 pi/sliT: |
     my $sc;
     sc.fsc = 'Tac';
+    G&xot,$sc,$_ for map{G&peel,$_ } grep{defined} c&sc;
+    saybl "Xoteted C.t:  ".ki $sc;
     Rw pi/slid + $sc;
+    
+pi/slid: |
+    y.at.qs = 1;
+    y.clos = 1;
+    n t=>1=>C.t,'%fs:11'
+    $s = 1 if $s eq C.t;
+    m C.t=>22=>$s,{pc=>lid=>lid=>1,on=>'c:crn',%{ar.sc||{}}};
     
 Tjs: | # webis
     u alljs
@@ -152,6 +164,7 @@ Tjs: | # webis
                 a.om(A,C,a,{});
             }
         };
+        ~get: s
         $.ajax('/W/'+s).done(cb);
     
     # cur short list of image list Wa[s], sol list line wanderings
@@ -172,7 +185,7 @@ Tjs: | # webis
         a.WW.cur[s] ||= {};
         $cur = a.WW.cur[s];
         !cur and ~NO CUR: s
-        !cur.l and ~NO CURl: s
+        !cur.l || !cur.l.length and ~NO CURl: s
         if (!cur.ol) {
             cur.ol = [];
             $.each(cur.l, &i,v{ cur.ol.push(a.WW.Wa[v]) });
@@ -183,56 +196,53 @@ Tjs: | # webis
         cur.i >= cur.ol.length and cur.i = 0
         
         ol.i ||= 0;
-        $f = ol.l[ol.i];
-        ol.i++;
-        ol.i >= ol.l.length and ol.i = 0;
-        
+        $f = '';
+        $uh = 0;
+        while (!f.length && uh < 5) {    
+            uh++;
+            $f = ol.l[ol.i];
+            ol.i++;
+            ol.i >= ol.l.length and ol.i = 0;
+        }
+        ~many pul: uh, C.t, ol, ol.i
         sol.fs ||= [];
         sol.fs.push(f);
         return f
     
+    # 
+    play:
+        var zi;
+        while (1) {
+        
+        }
+    
     u alljse
+    # tune in traction
     Tac 3:
         !C&zoo && !G&get,C.t+'.sc' and return T.not = 1;
         c&zooi = (s / 9) * C&zoo.length;
+        $qfa = 1;
+        $len = 1;
+        c&r && c&r.sc.qfa and len = c&r.sc.qfa;
+        c&r && c&r.sc.qfa and qfa = c&r.sc.qfa; len--;
         $lo = [];
         $.each(C&zoo, &i,v{
-            $abouts = i+2;
-            abouts = abouts > c&zooi;
-            abouts && (lo.length <3) and lo.push(v)
+            !v.length and return
+            $abouts = i + qfa > c&zooi;
+            abouts && (lo.length < len) and lo.push(v)
         });
         $.each(lo, &i,v{
-            !v.length and return;
+            !v.length and return
             G&get,v;
         });
         a.WW ||= {};
         a.WW.cur ||= {};
         $cur = a.WW.cur[C.t] = {};
         cur.l = lo;
-        ~way: C.t, C
+        c&r && c&r.sc.play and G&play,c&r;
+        c&r && c&r.sc.play and G&vid,c&r;
+        ~way: C.t, cur.l.length
     
-    # makes zoo:$l lines
-    
-    doo 32: %nk:sc
-        !a[s] and throw "missing doo: "+s
-        a[s](A,C,G,T);
-        T.not = 1;
-    
-    ifr:
-        c&tag = 'iframe';
-        C&atr = 'width:560,height:315,frameborder:0,allowfullscreen:!';
-        c&src = s;
-    
-    on 4:
-        var h = G&peel,s;
-        var el = $(A.on);
-        $.each(h, &k,v{
-            k == 'c' and k = 'change';
-            el.on(k, &e{
-                G&$v,e
-            });
-            k == 'change' && C&fsc and G&$v
-        });
     
     lid 3: %nk:c
         s == '1' and s = '';
@@ -243,11 +253,11 @@ Tjs: | # webis
         max ||= '9';
         var min = l[2];
         min ||= '0';
+        C&stoneto and c&s = (elvis+'').match('[1-'+C&stoneto+']\\\d') * 0.1;
         C&atr = ['type:range', 'value:'+c&s,
             'min:'+min, 'max:'+max, 'step:'+step].join(',');
         c&tag = 'input';
         delete c&s;
-        
     
     u alljs
     crn:
@@ -256,7 +266,8 @@ Tjs: | # webis
         var fsc = C.t;
         C&fsc and t = C.t; fsc = C&fsc
         sc[fsc] = A.on.value;
-        a.om(A.mo,[t,'',{},sc],a,{});
+        a.om(A.mo,[t,'',{r:C},sc],a,{});
+    
 Sho: | #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     u urw
     J.zesat = 1 if !defined J.zesat;
@@ -267,13 +278,6 @@ Sho: | #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     J.vid &&
         m J.vid =>-vid
     J.VV.N = 1;
-pi/slid: |
-    y.at.qs = 1;
-    y.clos = 1;
-    n t=>1=>C.t,'%fs:11'
-    
-    m C.t=>22=>1,{pc=>lid=>lid=>1,on=>'c:crn',%{ar.sc||{}}};
-    
 pi/vid: |
     my $di = 'public/art/';
     (my $see = C.t) =~ s/\W/?/g;
