@@ -150,10 +150,18 @@ oWo: |
     @$N == 1 || die "strangely: ".wdump 3, $N;
     $N->[0];
 SevWo: |
+    u allacgts
     n Meta
     n Wuts
     
-    u allacgts
+    slnk:
+        my $i = readlink $s;
+        return $i if !@Me;
+        my $e = $Me[0];
+        return if $i eq $e;
+        `unlink $s` if -l $s;
+        `ln -s $e $s`;
+        
     
     dlin: %acgt:dir to it
         return readlink $dir if !defined $to;
@@ -164,7 +172,7 @@ SevWo: |
         `cd $dir; ln -s $to $it`;
     
     wraf: %acgt:f s noappend
-        $s =~ s/\n?$/\n/s;
+        $s =~ s/\n?$/\n/s if !ref $s;
         G&writef,$f,$s,!$noappend
     
     writef: %acgt:f s append

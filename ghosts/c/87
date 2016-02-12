@@ -85,7 +85,7 @@ Vind: | # View boat / live generator /
     return if $dont;
     
     # Tarps for us
-    n Surl=>W=>{pin=>'Tarp',for=>29}
+    n Surl=>W=>{pin=>'Tarp',for=>55}
 Sloba: |
     
 Viow: |
@@ -98,7 +98,6 @@ View: | # oncer, makes paddocks of images, as pin for some random W, looking in 
     u urw
     # c&atusc = A.J.name;
     # Rw Ti;
-    y.at.sq = 'wave';
     my $lis = "w/list/J.name";
     J.tea ||= -f $lis ? LoadFile($lis) : do {
         my $s = [shuffle grep {s/\n$//;/^[\/\-\.\w]+jpe?g$/gi} `find -L $s`];
@@ -114,7 +113,7 @@ View: | # oncer, makes paddocks of images, as pin for some random W, looking in 
 
         my @h = grep {defined} @{J.tea}[c&lin .. c&lout];
         if (!@h) {
-            sayyl "Nothing left from $s   (c&lin -> c&lout of ".h.")";
+            sayyl "Nothing left from $s   (c&lin -> c&lout of ".@h.")";
             exit;
         }
         my @l;
@@ -127,7 +126,6 @@ View: | # oncer, makes paddocks of images, as pin for some random W, looking in 
             }
             push @l, $s;
         }
-        sayyl "Thumbed: ".
         my $in = A.J.name;
         my $name = J.name;
         
@@ -136,37 +134,10 @@ View: | # oncer, makes paddocks of images, as pin for some random W, looking in 
         my $din = "$name\.$page\.c";
         G&wraf,"life/W/$din",$s;
         G&wraf,"life/W/$in\.sc",$din;
-        say "Make $din";
-        #saybl ''.`head life/W/$din`;
-        sayre "Done?";
-        #exit;
         $page++;
     }
     
-Ti: |
-    my $t = J.Ti ||= {};
-    if (c&for) {
-        my $now = hitime();
-        t.last ||= $now;
-        t.now = $now;
-
-        y.at.int = int((t.now - t.last)*10)*0.1;
-        y.at.ini = t.ini++;
-
-        t.last = t.now;
-    }
-    say "Jidder: J.id";
-    c&atusc && !y.at.ini && G&wraf,"life/W/c&atusc\.sc","J.id\.c";
-    # extents of time with a pour out at the end.
-    !c&for || y.at.ini < c&for;
-    
-    
-dolp: |
-    my $junk = "gji\tksdooodskoo\tkd=de,f=d";
-    my $oe = "ksfoi\t".sjson($junk)."\tsko";
-    saybl "Zea: $oe ".wdump 3, [split "\t", $oe];
 wave: |
-    my $i = ar.i."  ";
     my $try = sub {
         my $s = shift;
         return sjson($s) if grep{/\n|\t|,|:/}
@@ -184,12 +155,41 @@ wave: |
         C.sc = $try->(C.sc);
         my $y = C.y.cv;
         $y =~ s/^0\.//;
-        say join "\t","$i".C.t, $y, C.c, C.sc;
-        $z &&
-        Rw wave $N:z $i;
+        my @m = join("\t", '', C.t, $y, C.c, C.sc);
+        if ($z) {
+            my $n = Rw wave + $N:z $oo=1;
+            push @m, map {" $_"} @$n;
+        }
+        @m
     }@$N];
-    
+    if (ar.oo) {
+        return $M
+    }
+    else {
+        J.Wayout || die "Wayout wave J.name";
+        say "Wave tabulated: J.name ".@$M;
+        G&wraf,"life/W/J.Wayout",$M;
+    }
     $N;
+Ti: |
+    my $t = J.Ti ||= {};
+    if (c&for) {
+        my $now = hitime();
+        t.last ||= $now;
+        t.now = $now;
+
+        y.at.int = int((t.now - t.last)*10)*0.1;
+        y.at.ini = t.ini++;
+
+        t.last = t.now;
+    }
+    say "Jidder: J.id";
+    my $see = J.Wayout || "J.id\.c";
+    c&atusc && !y.at.ini && G&wraf,"life/W/c&atusc\.sc",$see;
+    # extents of time with a pour out at the end.
+    !c&for || y.at.ini < c&for;
+    
+    
 Jig: | # a J.tea into J.slow ...
     my $n = J.name.'ig';
     J.slow = readlink("w/$n") || 0;
@@ -200,8 +200,10 @@ Jig: | # a J.tea into J.slow ...
 Tarp: |
     u urw
     c&atusc = A.J.name;
+    J.Wayout = "J.name\.c";
     my $dont = !
     Rw Ti;
+    J.donts++ && exit if $dont;
     y.at.sq = 'wave';
     #y.at.dis = 0;
     #
@@ -213,16 +215,18 @@ Tarp: |
     return if $dont;
     
     my @for = (1..3);
-    my $dealin = 2;
+    my $dea = 2;
     while (@for) {
         my $n = shift @for;
         $i++;
+        $dea += rand(2) - 1;
+        $dea += 0.2 until $dea > 0.2;
         
         my $sc = {};
         
-        sc.tism = sprintf '%s%06d', slm(4,G.oin.id), J.oini++;
+        #sc.tism = sprintf '%s%06d', slm(4,G.oin.id), J.oini++;
         
-        sc.deal = G&ron,0.4+$dealin;
+        sc.deal = G&ron,0.4+$dea;
         
         sc.I = 'Viow';
     
@@ -234,6 +238,7 @@ Tarp: |
     J.AM = [@$M];
 pi/pape: |
     C&pa = 'R';
+    C&qz = 1;
     c&thumb ||= C.t unless C&src || C&I || length(C.t) < 4;
     c&thumb &&
     Rw pi/thumb + $s:c&thumb;
