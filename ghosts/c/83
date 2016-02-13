@@ -137,6 +137,7 @@ pi/slid: |
     $s = 1 if $s eq C.t;
     m C.t=>22=>$s,{pc=>lid=>lid=>1,on=>'c:crn',%{ar.sc||{}}};
     
+
 And: | # andimation
     u alljs
     
@@ -269,47 +270,6 @@ And: | # andimation
         
 Tjs: | # webis
     u alljse
-    # tune in traction, 0 should rm, all loopi should t up somehow
-    Tac 3:
-        s <= 0 and return;
-        !C&zoo && !G&get,C.t+'.sc' and return T.not = 1;
-        $lo = c&lo;
-        $r = c&r;
-        if (!c&zooi) {
-            $qfa = 1;
-            $len = 1;
-            r&&r.sc.qfa and len = c&r.sc.qfa;
-            r&&r.sc.qfa and qfa = c&r.sc.qfa; len--;
-            $zoo = [];
-            $.each(s&zoo, &i,v{
-                !v.length and return
-                zoo.push(v);
-            });
-            c&zooi = s * 0.1 * zoo.length;
-            lo = c&lo = [];
-            $.each(C&zoo, &i,v{
-                !v.length and return
-                $abouts = i + qfa > c&zooi;
-                abouts && (lo.length < len) and lo.push(v)
-            });
-            !lo.length and lo.push(s&zoo[s&zoo.length - 1])
-        }
-        !lo.length and ~die~nololen: C.t
-        c&lodi ||= 0;
-        while (c&lodi < lo.length) {
-            $v = lo[c&lodi];
-            if (!v || !v.length) {
-                ~die~novlo: v, C
-            }
-            c&lodi++;
-            !G&get,v and return T.not = 1;
-        }
-        $cur = a.zet('cur',C.t);
-        cur.l = lo;
-        r&&r.sc.play and G&play,r;
-        r&&r.sc.vid and G&vid,r;
-        ~way: C.t, cur.l.length
-    
     lid 3: %nk:c
         s == '1' and s = '';
         var l = s.split(' ');
@@ -325,7 +285,88 @@ Tjs: | # webis
         c&tag = 'input';
         delete c&s;
     
+    # tune in traction, 0 should rm, all loopi should t up somehow #
+    Tac 3:
+        s <= 0 and return
+        !s&zoo && !G&get,C.t+'.sc' and T.not = 1; return
+        !s&zoo and ~nozoo: C.t
+        ~szooing: C.t, s
+        c&lo ||= G&qvea,s;
+        
+        !c&lo || !c&lo.length and ~die~notlong: C.t
+        c&lodi ||= 0;
+        while (c&lodi < c&lo.length) {
+            $v = c&lo[c&lodi];
+            if (!v || !v.length) {
+                ~die~novlo: v, C
+            }
+            c&lodi++;
+            if (!G&get,v) {
+                ~inbac: v
+                T.not = 1;
+                return
+            }
+        }
+        $cur = a.zet('cur',C.t);
+        cur.l = c&lo;
+        C.t == 'Vind' && !G&mindu,['Viow'] and return;
+        $r = G&ge,'r';
+        r.sc.play and G&play,r;
+        r.sc.vid and G&vid,r;
+        ~way: C.t, cur.l.length
+    
     u alljs
+    mindu:
+        $waits = [];
+        $.each(s, &i,t{ a.zet('cur',t).l || waits.push(u) });
+        !waits.length and return 1
+        ~needu: C.t, waits.join(',')
+        a.yl(231, &{ a.om(A,C,a,{}) });
+        T.not = 1;
+        return 0;
+    
+    ge:
+        $r = C.c[s];
+        $l = [r];
+        while (r && r.c && r.c[s]) {
+            r = r.c[s];
+            l.push(r);
+        }
+        C.c[s+'eel'] = l;
+        return r
+    
+    qvea:
+        $f = s&zoo;
+        $p = s * 0.1 * f.length;
+        $t = [];
+        $q = 1;
+        $lim = 1;
+        $r = G&ge,'r';
+        if (r && r.sc) {
+            r.sc.qfa and lim = r.sc.qfa;
+            r.sc.qfa and q = r.sc.qfa; lim--;
+        }
+        $e = &i,v{
+            $abouts = p < i + q;
+            return abouts && (t.length < lim);
+        };
+        a.read(f,e,t);
+        return t;
+    
+    read: %args:f e t
+        t ||= [];
+        $o = [];
+        $.each(f, &i,v{
+            !v.length and return
+            o.push(v);
+        });
+        $.each(o, &i,v{
+            e && !e(i,v) and return
+            t.push(v);
+        });
+        !t.length and t.push(o[o.length - 1]);
+        return t
+    
     # circle back into A z #1
     # cache sources #
     zet: %args:K t
@@ -394,7 +435,7 @@ Tjs: | # webis
             ol.i++;
             ol.i >= ol.l.length and ol.i = 0;
         }
-        //~many pul: cur.t, ol.t, C.t, ol.i, f
+        ~many pul: cur.t, ol.t, C.t, ol.i, f
         sol.fs ||= [];
         sol.fs.push(f);
         return f
