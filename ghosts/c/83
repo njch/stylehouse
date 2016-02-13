@@ -35,10 +35,7 @@ Gum: |
     
 
     
-Gun: |
-    Rw forked v;
-    Rw forked jes:styclick;
-    Rw forked jes:stylext;
+
 Gub: |
     u urw
     y.at.anch = 'Noteal';
@@ -148,29 +145,62 @@ And: | # andimation
         now /= 1000;
         return now;
     
-    # func or zet with .futa (next now) .e (func)
+    # func or zet with .fut (next now) .e (func) ##$
     nim:
-        A.W.N ||= {};
-        A.W.N[C.t] = s;
-        ~nimbly: A.W.t, C.t
+        $K = typeof s == 'function' && 'N' || 'sN';
+        a.WW ||= {};
+        a.WW[K] ||= {};
+        a.WW[K][C.t] = s;
+        if (K == 'sN' && 0) {
+            s.ee ||= &e{
+                $til = s.fut - a.nw();
+                if (til <= 0) {
+                    s.e({});
+                    til = s.fut - a.nw();
+                }
+                til <= 0 and ~sucesiv: s.t
+                til <= 0 and til = 1;
+                a.yl(til,s.ee);
+            }
+            s.ee();
+        }
+        ~nimbly: C.t
     
     # W.next && W.next > Date() and return !
     frame: %args:e
-        e.now = a.nw();
-        $.each(ww, &t,W{
-            !W.N and return
-            $.each(W.N, &k,s{
-                typeof s == 'function' and return s(e);
-                e.now >= s.futa and s.e(e);
+        a.WW ||= {};
+        a.WW.N ||= {};
+        a.WW.sN ||= {};
+        a.yl(5, &{ a.huf(e) });
+    
+    huf: %args:e
+        $.each(a.WW.N, &t,M{
+            $.each(M, &k,s{
+                s(e);
             });
         });
+        if (e.count % 10 == 5) {
+            $nw = a.nw();
+            $gap = nw - (a.tenlast || nw);
+            a.tenlast = nw;
+            $.each(a.WW.sN, &t,s{
+                if (nw < s.fut) {
+                    ~wai: t, s.fut - nw
+                    return
+                }
+                e.now = nw;
+                s.e(e);
+            });
+            $del = nw - a.tenlast;
+            ~10frames: e.count, gap, del
+        }
     
     # only one vid/playlist via iframe, make it end
     # the bigger js for it does everything
     vid:
         ~gotviddy: s, C.t, C
         $c = {el:2,ht:1};
-        c.s = '<video width="900" autoplay controls><source src="art/medlos.mp4""></video>';
+        c.s = '<video width="900" autoplay controls><source src="art/medlos.mp4"></video>';
         $sc = {geo:'a1 0.1361 0.3466 -0.3734'};
         a.om(A.mo,[C.t+'eo',4,c,sc],a,{});
     
@@ -182,6 +212,8 @@ And: | # andimation
         !n and return
         ~play: n, n.sc.int, A
         a.om(A.mo,n,a,{});
+        ~zon
+        
         
     # s = tap wanting time to piece stream of lines
     sand:
@@ -191,10 +223,10 @@ And: | # andimation
         !n and ~die~nonext: s
         $i = n.sc.int;
         i == undefined and i = 1.3;
-        s.futa = s.tlas + i * 1;
-        $gap = s.futa - s.tlas;
-        $til = s.futa - a.nw();
-        ~waitofor: gap, til, n.t, n.sc.b
+        s.fut = s.tlas + i * 1;
+        $gap = s.fut - s.tlas;
+        $til = s.fut - a.nw();
+        ~gaptiltz: gap, til, n.t, n.sc.z&&n.sc.z.length
         til > 0 and return
         
         s.last = s.next;
@@ -216,13 +248,15 @@ And: | # andimation
         while (z.length) {
             $l = z.shift();
             $d = l.c.ind;
+            delete l.c.ind;
             if (d) {
                 iz[d-1].sc.z ||= [];
                 iz[d-1].sc.z.push(l);
             }
             iz[d] = l;
         }
-        ~sanded: s.last
+        $l = s.last
+        ~sanded: l.t
         return s.last;
     
     land:
@@ -234,9 +268,66 @@ And: | # andimation
         return l;
         
 Tjs: | # webis
+    u alljse
+    # tune in traction, 0 should rm, all loopi should t up somehow
+    Tac 3:
+        s <= 0 and return;
+        !C&zoo && !G&get,C.t+'.sc' and return T.not = 1;
+        $lo = c&lo;
+        $r = c&r;
+        if (!c&zooi) {
+            $qfa = 1;
+            $len = 1;
+            r&&r.sc.qfa and len = c&r.sc.qfa;
+            r&&r.sc.qfa and qfa = c&r.sc.qfa; len--;
+            $zoo = [];
+            $.each(s&zoo, &i,v{
+                !v.length and return
+                zoo.push(v);
+            });
+            c&zooi = s * 0.1 * zoo.length;
+            lo = c&lo = [];
+            $.each(C&zoo, &i,v{
+                !v.length and return
+                $abouts = i + qfa > c&zooi;
+                abouts && (lo.length < len) and lo.push(v)
+            });
+            !lo.length and lo.push(s&zoo[s&zoo.length - 1])
+        }
+        !lo.length and ~die~nololen: C.t
+        c&lodi ||= 0;
+        while (c&lodi < lo.length) {
+            $v = lo[c&lodi];
+            if (!v || !v.length) {
+                ~die~novlo: v, C
+            }
+            c&lodi++;
+            !G&get,v and return T.not = 1;
+        }
+        $cur = a.zet('cur',C.t);
+        cur.l = lo;
+        r&&r.sc.play and G&play,r;
+        r&&r.sc.vid and G&vid,r;
+        ~way: C.t, cur.l.length
+    
+    lid 3: %nk:c
+        s == '1' and s = '';
+        var l = s.split(' ');
+        var step = l[0];
+        step ||= '0.25';
+        var max = l[1];
+        max ||= '9';
+        var min = l[2];
+        min ||= '0';
+        s&lows and c&s = (elvis+'').match('[1-'+s&lows+']\\\d') * 0.1;
+        s&atr = ['type:range', 'value:'+c&s,
+            'min:'+min, 'max:'+max, 'step:'+step].join(',');
+        c&tag = 'input';
+        delete c&s;
+    
     u alljs
     # circle back into A z #1
-    # cache sources
+    # cache sources #
     zet: %args:K t
         a.WW ||= {};
         a.WW[K] ||= {};
@@ -265,7 +356,7 @@ Tjs: | # webis
         $.ajax('/W/'+s).done(cb);
         return 0;
     
-    # cur short list of image/etc list Wa[s], sol list line wanderings #
+    #cur short list of image/etc list Wa[s], sol list line wanderings #
     pull:
         $sol = a.zet('sol',s);
         sol.i ||= 0;
@@ -299,65 +390,15 @@ Tjs: | # webis
             uh++;
             !ol.l and ~borknine: ol.t, ol.i
             f = ol.l[ol.i];
-            ~seek: ol.t, ol.i
+            //~seek: ol.t, cur.i, ol.i
             ol.i++;
             ol.i >= ol.l.length and ol.i = 0;
         }
-        ~many pul: C.t, ol.i
+        //~many pul: cur.t, ol.t, C.t, ol.i, f
         sol.fs ||= [];
         sol.fs.push(f);
         return f
     
-    u alljse
-    # tune in traction, 0 should rm, all loopi should t up somehow
-    Tac 3:
-        s <= 0 and return;
-        !C&zoo && !G&get,C.t+'.sc' and return T.not = 1;
-        $lo = c&lo;
-        $r = c&r;
-        if (!c&zooi) {
-            c&zooi = (s / 9) * C&zoo.length;
-            $qfa = 1;
-            $len = 1;
-            r&&r.sc.qfa and len = c&r.sc.qfa;
-            r&&r.sc.qfa and qfa = c&r.sc.qfa; len--;
-            lo = c&lo = [];
-            $.each(C&zoo, &i,v{
-                !v.length and return
-                $abouts = i + qfa > c&zooi;
-                abouts && (lo.length < len) and lo.push(v)
-            });
-        }
-        !lo.length and ~die~nololen: C.t
-        c&lodi ||= 0;
-        while (c&lodi < lo.length) {
-            $v = lo[c&lodi];
-            !v || !v.length and ~die~novlo: v, C
-            c&lodi++;
-            !G&get,v and return T.not = 1;
-        }
-        $cur = a.zet('cur',C.t);
-        cur.l = lo;
-        r&&r.sc.play and G&play,r;
-        r&&r.sc.vid and G&vid,r;
-        ~way: C.t, cur.l.length
-    
-    lid 3: %nk:c
-        s == '1' and s = '';
-        var l = s.split(' ');
-        var step = l[0];
-        step ||= '0.25';
-        var max = l[1];
-        max ||= '9';
-        var min = l[2];
-        min ||= '0';
-        s&lows and c&s = (elvis+'').match('[1-'+s&lows+']\\\d') * 0.1;
-        s&atr = ['type:range', 'value:'+c&s,
-            'min:'+min, 'max:'+max, 'step:'+step].join(',');
-        c&tag = 'input';
-        delete c&s;
-    
-    u alljs
     crn:
         $sc = {};
         var t = '';
