@@ -93,9 +93,8 @@
   </script>
 
 
-</head><body style="margin: 0px; background: url('eye/Pic/ift/IMG_4021.JPG'); background: black; color: #0d2; height:100%; width:100%;">
-    <img id='tee' src="eye/el/teeswivelm.jpg" style="display:none"/>
-    <div id='msgs' style="white-space: pre;position:absolute;font-size:60%;left:0em;bottom:0em;width:50%;height:50%; overflow:hidden;padding:0.2em;color:#abc;z-index:200;background:rgba(0,0,0,0.6)" onclick="keon();clon();" > </div>
+</head><body style="margin: 0px; background: black; color: #0d2; height:100%; width:100%;">
+    <div id='msgs' style="white-space: pre;position:absolute;font-size:60%;left:0em;bottom:0em;width:20%;height:20%; overflow:hidden;padding:0.2em;color:#abc;z-index:200" onclick="keon();clon();" > </div>
     <div id='ux' style="position:absolute;top:0em;
     right:0em;width:100%;height:100%;"> </div>
 
@@ -103,7 +102,7 @@
 
     <script type="text/javascript">
       // default, top level #c
-      var w = {conin: 'ws://s:10094/s'};
+      var w = {conin: 'ws://'+location.host+'/s'};
       var fail = 0;
       var a = {};
       a.N = {}
@@ -116,33 +115,10 @@
       var mm = {};
       var ww = {};
 
-
+      
       // splate
 
-      a.e = function(e) {
-          if (!q) {
-              console.log("xut "+e);
-          }
-          var m;
-          try {
-              m = eval(e);
-          }
-          catch (er) {
-              a.er(e, er);
-          }
-          m
-      };
-      a.er = function (e, er) {
-              console.log(["xutbang: ", e, er]);
-              var ej = {er: {e: e}};
-              if (er) {
-                  if (er.message) {
-                      ej.er.m = er.message;
-                  }
-              }
-              s.reply(ej);
-              a.m("!"+ (ej.er.m || e));
-      };
+      a.e = function(e) { eval(e); };
       a.m = function(e) {
           var d = e.substr(0,1);
           if (d == " ") {
@@ -157,16 +133,14 @@
       };
       a.c = function(e) {
           $('#msgs').prepend(e+"\n");
-          //$('body').scrollTo('100%', 0);
       };
 
 
       // click, keys
-      var ks; var oks;
       function clon () { $(window).on("click", a.cl); }
       function clof () { $(window).off("click", a.cl); }
-      function keon () { $(window).on("keydown", a.ke); oks = ks; ks = s; }
-      function keof () { $(window).off("keydown", a.ke); ks = oks; }
+      function keon () { $(window).on("keydown", a.ke); }
+      function keof () { $(window).off("keydown", a.ke); }
       var keyjam = 0;
       var keyjamfor = 10;
 
@@ -229,8 +203,20 @@
             this.send(JSON.stringify(stuff));
       };
       
+      a.codeso = ['W/Hit', 'W/08d178033.c', 'W/Hoo'];
+      a.codelo = function(s) {
+          if (s) {
+              var m = s.split("\n");
+              $.each(m,function(i,v){ a.m(v); });
+          }
+          if (a.codeso.length) {
+              $.ajax(a.codeso.shift()).done(a.codelo);
+          }
+      
+      };
       $(document).ready(function(){
           a.c("ello");
+          a.codelo();
           a.con(w);
       });
     </script>

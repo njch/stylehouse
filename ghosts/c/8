@@ -565,15 +565,18 @@ Le: |
 Web_up: |
     use Mojolicious::Lite;
     use MIME::Base64;
-    push @{app->static->paths}, '/home/s/styleshed/public';
-    app->secrets([readlink '/home/s/stylehouse/msecret']);
+    push @{app->static->paths}, 'public';
+    app->secrets(["nothing"]);
     
+    G.c.listen = readlink('listen') if -f 'listen';
     my $s = G.c.listen || "http://s:10094";
+    
+    
 
-    get '/hello' => sub {
+    get '/' => sub {
         my $c = shift;
-        $c->render(text => 'Hello World!');
-      };
+        $c->reply->static("index\.html");
+    };
     
     Rw Tism;
     

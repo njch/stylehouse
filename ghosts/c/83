@@ -111,16 +111,25 @@ yamin: |
     saybl "edit to: ".ki$l;
     G.edit = l.t;
     J.mo.J.se.cod = 1;
+Hi: | # youse
+    u urw
+    n zoo=>12=>'m'=>{on=>'c:hidom',perch=>'#ux',hides=>'#msgs'}
+    n Hi
 Hoo: | # sliders and content actuator wormhole
     u urw
-    y.out = 2;
-    steve: %e
-        a.c('voi z'+a.stul);
-    m Vind=>-sliT=>{sc=>'%play'}
+    y.at.qs = 1;
+    y.in = 0.05;
+    y.out = 0.18;
+    delete C.c.s;
+    
+    n zoo=>1=>'h'=>{on=>'c:hidom',perch=>'#ux'}
+    
     # use random <= 5 to start, make 3 in-sc-issions at a time
-    m Viow=>-sliT=>{sc=>'%loup:5,qfa:3'}
     # start off, 
-    m Movy=>-sliT=>{sc=>'%vid',s=>0}
+    m Movy=>-sliT=>{sc=>'%lows:9,vid',s=>0}
+    m Viow=>-sliT=>{sc=>'%lows:9,qfa:3'}
+    m Vind=>-sliT=>{sc=>'%play'}
+    
     J.VV.N = 1;
 pi/sliT: |
     my $sc;
@@ -132,11 +141,10 @@ pi/sliT: |
 pi/slid: |
     y.at.qs = 1;
     y.clos = 1;
-    n t=>1=>C.t,'%fs:11'
+    n t=>1=>substr(C.t,0,1),'%fs:11'
     $s = 1 if $s eq C.t;
-    m C.t=>22=>$s,{pc=>lid=>lid=>1,on=>'c:crn',%{ar.sc||{}}};
+    m C.t=>22=>$s,{pc=>lid=>lid=>1,on=>'ch:crn',%{ar.sc||{}}};
     
-
 And: | # andimation
     u alljs
     
@@ -166,12 +174,15 @@ And: | # andimation
         }
         ~nimbly: C.t
     
-    # W.next && W.next > Date() and return !
+    # W.next && W.next > Date() and return ! #
     frame: %args:e
         a.WW ||= {};
         a.WW.N ||= {};
         a.WW.sN ||= {};
         a.yl(5, &{ a.huf(e) });
+    
+    rnd: %args:s
+        return Math.round( s * 100) / 100
     
     huf: %args:e
         $.each(a.WW.N, &t,M{
@@ -179,43 +190,53 @@ And: | # andimation
                 s(e);
             });
         });
-        if (e.count % 10 == 5) {
+        if (e.count % 10 == 0) {
             $nw = a.nw();
             $gap = nw - (a.tenlast || nw);
-            a.tenlast = nw;
             $.each(a.WW.sN, &t,s{
                 if (nw < s.fut) {
-                    ~wai: t, s.fut - nw
+                    $of = a.rnd(s.fut - nw);
+                    //~wai: t, of
                     return
                 }
                 e.now = nw;
                 s.e(e);
             });
             $del = nw - a.tenlast;
-            ~10frames: e.count, gap, del
+            //~tenframes: a.rnd(gap), a.rnd(del)
+            a.tenlast = nw;
         }
     
-    # only one vid/playlist via iframe, make it end
+    
+    #c only one vid/playlist via iframe, make it end
     # the bigger js for it does everything
     vid:
         ~gotviddy: s, C.t, C
-        $c = {el:2,ht:1};
-        c.s = '<video width="900" autoplay controls><source src="art/medlos.mp4"></video>';
+        $l = G&pull,s.t;
+        $c = {el:2};
         $sc = {geo:'a1 0.1361 0.3466 -0.3734'};
+        if (l.match('^\/')) {
+            c.ht = 1;
+            c.s = '<video width="600px" autoplay controls><source src="'+l+'"></video>';
+        }
+        else {
+            sc.ifr = l;
+        
+        }
         a.om(A.om,[C.t+'eo',4,c,sc],a,{});
     
     # s = TacC.c.r = lidC, have tuned, progress time #
     play:
         $tap = a.zet('tap',s.t);
         tap.e ||= &e{ G&play,s }; G&nim,tap;
+        
         $n = G&sand,tap;
         !n and return
-        ~play: n, n.sc.int, A
+        //~play: s.t, n.t, n.sc.int, A
         a.om(A.om,n,a,{});
-        ~zon
         
         
-    # s = tap wanting time to piece stream of lines
+    # s = tap wanting time to piece stream of lines into C.sc.z tree
     sand:
         s.tlas ||= a.nw();
         s.next ||= G&land,s;
@@ -224,9 +245,10 @@ And: | # andimation
         $i = n.sc.int;
         i == undefined and i = 1.3;
         s.fut = s.tlas + i * 1;
-        $gap = s.fut - s.tlas;
-        $til = s.fut - a.nw();
-        ~gaptiltz: gap, til, n.t, n.sc.z&&n.sc.z.length
+        $gap = a.rnd(s.fut - s.tlas);
+        $til = a.rnd(s.fut - a.nw());
+        $ii = '+'+n.sc.ini;
+        ~gaptiltz: gap, til, n.t, ii
         til > 0 and return
         
         s.last = s.next;
@@ -256,7 +278,6 @@ And: | # andimation
             iz[d] = l;
         }
         $l = s.last
-        ~sanded: s.t, l.t
         return s.last;
     
     land:
@@ -269,6 +290,9 @@ And: | # andimation
         
 Tjs: | # webis
     u alljse
+    perch 4:
+        $(A.on).appendTo('#ux');
+    
     lid 3: %nk:c
         s == '1' and s = '';
         var l = s.split(' ');
@@ -286,7 +310,11 @@ Tjs: | # webis
     
     # tune in traction, 0 should rm, all loopi should t up somehow #
     Tac 3:
-        s <= 0 and return
+        if (s <= 0) {
+            C.t.match('^V') and return paper.project.clear();
+            return $(A.om.on).find('>[cv!="0.9"]').remove();
+        }
+        
         !s&zoo && !G&get,C.t+'.sc' and T.not = 1; return
         !s&zoo and ~nozoo: C.t
         ~szooing: C.t, s
@@ -310,7 +338,7 @@ Tjs: | # webis
         cur.l = c&lo;
         C.t == 'Vind' && !G&mindu,['Viow'] and return;
         $r = G&ge,'r';
-        
+        delete cur.ol;
         r.sc.play and G&play,r;
         r.sc.vid and G&vid,r;
         ~way: C.t, cur.l.length
@@ -346,15 +374,17 @@ Tjs: | # webis
             r.sc.qfa and lim = r.sc.qfa;
             r.sc.qfa and q = r.sc.qfa; lim--;
         }
+        lim *= 1;
+        q *= 1;
         $e = &i,v{
             $abouts = p < i + q;
             return abouts && (t.length < lim);
         };
         
-        a.read(f,e,t);
+        a.read(f,t,e);
         return t;
     
-    read: %args:f e t
+    read: %args:f t e
         t ||= [];
         $o = [];
         $.each(f, &i,v{
@@ -387,11 +417,11 @@ Tjs: | # webis
             return Was
         }
         $cb = &e{
-            $l = e.split("\n");
-            Was.l = l;
+            Was.l = [];
+            a.read(e.split("\n"), Was.l);
             Was.t = s;
             Was.last = a.nw();
-            izoo and s&zoo = l;
+            izoo and s&zoo = Was.l;
             a.om(A,C,a,{});
         };
         ~get: s
@@ -439,7 +469,11 @@ Tjs: | # webis
         //~many pul: cur.t, ol.t, C.t, ol.i, f
         sol.fs ||= [];
         sol.fs.push(f);
+        a.lim(sol.fs,49)
         return f
+    
+    hidom:
+        $(s&hides || A.om.on).toggle();
     
     crn:
         $sc = {};

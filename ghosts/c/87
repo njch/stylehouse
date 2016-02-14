@@ -11,7 +11,7 @@ Zo: |
     my $m = new WWW::Mechanize;
     use YAML::Syck;
 
-    my $url = "http://st33v.tumblr.com/";
+    my $url = "http://st33v\.tumblr\.com/";
     my @posts;
     my $page = 1;
     while ($page && 0) {
@@ -23,14 +23,14 @@ Zo: |
         last unless $m->content =~ m{<a href="(/page/$next)">};
         $page++;
     }
-    @posts = @{LoadFile("posts.yml")};
+    @posts = @{LoadFile("posts\.yml")};
     my $i = 1;
     my @photos = 1;
     for my $post (@posts) {
         $m->get($post);
         push @photos, $m->content =~ m{"([^"]+?jpg)"}smg;
     }
-    DumpFile("photos.yml", \@photos);
+    DumpFile("photos\.yml", \@photos);
     exit;
 Zoy: |
     #y.at.jsl = 1;
@@ -455,8 +455,6 @@ stylepap: |
                 r.omily and delete r.alive
                 else { r.remove() }
             }
-            ~pa: r.image.src
-            //
             A.b.pa = r;
         }
 
