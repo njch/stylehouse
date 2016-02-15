@@ -60,6 +60,8 @@ Zo: |
     for (@all) {
         my $st = /1280.jpg/ ? 'ii' : 'oo';
         my $sec = $i++ % 4;
+        /http:\/\/(\d+)\.media\.tumblr/ || next;
+        $sec = $1;
         push @{$tw->{$st}->{$sec}||=[]}, $_;
     }
     my $fl;
@@ -73,6 +75,10 @@ Zo: |
         say "$k";
     }
     exit;
+
+Zos: |
+    my @in = `cat n/W/st33v\.oo\.40\.c`;
+    `cd n/i; wget $_` for @in;
 Zoy: |
     #y.at.jsl = 1;
     Rw Sefara;
@@ -448,7 +454,10 @@ stylepap: |
                     !find.length and a.c('no find '+C&jfi);
                     src = $(find).last().attr('src');
                 }
-                r = new Raster(src);
+                r = new Raster({
+                    crossOrigin: 'anonymous',
+                    source: src
+                });
             } 
             else if (C&typ === 'T') {
                 r = new PointText(view.center);
