@@ -158,17 +158,6 @@ Rel: |
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     #
 Tel: |
     n Hoo
@@ -562,7 +551,12 @@ Tjs: | # webis cranking, Hut's content patchbay
     vid:
         ~gotviddy: s, C.t, C
         a.putontv = &l{
-            l.match('^\\\?v=') and l = 'https://www.youtube.com/embed/'+l;
+            var m = l.match('^\\\?v=([^&]+)(&.+)?$');
+            if (m) {
+                l = m[1]+'?steve=steve';
+                m[2] and l += m[2];
+                l = 'https://www.youtube.com/embed/'+l;
+            }
             G&vid,l;
         };
         $l = typeof s == 'string' && s || G&pull,s.t;
