@@ -1,6 +1,4 @@
+Sligo.c
+Slei.c
 Surl.c
 Slur.c
-Slei.c
-Sligo.c
-Sligo.c
-Sligo.c

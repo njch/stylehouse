@@ -384,3 +384,298 @@
  	1	3	el:9	
  	2	4	el:9	
  	3	5	el:9	
+	Slur	9	el:2	ini:0,int:0
+ 	1	3	el:2	b:difference,deal:1.4705,opa:0.4631,pa:R,pxp:161,pyp:102,qz:1,r:7,sca:2.1
+ 	2	4	el:2	b:normal,deal:1.5179,opa:0.7223,pa:R,pxp:102,pyp:0,qz:1,r:7,sca:1.8
+ 	3	5	el:2	b:negation,deal:2.3725,opa:0.7911,pa:R,pxp:198,pyp:-42,qz:1,r:7,sca:2.1
+	Slur	9	el:3	ini:1,int:7.4
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:difference,deal:1.5195,opa:0.6254,pa:R,pxp:37,pyp:127,qz:1,r:7,sca:1.0799
+ 	2	43	el:2	b:hue,deal:1.6455,opa:0.8069,pa:R,pxp:30,pyp:-219,qz:1,r:7,sca:1.17
+ 	3	53	el:2	b:multiply,deal:2.0593,opa:0.4979,pa:R,pxp:-155,pyp:-251,qz:1,r:7,sca:0.9
+	Slur	9	el:3	ini:2,int:13.9
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:negation,deal:2.2315,opa:0.684,pa:R,pxp:135,pyp:-142,qz:1,r:0,sca:1.2
+ 	2	4	el:2	b:normal,deal:2.4186,opa:0.6376,pa:R,pxp:90,pyp:245,qz:1,r:0,sca:1.8
+ 	3	5	el:2	b:normal,deal:1.8653,opa:0.4614,pa:R,pxp:98,pyp:-214,qz:1,r:0,sca:2.1
+	Slur	9	el:3	ini:3,int:13.6
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:normal,deal:2.4198,opa:0.4453,pa:R,pxp:235,pyp:-26,qz:1,r:-42,sca:1.2
+ 	2	43	el:2	b:normal,deal:1.4766,opa:0.4875,pa:R,pxp:-185,pyp:226,qz:1,r:-42,sca:1.8
+ 	3	53	el:2	b:normal,deal:1.5189,opa:0.3863,pa:R,pxp:250,pyp:-16,qz:1,r:-42,sca:0.72
+	Slur	9	el:3	ini:4,int:14.1
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:multiply,deal:2.9706,opa:0.598,pa:R,pxp:225,pyp:111,qz:1,r:-84,sca:1.5
+ 	2	4	el:2	b:saturation,deal:2.3871,opa:0.3823,pa:R,pxp:202,pyp:-127,qz:1,r:-84,sca:1.8
+ 	3	5	el:2	b:normal,deal:2.8287,opa:0.8301,pa:R,pxp:-100,pyp:18,qz:1,r:-84,sca:1.5
+	Slur	9	el:3	ini:5
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:saturation,deal:2.1481,opa:0.5901,pa:R,pxp:129,pyp:-42,qz:1,r:-76,sca:1.2
+ 	2	43	el:2	b:darken,deal:2.6523,opa:0.3844,pa:R,pxp:-127,pyp:-80,qz:1,r:-76,sca:2
+ 	3	53	el:2	b:normal,deal:3.4032,opa:0.4297,pa:R,pxp:-203,pyp:-77,qz:1,r:-76,sca:2.1
+	Slur	9	el:3	ini:6,int:13.8
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:multiply,deal:3.09,opa:0.6869,pa:R,pxp:70,pyp:-131,qz:1,r:13,sca:0.9
+ 	2	4	el:2	b:saturation,deal:2.6751,opa:0.6216,pa:R,pxp:180,pyp:255,qz:1,r:13,sca:1.8
+ 	3	5	el:2	b:normal,deal:3.5807,opa:0.7724,pa:R,pxp:15,pyp:54,qz:1,r:13,sca:0.8099
+	Slur	9	el:3	ini:7,int:13.9
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:difference,deal:2.4764,opa:0.3453,pa:R,pxp:29,pyp:198,qz:1,r:-27,sca:0.8099
+ 	2	43	el:2	b:multiply,deal:2.8233,opa:0.3957,pa:R,pxp:-259,pyp:-83,qz:1,r:-27,sca:1.8
+ 	3	53	el:2	b:darken,deal:2.2636,opa:0.3089,pa:R,pxp:-260,pyp:-73,qz:1,r:-27,sca:0.72
+	Slur	9	el:3	ini:8,int:14.4
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:multiply,deal:3.0236,opa:0.7759,pa:R,pxp:-22,pyp:87,qz:1,r:0,sca:1.2
+ 	2	4	el:2	b:negation,deal:2.77,opa:0.517,pa:R,pxp:-140,pyp:-44,qz:1,r:0,sca:1.8
+ 	3	5	el:2	b:darken,deal:3.6385,opa:0.7903,pa:R,pxp:-101,pyp:145,qz:1,r:0,sca:0.72
+	Slur	9	el:3	ini:9,int:13.5
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:multiply,deal:3.0047,opa:0.6805,pa:R,pxp:179,pyp:2,qz:1,r:27,sca:1.5
+ 	2	43	el:2	b:darken,deal:3.3189,opa:0.6419,pa:R,pxp:42,pyp:-268,qz:1,r:27,sca:1.17
+ 	3	53	el:2	b:xor,deal:2.9682,opa:0.5704,pa:R,pxp:87,pyp:-41,qz:1,r:27,sca:0.8099
+	Slur	9	el:3	ini:10,int:14.1
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:multiply,deal:1.7497,opa:0.6636,pa:R,pxp:119,pyp:57,qz:1,r:-34,sca:2
+ 	2	4	el:2	b:multiply,deal:2.3992,opa:0.7601,pa:R,pxp:173,pyp:112,qz:1,r:-34,sca:0.8099
+ 	3	5	el:2	b:normal,deal:2.8799,opa:0.671,pa:R,pxp:-70,pyp:-217,qz:1,r:-34,sca:0.9
+	Slur	9	el:3	ini:11,int:15
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:normal,deal:3.3696,opa:0.4299,pa:R,pxp:-134,pyp:207,qz:1,r:0,sca:0.72
+ 	2	43	el:2	b:normal,deal:2.8566,opa:0.3126,pa:R,pxp:180,pyp:-84,qz:1,r:0,sca:0.72
+ 	3	53	el:2	b:lighten,deal:2.4592,opa:0.5788,pa:R,pxp:229,pyp:94,qz:1,r:0,sca:2
+	Slur	9	el:3	ini:12,int:12.9
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:multiply,deal:2.9403,opa:0.3374,pa:R,pxp:-251,pyp:-225,qz:1,r:7,sca:1.5
+ 	2	4	el:2	b:multiply,deal:3.7764,opa:0.3791,pa:R,pxp:60,pyp:-146,qz:1,r:7,sca:0.9
+ 	3	5	el:2	b:normal,deal:3.8355,opa:0.5606,pa:R,pxp:242,pyp:97,qz:1,r:7,sca:0.8099
+	Slur	9	el:3	ini:13,int:13.9
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:saturation,deal:2.6308,opa:0.5745,pa:R,pxp:-16,pyp:268,qz:1,r:-7,sca:0.72
+ 	2	43	el:2	b:lighten,deal:3.4861,opa:0.5326,pa:R,pxp:-115,pyp:-189,qz:1,r:-7,sca:0.9
+ 	3	53	el:2	b:lighten,deal:3.3543,opa:0.8339,pa:R,pxp:-126,pyp:-7,qz:1,r:-7,sca:1.17
+	Slur	9	el:3	ini:14,int:14.4
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:difference,deal:2.5227,opa:0.5624,pa:R,pxp:268,pyp:141,qz:1,r:-62,sca:1.8
+ 	2	4	el:2	b:hue,deal:2.8759,opa:0.4399,pa:R,pxp:-212,pyp:147,qz:1,r:-62,sca:2.1
+ 	3	5	el:2	b:multiply,deal:1.9441,opa:0.5317,pa:R,pxp:-19,pyp:265,qz:1,r:-62,sca:0.8099
+	Slur	9	el:3	ini:15,int:13.5
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:difference,deal:3.1374,opa:0.6399,pa:R,pxp:165,pyp:-139,qz:1,r:-55,sca:0.72
+ 	2	43	el:2	b:lighten,deal:2.3187,opa:0.3619,pa:R,pxp:-53,pyp:138,qz:1,r:-55,sca:1.17
+ 	3	53	el:2	b:xor,deal:2.5217,opa:0.6438,pa:R,pxp:154,pyp:-118,qz:1,r:-55,sca:0.9
+	Slur	9	el:3	ini:16,int:14.1
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:darken,deal:2.0217,opa:0.4235,pa:R,pxp:121,pyp:-257,qz:1,r:-42,sca:0.72
+ 	2	4	el:2	b:difference,deal:2.5433,opa:0.5774,pa:R,pxp:-229,pyp:48,qz:1,r:-42,sca:1.8
+ 	3	5	el:2	b:normal,deal:2.9723,opa:0.6696,pa:R,pxp:-256,pyp:-6,qz:1,r:-42,sca:0.8099
+	Slur	9	el:3	ini:17,int:14.2
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:hue,deal:2.7204,opa:0.3459,pa:R,pxp:56,pyp:-191,qz:1,r:-77,sca:1.17
+ 	2	43	el:2	b:darken,deal:2.3579,opa:0.3387,pa:R,pxp:-58,pyp:-178,qz:1,r:7,sca:1.5
+ 	3	53	el:2	b:multiply,deal:3.1637,opa:0.4932,pa:R,pxp:-249,pyp:-48,qz:1,r:7,sca:1.8
+	Slur	9	el:3	ini:18,int:13.8
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:difference,deal:3.3373,opa:0.5515,pa:R,pxp:-98,pyp:38,qz:1,r:-34,sca:1.17
+ 	2	4	el:2	b:darken,deal:2.42,opa:0.7392,pa:R,pxp:-239,pyp:-177,qz:1,r:-34,sca:1.0799
+ 	3	5	el:2	b:difference,deal:1.4316,opa:0.7209,pa:R,pxp:59,pyp:190,qz:1,r:-34,sca:1.17
+	Slur	9	el:3	ini:19
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:normal,deal:2.9067,opa:0.8188,pa:R,pxp:-221,pyp:-98,qz:1,r:-42,sca:1.2
+ 	2	43	el:2	b:normal,deal:2.4148,opa:0.3962,pa:R,pxp:-113,pyp:-216,qz:1,r:-42,sca:1.2
+ 	3	53	el:2	b:hue,deal:3.1091,opa:0.3,pa:R,pxp:44,pyp:-113,qz:1,r:-42,sca:1.8
+	Slur	9	el:3	ini:20,int:14.6
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:normal,deal:2.4204,opa:0.4626,pa:R,pxp:75,pyp:-213,qz:1,r:-84,sca:2
+ 	2	4	el:2	b:darken,deal:3.2732,opa:0.4166,pa:R,pxp:41,pyp:-121,qz:1,r:-84,sca:2.1
+ 	3	5	el:2	b:hue,deal:3.7608,opa:0.7823,pa:R,pxp:237,pyp:-17,qz:1,r:-84,sca:0.8099
+	Slur	9	el:3	ini:21,int:13.4
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:saturation,deal:2.317,opa:0.5058,pa:R,pxp:-108,pyp:-129,qz:1,r:-28,sca:0.9
+ 	2	43	el:2	b:lighten,deal:2.6264,opa:0.3815,pa:R,pxp:228,pyp:-172,qz:1,r:-28,sca:0.9
+ 	3	53	el:2	b:multiply,deal:1.9138,opa:0.4795,pa:R,pxp:-259,pyp:-172,qz:1,r:-28,sca:2.1
+	Slur	9	el:3	ini:22,int:14
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:multiply,deal:2.4004,opa:0.5975,pa:R,pxp:-232,pyp:258,qz:1,r:-7,sca:0.72
+ 	2	4	el:2	b:normal,deal:3.1165,opa:0.7439,pa:R,pxp:215,pyp:99,qz:1,r:-7,sca:1.17
+ 	3	5	el:2	b:lighten,deal:3.653,opa:0.7638,pa:R,pxp:53,pyp:-235,qz:1,r:-7,sca:2.1
+	Slur	9	el:3	ini:23,int:14.1
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:lighten,deal:1.8067,opa:0.7924,pa:R,pxp:-78,pyp:244,qz:1,r:-21,sca:2.1
+ 	2	43	el:2	b:normal,deal:1.747,opa:0.7549,pa:R,pxp:159,pyp:-125,qz:1,r:-21,sca:1.17
+ 	3	53	el:2	b:multiply,deal:1.2388,opa:0.5188,pa:R,pxp:244,pyp:165,qz:1,r:-21,sca:0.9
+	Slur	9	el:3	ini:24,int:13.8
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:multiply,deal:2.5142,opa:0.694,pa:R,pxp:247,pyp:179,qz:1,r:-63,sca:0.8099
+ 	2	4	el:2	b:multiply,deal:2.8841,opa:0.8104,pa:R,pxp:101,pyp:82,qz:1,r:-63,sca:1.2
+ 	3	5	el:2	b:multiply,deal:3.0561,opa:0.7374,pa:R,pxp:-42,pyp:-176,qz:1,r:-63,sca:0.9
+	Slur	9	el:3	ini:25,int:13.9
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:negation,deal:3.034,opa:0.7576,pa:R,pxp:-68,pyp:157,qz:1,r:-56,sca:2.1
+ 	2	43	el:2	b:lighten,deal:3.126,opa:0.3441,pa:R,pxp:-77,pyp:-203,qz:1,r:-56,sca:1.5
+ 	3	53	el:2	b:difference,deal:3.9185,opa:0.5777,pa:R,pxp:1,pyp:27,qz:1,r:-56,sca:2.1
+	Slur	9	el:3	ini:26,int:14.9
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:difference,deal:2.8078,opa:0.3064,pa:R,pxp:-237,pyp:1,qz:1,r:7,sca:0.72
+ 	2	4	el:2	b:hue,deal:3.5848,opa:0.5362,pa:R,pxp:126,pyp:95,qz:1,r:7,sca:1.8
+ 	3	5	el:2	b:difference,deal:4.4645,opa:0.4081,pa:R,pxp:94,pyp:17,qz:1,r:7,sca:0.72
+	Slur	9	el:3	ini:27,int:13.1
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:darken,deal:3.0633,opa:0.7371,pa:R,pxp:-263,pyp:-35,qz:1,r:-34,sca:2.1
+ 	2	43	el:2	b:lighten,deal:3.7901,opa:0.4263,pa:R,pxp:176,pyp:149,qz:1,r:-34,sca:2.1
+ 	3	53	el:2	b:saturation,deal:3.1065,opa:0.5904,pa:R,pxp:130,pyp:-118,qz:1,r:-34,sca:1.0799
+	Slur	9	el:3	ini:28,int:14.1
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:negation,deal:1.5396,opa:0.6529,pa:R,pxp:-54,pyp:253,qz:1,r:-34,sca:0.8099
+ 	2	4	el:2	b:xor,deal:1.964,opa:0.4466,pa:R,pxp:126,pyp:-32,qz:1,r:-34,sca:1.17
+ 	3	5	el:2	b:multiply,deal:1.122,opa:0.6305,pa:R,pxp:-168,pyp:-89,qz:1,r:-34,sca:0.8099
+	Slur	9	el:3	ini:29,int:14.2
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:difference,deal:3.1745,opa:0.3214,pa:R,pxp:164,pyp:269,qz:1,r:-69,sca:2
+ 	2	43	el:2	b:normal,deal:2.1824,opa:0.6598,pa:R,pxp:266,pyp:244,qz:1,r:-69,sca:2.1
+ 	3	53	el:2	b:lighten,deal:1.5615,opa:0.7854,pa:R,pxp:79,pyp:135,qz:1,r:-69,sca:1.2
+	Slur	9	el:3	ini:30,int:13.6
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:multiply,deal:3.0539,opa:0.5817,pa:R,pxp:239,pyp:-180,qz:1,r:-55,sca:1.17
+ 	2	4	el:2	b:multiply,deal:3.5325,opa:0.725,pa:R,pxp:142,pyp:125,qz:1,r:-55,sca:0.9
+ 	3	5	el:2	b:saturation,deal:3.467,opa:0.6899,pa:R,pxp:162,pyp:222,qz:1,r:-55,sca:1.2
+	Slur	9	el:3	ini:31,int:13.9
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:difference,deal:3.2513,opa:0.7021,pa:R,pxp:-6,pyp:64,qz:1,r:-42,sca:1.0799
+ 	2	43	el:2	b:multiply,deal:3.4627,opa:0.4936,pa:R,pxp:-178,pyp:83,qz:1,r:-42,sca:2.1
+ 	3	53	el:2	b:lighten,deal:3.8367,opa:0.6935,pa:R,pxp:112,pyp:232,qz:1,r:-42,sca:0.8099
+	Slur	9	el:3	ini:32,int:14.5
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:normal,deal:3.378,opa:0.5304,pa:R,pxp:91,pyp:145,qz:1,r:-34,sca:1.5
+ 	2	4	el:2	b:normal,deal:3.2678,opa:0.4725,pa:R,pxp:-78,pyp:236,qz:1,r:-34,sca:0.9
+ 	3	5	el:2	b:multiply,deal:2.3721,opa:0.3563,pa:R,pxp:248,pyp:-31,qz:1,r:-34,sca:0.9
+	Slur	9	el:3	ini:33,int:13.4
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:darken,deal:2.7911,opa:0.3653,pa:R,pxp:-60,pyp:-173,qz:1,r:-56,sca:1.5
+ 	2	43	el:2	b:darken,deal:2.8921,opa:0.7468,pa:R,pxp:-131,pyp:182,qz:1,r:-56,sca:1.0799
+ 	3	53	el:2	b:normal,deal:3.513,opa:0.4685,pa:R,pxp:-178,pyp:162,qz:1,r:-56,sca:1.8
+	Slur	9	el:3	ini:34,int:14.1
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:difference,deal:2.4238,opa:0.5821,pa:R,pxp:-268,pyp:48,qz:1,r:-91,sca:1.0799
+ 	2	4	el:2	b:xor,deal:2.5479,opa:0.6737,pa:R,pxp:180,pyp:142,qz:1,r:-91,sca:1.17
+ 	3	5	el:2	b:difference,deal:3.131,opa:0.331,pa:R,pxp:21,pyp:8,qz:1,r:-91,sca:0.8099
+	Slur	9	el:3	ini:35,int:15
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:normal,deal:3.2314,opa:0.461,pa:R,pxp:-89,pyp:-29,qz:1,r:14,sca:1.8
+ 	2	43	el:2	b:lighten,deal:2.9715,opa:0.6033,pa:R,pxp:-139,pyp:-101,qz:1,r:14,sca:1.8
+ 	3	53	el:2	b:negation,deal:2.3793,opa:0.7313,pa:R,pxp:-96,pyp:-28,qz:1,r:14,sca:0.72
+	Slur	9	el:3	ini:36,int:13
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:difference,deal:3.3834,opa:0.6364,pa:R,pxp:-171,pyp:-62,qz:1,r:42,sca:2.1
+ 	2	4	el:2	b:normal,deal:3.6369,opa:0.6378,pa:R,pxp:-224,pyp:-81,qz:1,r:42,sca:2.1
+ 	3	5	el:2	b:multiply,deal:4.3283,opa:0.8198,pa:R,pxp:29,pyp:-232,qz:1,r:42,sca:1.17
+	Slur	9	el:3	ini:37,int:13.8
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:saturation,deal:2.6578,opa:0.6256,pa:R,pxp:65,pyp:50,qz:1,r:49,sca:2.1
+ 	2	43	el:2	b:lighten,deal:3.3377,opa:0.5269,pa:R,pxp:124,pyp:-58,qz:1,r:49,sca:2
+ 	3	53	el:2	b:normal,deal:3.9588,opa:0.6187,pa:R,pxp:-227,pyp:-152,qz:1,r:49,sca:1.8
+	Slur	9	el:3	ini:38,int:14.4
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:darken,deal:2.2643,opa:0.466,pa:R,pxp:-245,pyp:100,qz:1,r:69,sca:1.17
+ 	2	4	el:2	b:normal,deal:2.1429,opa:0.8185,pa:R,pxp:-137,pyp:-147,qz:1,r:69,sca:2.1
+ 	3	5	el:2	b:multiply,deal:2.7193,opa:0.7727,pa:R,pxp:-148,pyp:-91,qz:1,r:69,sca:0.9
+	Slur	9	el:3	ini:39,int:14.6
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:saturation,deal:1.7605,opa:0.3015,pa:R,pxp:-259,pyp:62,qz:1,r:7,sca:2
+ 	2	43	el:2	b:normal,deal:1.6504,opa:0.7697,pa:R,pxp:-267,pyp:27,qz:1,r:7,sca:1.0799
+ 	3	53	el:2	b:negation,deal:0.9038,opa:0.5182,pa:R,pxp:-144,pyp:-191,qz:1,r:7,sca:2
+	Slur	9	el:3	ini:40,int:13
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
+ 	1	3	el:2	b:lighten,deal:2.4707,opa:0.7218,pa:R,pxp:-167,pyp:122,qz:1,r:7,sca:1.5
+ 	2	4	el:2	b:multiply,deal:1.7447,opa:0.8138,pa:R,pxp:59,pyp:-144,qz:1,r:7,sca:1.2
+ 	3	5	el:2	b:darken,deal:1.5881,opa:0.6792,pa:R,pxp:176,pyp:193,qz:1,r:7,sca:2
+	Slur	9	el:3	ini:41,int:14.5
+ 	1	3	el:9	
+ 	2	4	el:9	
+ 	3	5	el:9	
+ 	1	33	el:2	b:multiply,deal:2.2912,opa:0.3656,pa:R,pxp:-78,pyp:203,qz:1,r:0,sca:0.9
+ 	2	43	el:2	b:difference,deal:1.4152,opa:0.5726,pa:R,pxp:-181,pyp:-260,qz:1,r:0,sca:1.2
+ 	3	53	el:2	b:multiply,deal:0.9886,opa:0.4374,pa:R,pxp:211,pyp:171,qz:1,r:0,sca:1.5
+	Slur	9	el:3	ini:42,int:12.8
+ 	1	33	el:9	
+ 	2	43	el:9	
+ 	3	53	el:9	
