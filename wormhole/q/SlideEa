@@ -1,0 +1,164 @@
+--- 
+I: 
+  "0.1": 
+    array: 
+      c: 
+        s: "A.I.array = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nreturn I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\\w+$/;\nreturn I.d&fourstring,$s->[0] if @$s == 1 && !ref $s->[0];\n# should stick In in first and M it? \n# kind of motion that wants to be unsure in the wild\nunshift @{A.N}, @$s;\nT.not = 1;\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 1fec58dc0439
+        of: I
+      t: array
+      "y": 
+        cv: '0.1'
+    fourreal: 
+      c: 
+        s: "A.I.fourreal = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\n(C.t, C.y) = @$s;\nC.c  = $s->[2] if exists $s->[2];\nC.sc = $s->[3] if exists $s->[3];\ndie'@>4'.wdump $s if @$s > 4;\nif (ref C.t eq 'SCALAR') {    \n    die \"scalaref Ct had Cc\".wdump 4,$C if C.c;\n    (C.t,C.y) = ('',$s);\n}\ndie\"C.t from \".wdump $s if ref C.t; # dives\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: ce20681b4eb3
+        of: I
+      t: fourreal
+      "y": 
+        cv: '0.1'
+    fourstring: 
+      c: 
+        s: "A.I.fourstring = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nI.d&MZu,$1 if $s =~ /^\\s*#?\\s*MZ (.+)$/;\n$s =~ s/^\\s+//;\nif ($s =~ /^\\s*(#.*)$/) {\n   T.not = 1;\n   T.com = $1;\n}\nelsif ($s eq '') {\n   T.not = T.space = 1;\n}\nelse {\n   my $ci = $s;\n   for my $nk (qw't y c sc') {\n       if ($ci =~ s/^(\\S+) *//) { # some t are types of space\n           my $v = $1;\n           $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;\n           # << consumes more lines into $nk, then ...\n           $v = '' if $v =~ /^(''|\"\")$/;\n           $C->{$nk} = $v;\n       }\n   }\n}\nsaybl \"4string: $s            \".ki $C if A.V&C;\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 9a408a2c79fe
+        of: I
+      t: fourstring
+      "y": 
+        cv: '0.1'
+    givy: 
+      c: 
+        s: "A.I.givy = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy $y = C.y;\nif (ref $s eq 'SCALAR') {\n    my $z = $s;\n    $s = $$s;\n    $s = '%'.$s if $s !~ /^%/;\n    $s =~ /I.peels/ || die \"scalarnopeel $s\";\n    G&xo,C.c,$_ for G&peel,$s;\n\n}\nelsif (ref $s eq 'ARRAY') {\n    for my $yy (@$s) {\n        C.y = {};\n        G&givy,$yy;\n        ref $y || die \"notash \".ki $y;\n        G&xot,$y,C.y;\n        C.y = $y;\n    }\n}\nelsif (ref $s) {\n    ref $s eq 'HASH' || ref $s eq 'REF'\n        || die \"no $s  ref=\".ref $s;\n    if (G&taJe,$s ) {\n        my $yy = C.y;\n        C.y = {} if ref C.y ne 'HASH';\n        G&givy,$yy;\n    }\n    elsif ($y ne $s) {\n        G&xot,$y,$s;\n    }\n}\nelsif ($s eq '') {\n    my $x = I.blanky ? G&blanky : {};\n    G&xot,C.y,$x if keys %$x;\n}\nelsif ($s =~ /^($G::NUM)$/) {\n    y.cv = $1;\n}\nelsif ($s =~ /^($G::NUM)-($G::NUM)$/) {\n    y.in = $1;\n    y.out = $2;\n}\nelsif ($s =~ /^($G::NUM)-($G::NUM)x($G::NUM)$/) {\n    y.in = $1;\n    y.out = $2;\n    y.thi = $3;\n}\nelsif ($s =~ /^-(\\w+)$/) {\n    C.c.pi = $1;\n    C.c.s = C.t if !exists C.c.s || A.btw.cwass;\n}\nelsif ($s =~ /^([a-zA-Z]+)(?::(.+))?$/) {\n    C.c->{$1} = $2 || C.t;\n}\nelse {\n    die \"C y wtf: $s\";\n}\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: a52d0fae8046
+        of: I
+      t: givy
+      "y": 
+        cv: '0.1'
+    hash: 
+      c: 
+        s: "A.I.hash = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nreturn %$C = %$s if exists s.t && s.y && s.c;\nI.d&servehash,$s;\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 9b00a34a9eb1
+        of: I
+      t: hash
+      "y": 
+        cv: '0.1'
+    isC: 
+      c: 
+        s: "A.I.isC = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nreturn 0 unless ref $s eq 'HASH';\nexists s.t && defined C.t && !ref s.t\n&& ref s.y && ref s.c && 9 > keys %$s;\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: b7d447464bc7
+        of: I
+      t: isC
+      "y": 
+        cv: '0.1'
+    isJ: 
+      c: 
+        s: "A.I.isJ = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nref $s eq 'HASH' && ref s.bb eq 'HASH';\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: b6d0a657a6f3
+        of: I
+      t: isJ
+      "y": 
+        cv: '0.1'
+    renc: 
+      c: 
+        s: "A.I.renc = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\n(my $s,C.c) = (C.c,{});\nif (ref $s eq 'REF' || ref $s eq 'SCALAR') {\n    C.c.s = $$s;\n    return;\n}\nif (ref $s eq '' && $s =~ /I.peels/) {\n    # peels for now\n    G&xo,C.c,$_ for G&peel,$s;\n}\nelse {\n    A.btw.cwass = 1 if \"\" eq $s;\n    A.btw.cwasnd = 1 if !defined $s;\n    C.c.s = $s;\n}\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 8b5bae0ceb42
+        of: I
+      t: renc
+      "y": 
+        cv: '0.1'
+    rensc: 
+      c: 
+        s: "A.I.rensc = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nC.sc = '%'.${C.sc} if ref C.sc eq 'SCALAR';\nC.sc = C.sc eq '' ? {}\n    : C.sc =~ I.peels\n    ? G&peel,C.sc\n    : die \"C sc nostr: C.sc   of I.peels  \".ki $C\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: b44dd6753a54
+        of: I
+      t: rensc
+      "y": 
+        cv: '0.1'
+    string: 
+      c: 
+        s: "A.I.string = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\ndie \"string: $s \".wdump 5, [A.N];\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: f30652ec746f
+        of: I
+      t: string
+      "y": 
+        cv: '0.1'
+    taJe: 
+      c: 
+        s: "A.I.taJe = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy $r = $s = $$s if ref $s eq 'REF';\n$r || G&isC,$s || G&isJ,$s || return;\nif ($r || s.bb) {\n    C.c = {e=>C.c} if G&isC,C.c;\n    C.c.s = $s;\n}\nelse {\n    C.c = {s=>C.c} if G&isJ,C.c;\n    C.c.e = $s;\n}\nC.y = {};\nC.c.W = C.t;\nreturn 1\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: a8688b265402
+        of: I
+      t: taJe
+      "y": 
+        cv: '0.1'
+  "0.12": 
+    Ci: 
+      c: 
+        s: "A.I.Ci = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy $r = ref $s;\n!$r ? G&string,$s :\n'ARRAY'eq$r ? G&array,$s :\n'HASH'eq$r ? G&hash,$s :\n'SCALAR'eq$r ? do {\n    C.t ||= '';\n    C.y = $s;\n} :\ndie \"mmtype:$r for $s\"\n};"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: I
+        dige: 2f79ac554527
+        of: I
+      t: Ci
+      "y": 
+        cv: '0.12'
+  "0.18": 
+    reasonlock: 
+      c: 
+        s: "A.I.reasonlock = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\ndie\"reft\" if ref C.t;\nif (A.J && (A.J.name eq 'qq' || A.J.most.J eq A.J)) {\n    C.c.W = C.t unless C.c || C.sc || C.y;\n}\nI.d&renc if ref C.c ne 'HASH';\n\nmy $yy = C.y;\nC.y = {} if ref C.y ne 'HASH';\nI.d&givy,$yy;\n\nI.d&rensc if ref C.sc ne 'HASH';\n\nI.d&isC,$C && ref C.sc\n    || die \"reaso fail\".wdump [A.s,$C];\nI.d&scyvle;\n};"
+      sc: 
+        acgt: s
+        act: 1
+        args: A,C,G,T,s
+        code: I
+        dige: 48c2d4c4aa50
+        of: I
+      t: reasonlock
+      "y": 
+        cv: '0.18'
+Ii: array vers:HASH + fourreal vers:HASH + fourstring vers:HASH + givy vers:HASH + hash vers:HASH + isC vers:HASH + isJ vers:HASH + renc vers:HASH + rensc vers:HASH + string vers:HASH + taJe vers:HASH + Ci vers:HASH + reasonlock vers:HASH

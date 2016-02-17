@@ -1,0 +1,64 @@
+--- 
+I: 
+  "0.1": 
+    hup: 
+      c: 
+        s: "A.I.hup = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy $CC = {%$s};\n$CC->{$_} = {%{$CC->{$_}}} for\n    grep {ref $CC->{$_} eq 'HASH'} keys %$CC;\nreturn $CC;\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 21c3cdef1671
+        of: I
+      t: hup
+      "y": 
+        cv: '0.1'
+    ip: 
+      c: 
+        s: "A.I.ip = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($s,$c,@Me) = @M;\nmy $I = A.I;\nmy $z;\n$s = G&peel,$$s if ref $s eq 'SCALAR';\nmy $n;\nif (ref $s eq 'REF') {\n    # do s.do\n    $s = $$s;\n    $n = $s;\n    s.ip || die \"sip no ref\";\n    $s = {map{$_=> \\s.ip.>$_ }keys %{s.ip}};\n}\n# n.all keeps going after a pass--\nmy $pass = 1;\nEE: for my $k (keys %$s) {\n    $pass == 1 || n.all || return 0;\n    my $y = $s.>$k;\n    my $x = $c.>$k;\n    if (ref $y eq 'REF') {\n        $y = $$y;\n        if (exists y.nk) {\n            $x = $c;\n            for my $k (grep{defined}y.nk,y.gk,y.tk) {\n                $pass--, next EE unless\n                    ref $x eq 'HASH' && exists $x.>$k;\n                $x = $x.>$k;\n            }\n        }\n        my $wa = $pass;\n        !defined $x || $pass-- if y.ndef;\n        defined $x || $pass-- if y.def;\n        y.is eq $x || $pass-- if exists y.is;\n        y.not ne $x || $pass-- if exists y.not;\n        y.in->{$x} || $pass-- if y.in;\n        !y.nin->{$x} || $pass-- if y.nin;\n        $x > y.gt || $pass-- if exists y.gt;\n        $x < y.lt || $pass-- if exists y.lt;\n        $x >= y.gteq || $pass-- if exists y.gteq;\n        $x <= y.lteq || $pass-- if exists y.lteq;\n        $x =~ y.re || $pass-- if exists y.re;\n        $pass = $pass < $wa ? $wa : $pass-1\n            if y.neg;\n    }\n    elsif ($y ne $c.>$k) {\n        $pass--;\n    }\n}\n$pass == 1\n};"
+      sc: 
+        acgt: s c
+        args: A,C,G,T,s,c
+        code: I
+        dige: 15ce682807e6
+        of: I
+      t: ip
+      "y": 
+        cv: '0.1'
+    xo: 
+      c: 
+        s: "A.I.xo = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($s,$c,@Me) = @M;\nmy $I = A.I;\nref $c eq 'HASH' && ref $s eq 'HASH'\n    || die \"Hash up\".wdump 3, [$s,$c];\nwhile (my($k,$v) = each %$c) {\n    $s->{$k} = $v;\n}\nreturn $s\n};"
+      sc: 
+        acgt: s c
+        args: A,C,G,T,s,c
+        code: I
+        dige: 3fe77b2bee02
+        of: I
+      t: xo
+      "y": 
+        cv: '0.1'
+    xot: 
+      c: 
+        s: "A.I.xot = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($s,$c,@Me) = @M;\nmy $I = A.I;\nref $c eq 'HASH' && ref $s eq 'HASH'\n    || die \"Hash up\".wdump 3, [$s,$c];\nwhile (my($k,$v) = each %$c) {\n    $s->{$k} = ref $v eq 'HASH' ?\n                {%{$s->{$k}||{}}, %$v}\n    : $v;\n}\nreturn $s\n};"
+      sc: 
+        acgt: s c
+        args: A,C,G,T,s,c
+        code: I
+        dige: f563a13757f0
+        of: I
+      t: xot
+      "y": 
+        cv: '0.1'
+    xoy: 
+      c: 
+        s: "A.I.xoy = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($s,$c,@Me) = @M;\nmy $I = A.I;\n$c = G&xot,{},$c;\nG&xot,$c,$s;\nreturn $s;\n};"
+      sc: 
+        acgt: s c
+        args: A,C,G,T,s,c
+        code: I
+        dige: c7efffb7d7d5
+        of: I
+      t: xoy
+      "y": 
+        cv: '0.1'
+Ii: hup vers:HASH + ip vers:HASH + xo vers:HASH + xot vers:HASH + xoy vers:HASH
