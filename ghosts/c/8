@@ -84,12 +84,16 @@ urw: | # the pointyclick, curved probablW, %dos do w
         J.ev.th ||= 'middle';
         J.ev.li ||= 'climbos';
         
+srw: |
+    u allovse
+    n urw
+    Jnamehides 7: %code:Art,v:root
+        delete at.c.s
 GW: | # star listening !
     # networky other G.W/GW the J, see also Oth who is G.s/oin the J, self time pourer
     G.c.b &&
         u UpPg
     u Bubble
-    u Meta
     J.VV.N = 1;
     
     #y.at.jslines = 1;
@@ -135,6 +139,41 @@ GW: | # star listening !
     };
     $ya->() unless J.islisten++;
     
+GW_Answer: |
+            my $J = G.oin;
+            say "listened: $name: $s";
+            if ($s =~ /^\['/) {
+                Rw Too $name $s;
+            }
+            if ($s =~ /^CCC (\d+)$/) {
+                my $h = G&qh,<<'',$1;
+                    select f,t,s,mid from mez where mid = ?
+                length(h.s) || die "mized mez: $1";
+                Rw timer $d=2 $cb:_ for sub { G&qp,<<'',h.mid };
+                    delete from mez where mid = ?
+                $s = h.s;
+                warn "aNm not $name h.t for mezmid=h.mid" if h.t ne $name;
+            }
+            if (my $J = G.W.noti.>$name ) {
+                my $c;
+                c.e = G&tC,[PgNotify=>{s=>$s}];
+                ref $J eq 'CODE' ? $J->($name,$s) :
+                    Rw waited $J $c
+            }
+            elsif ($s =~ /^(\w+);(.+)$/) {
+                my $m = [split',',$2];
+                Rw $1 $J:G.oin $m;
+            }
+            elsif ($s =~ /^me (.+)$/) {
+                $J = G.U;
+                J.me = $1;
+                Rw forked $J;
+            }
+            else {
+                my $c;
+                c.e = G&tC,[PgNotify=>{s=>$s}];
+                Rw waited $J:G.W $c;
+            }
 Iam: |
      @$N == 1 || die "strangely: ".wdump 3, $N;
      $N = $N->[0];
@@ -315,41 +354,6 @@ Wuts: |
     n takeover =>49=><<'','%cg:em'
         G&dlin,'life/W',"em.is.W\.c","em.is.M";
     
-GW_Answer: |
-            my $J = G.oin;
-            say "listened: $name: $s";
-            if ($s =~ /^\['/) {
-                Rw Too $name $s;
-            }
-            if ($s =~ /^CCC (\d+)$/) {
-                my $h = G&qh,<<'',$1;
-                    select f,t,s,mid from mez where mid = ?
-                length(h.s) || die "mized mez: $1";
-                Rw timer $d=2 $cb:_ for sub { G&qp,<<'',h.mid };
-                    delete from mez where mid = ?
-                $s = h.s;
-                warn "aNm not $name h.t for mezmid=h.mid" if h.t ne $name;
-            }
-            if (my $J = G.W.noti.>$name ) {
-                my $c;
-                c.e = G&tC,[PgNotify=>{s=>$s}];
-                ref $J eq 'CODE' ? $J->($name,$s) :
-                    Rw waited $J $c
-            }
-            elsif ($s =~ /^(\w+);(.+)$/) {
-                my $m = [split',',$2];
-                Rw $1 $J:G.oin $m;
-            }
-            elsif ($s =~ /^me (.+)$/) {
-                $J = G.U;
-                J.me = $1;
-                Rw forked $J;
-            }
-            else {
-                my $c;
-                c.e = G&tC,[PgNotify=>{s=>$s}];
-                Rw waited $J:G.W $c;
-            }
 Too: |
     for (G&tC,djson$s ) {
         if (_.c.mez) {

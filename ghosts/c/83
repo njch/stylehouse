@@ -134,7 +134,7 @@ Rel: |
     my $in = "public/lowcal\.html";
     my $s = read_file($in);
     
-    $s =~ s/(div id=')(msgs')/${1}no{$2}/s;
+    $s =~ s/(div id=')(msgs')/${1}no$2/s;
     
     $s =~ s/ (\S+window\).on\()/0 && $1/sg;
     
@@ -171,7 +171,7 @@ Tel: |
     n Hoo
     n Yoo
 Hoo: | # sliders and content actuator wormhole
-    u urw
+    u srw
     C.sc.qs = 1;
     y.in = 0.05;
     y.out = 0.18;
@@ -188,7 +188,7 @@ Hoo: | # sliders and content actuator wormhole
     
     
 Yoo: |
-    u urw
+    u srw
     C.sc.qs = 1;
     y.at.anch = 'LeCurve';
     
@@ -412,6 +412,24 @@ Tjs: | # webis
         r.sc.play and G&play,r;
         r.sc.vid and G&vid,r;
         ~way: C.t, cur.l.length
+    
+    ifr:
+        c&tag = 'iframe';
+        s&atr = 'width:500,height:380'
+            +',frameBorder:0,allowfullscreen:1,autoplay:1';
+        c&src = s;
+    
+    on 4:
+        var h = G&peel,s;
+        var el = $(A.on);
+        $.each(h, &k,v{
+            k == 'c' and k = 'click';
+            k == 'ch' and k = 'change';
+            el.on(k, &e{
+                G&$v,e
+            });
+            C&fsc and a.yl(420, G&$v );
+        });
     
     u alljs
     mindu:
