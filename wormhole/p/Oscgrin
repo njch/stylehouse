@@ -1,0 +1,268 @@
+--- 
+I: 
+  "0.1": 
+    cole: 
+      c: 
+        s: "A.I.cole = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy $h;\n(h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)\n    if $s =~ /^(\\w)(\\w)(\\w)(\\w)?$/ || die \"not cole: $s\";\nif (defined h.a) {\n   # do an rgba(255,255,255,1)\n   for my $k (qw'r g b a') {\n       my $e = $h->{$k};\n       $e = \"$e$e\" if length $e == 1; # out of 255\n       $h->{$k} = hex $e;\n   }\n   h.la = sprintf '%.2f', h.la / 255; # out of 1\n   return \"rgba(h.r,h.g,h.b,h.a)\";\n}\nelse {\n   return sprintf \"#%s%s%s\", h.r, h.g, h.b;\n}\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: a14232823619
+        of: I
+      t: cole
+      "y": 
+        cv: '0.1'
+    defsa: 
+      c: 
+        s: "A.I.defsa = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\ns.v || s.et\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 677f8a390a21
+        of: I
+      t: defsa
+      "y": 
+        cv: '0.1'
+    empc: 
+      c: 
+        s: "A.I.empc = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\n$s .= 'em' if $s !~ /(%|em|px)/;\n$s =~ s/^-?0em$/0%/;\n$s\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 59c242582712
+        of: I
+      t: empc
+      "y": 
+        cv: '0.1'
+    hsle: 
+      c: 
+        s: "A.I.hsle = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy @m;\nfor ($s) {\n    @m = split ' ', $_;\n    last if @m == 3 || @m == 4;\n    @m = split /\\./, $_;\n    last if @m == 3 || @m == 4;\n    @m = split '', $_;\n    last if @m == 3 || @m == 4;\n    @m = ();\n}\n@m || die \"not hsle: $s\";\nmy $h;\n(h.h, h.s, h.l, h.a) = map{0+(\"0.\".$_)}@m;\n\nh.h = h.h * 360 if h.h < 1;\n\n$h->{$_} = ($h->{$_}*100).'%' for 's','l';\n\nmy $al = \", h.a\" if defined h.a;\n\"hsl\".($al?'a':'').\"(h.h, h.s, h.l$al)\";\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 371ee0774fc0
+        of: I
+      t: hsle
+      "y": 
+        cv: '0.1'
+    hundr: 
+      c: 
+        s: "A.I.hundr = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nint($s*100).'%';\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 812007629c68
+        of: I
+      t: hundr
+      "y": 
+        cv: '0.1'
+    hunine: 
+      c: 
+        s: "A.I.hunine = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nint($s*9).'%';\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 478c7af4fc6f
+        of: I
+      t: hunine
+      "y": 
+        cv: '0.1'
+    mean: 
+      c: 
+        s: "A.I.mean = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($to,$fro,$mix,@Me) = @M;\nmy $I = A.I;\n$mix ||= 0.5;\nmy $yu = $fro - $to;\n$yu = $yu * $mix;\n$fro -= $yu;\n$fro\n};"
+      sc: 
+        acgt: to fro mix
+        args: A,C,G,T,to,fro,mix
+        code: I
+        dige: c432cbfd1d48
+        of: I
+      t: mean
+      "y": 
+        cv: '0.1'
+    meat: 
+      c: 
+        s: "A.I.meat = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($k,$v,@Me) = @M;\nmy $I = A.I;\nmy $f = $v;\nmy $mv = C.sc->{$k};\n$f = I.d&mean,$f,$mv;\nC.sc->{$k} = $f;\n};"
+      sc: 
+        acgt: k v
+        args: A,C,G,T,k,v
+        code: I
+        dige: 388132bf996b
+        of: I
+      t: meat
+      "y": 
+        cv: '0.1'
+    mksc: 
+      c: 
+        s: "A.I.mksc = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy $t = I.d&mos,$s;\nI.d&xot,C.sc,$t;\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: b903bd50d686
+        of: I
+      t: mksc
+      "y": 
+        cv: '0.1'
+    mos: 
+      c: 
+        s: "A.I.mos = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy @t = split ',',$s;\nfor (@t) {\n    my ($k, $v) = split ':', $_;\n    $T.>$k = $v;\n}\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 247ff7f43475
+        of: I
+      t: mos
+      "y": 
+        cv: '0.1'
+    numb: 
+      c: 
+        s: "A.I.numb = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nint($s);\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: bc82e0ad2138
+        of: I
+      t: numb
+      "y": 
+        cv: '0.1'
+    ori: 
+      c: 
+        s: "A.I.ori = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\n@{s.et} > 2 && die \"Many et for ori s.v: @{s.et}\";\nmy ($t,$f) = @{s.et};\nreturn s.v =~ /[1ay]/ ? $t : $f\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 4959c87c5ac2
+        of: I
+      t: ori
+      "y": 
+        cv: '0.1'
+    plus: 
+      c: 
+        s: "A.I.plus = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\ns.v + s.et\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 77feb03b821b
+        of: I
+      t: plus
+      "y": 
+        cv: '0.1'
+    radun: 
+      c: 
+        s: "A.I.radun = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy $o = $G::RADIAN*4;\nmy $swish = $o;\n$swish *= -1 if $s < 0;\nmy $i = 0;\nmy $ori = $s;\n$s -= $swish until\n    do {$i++>5&&die\"$i muchwind from $ori ... $s\";0}\n    ||\n    $o*-1 < $s && $s < $o;\nreturn $s\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: aa747133ffd0
+        of: I
+      t: radun
+      "y": 
+        cv: '0.1'
+    ron: 
+      c: 
+        s: "A.I.ron = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\n0.0001 * int(10000*$s)\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: dcff73406abd
+        of: I
+      t: ron
+      "y": 
+        cv: '0.1'
+    saydeg: 
+      c: 
+        s: "A.I.saydeg = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nint($s).'deg';\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 4a5091bac1e1
+        of: I
+      t: saydeg
+      "y": 
+        cv: '0.1'
+    saypx: 
+      c: 
+        s: "A.I.saypx = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nreturn $s if $s =~ /px$/;\n$s.'px';\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 23af78d3b2eb
+        of: I
+      t: saypx
+      "y": 
+        cv: '0.1'
+    sayurl: 
+      c: 
+        s: "A.I.sayurl = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\n\"url('$s')\"\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: '825822443053'
+        of: I
+      t: sayurl
+      "y": 
+        cv: '0.1'
+    scaly: 
+      c: 
+        s: "A.I.scaly = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($s,$l,$sc,@Me) = @M;\nmy $I = A.I;\n$l ||= 15;\n$sc ||= {};\n$sc = G&peel,$sc if !ref $sc;\nsc.fs ||= 9;\nmy $d = $l - length($s);\n$d /= ($l/3.14159);    \nsc.fs += $d;\nsc.width = int(6+$l/2.13169) if $d < -0.6;\nsc.fs = 3 if sc.fs < 3;\nsc.fs = 17 if sc.fs > 17;\n$s,$sc\n};"
+      sc: 
+        acgt: s l sc
+        args: A,C,G,T,s,l,sc
+        code: I
+        dige: c19af4c4a553
+        of: I
+      t: scaly
+      "y": 
+        cv: '0.1'
+    shadole: 
+      c: 
+        s: "A.I.shadole = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nmy @m = split m/\\s/, $s;\n$m[-1] = I.d&cole,$m[-1];\nreturn sprintf '%dpx %dpx %dpx %s', @m;\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 2f163c9f1927
+        of: I
+      t: shadole
+      "y": 
+        cv: '0.1'
+    whipre: 
+      c: 
+        s: "A.I.whipre = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\nreturn $s =~ /[1p]/ ? 'pre' : \n$s =~ /[2n]/ ? 'nowrap' : \ndie \"Canot $s whipre?\";\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 1759e7bcb35b
+        of: I
+      t: whipre
+      "y": 
+        cv: '0.1'
+    wordbreakwords: 
+      c: 
+        s: "A.I.wordbreakwords = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\ndie \"Wordbreaku: $s\" if $s ne '1';\n'break-word';\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: 5c22fe226e84
+        of: I
+      t: wordbreakwords
+      "y": 
+        cv: '0.1'
+Ii: cole vers:HASH + defsa vers:HASH + empc vers:HASH + hsle vers:HASH + hundr vers:HASH + hunine vers:HASH + mean vers:HASH + meat vers:HASH + mksc vers:HASH + mos vers:HASH + numb vers:HASH + ori vers:HASH + plus vers:HASH + radun vers:HASH + ron vers:HASH + saydeg vers:HASH + saypx vers:HASH + sayurl vers:HASH + scaly vers:HASH + shadole vers:HASH + whipre vers:HASH + wordbreakwords vers:HASH
