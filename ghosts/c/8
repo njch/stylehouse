@@ -572,8 +572,9 @@ Web_up: |
     push @{app->static->paths}, '/home/s/styleshed/public';
     app->secrets(["nothing"]);
     
-    G.c.listen = readlink('listen') if -f 'listen';
-    my $s = G.c.listen || "http://s:10094";
+    G.c.listen = readlink('listen') if -l 'listen';
+    my $s = G.c.listen || "s:10094";
+    $s = "http://$s" if $s !~/^http:\/\//;
     
     
 
