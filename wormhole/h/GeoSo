@@ -1,0 +1,64 @@
+--- 
+I: 
+  "0.1": 
+    atom: 
+      c: 
+        s: "A.I.atom = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($last,$here,@Me) = @M;\nmy $I = A.I;\n# spacin\nhere.dist = here.cv - last.cv;\n# twistin spin inherit\nhere.spin += last.spin;\n# scale local-local change\nhere.rad += here.spin * here.dist * 10;\n# builds rad on rad\nhere.rad += last.rad;\n# distort space + more ways, orbital\n# chuck skeletons for mods\n# adapt M meta for what kinda places things want\n# into constellations of high level things\n# atomised hairs\nhere.zoom ||= last.zoom;\nhere.dist *= here.zoom if here.zoom;\n# and move\nhere.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;\nhere.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;\n};"
+      sc: 
+        acgt: last,here
+        args: A,C,G,T,last,here
+        code: I
+        dige: 3771101ba2f7
+        of: I
+      t: atom
+      "y": 
+        cv: '0.1'
+    geo2lin: 
+      c: 
+        s: "A.I.geo2lin = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($geo,@Me) = @M;\nmy $I = A.I;\n# shove com toeget\n# OR SOMETHING\n# loses its compressibility as csz\nmy @am = qw'a? ab  x x  y y  r radial  s scale';\nmy @l;\nwhile (@am) {\n    my $k = shift @am;\n    my $v = shift @am;\n    my $sens = $k =~ s/\\?$//;\n    push @l, ($sens && $k).$geo->{$v} if exists $geo->{$v};\n}\nmy $l = join ' ', @l;\n$l\n};"
+      sc: 
+        acgt: geo
+        args: A,C,G,T,geo
+        code: I
+        dige: b862f494b512
+        of: I
+      t: geo2lin
+      "y": 
+        cv: '0.1'
+    here2geo: 
+      c: 
+        s: "A.I.here2geo = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($here,@Me) = @M;\nmy $I = A.I;\nmy $geo = {};\ngeo.rad = here.rad;\n# unwind (into...)\nmy $o = $G::RADIAN*4;\nmy $swish = $o;\n$swish *= -1 if geo.rad < 0;\nmy $i = 0;\ngeo.rad -= $swish until\n    do {$i++>5&&die\"$i muchwind\".ki$here;0}\n    ||\n    $o*-1 < geo.rad && geo.rad < $o;\n# pan to hemisphere...\n# from O- is it in the left hemisphere etc\nmy $rad = geo.rad;\nmy $radleg = -$G::RADIAN;\n$radleg *= -1 unless $rad < -$G::RADIAN && $rad > $G::RADIAN;\n$rad -= $radleg;\ngeo.radial = I.d&ron,$rad;\ngeo.x = here.x;\ngeo.y = here.y;\ngeo.ab = '100' if 1; # w=h=100,ab=1\ngeo.ab = '1' if here.swy eq 'atom';\n# transform about\ngeo.tro = '0 0.5'; # midleft\ngeo.tro = '0 0' if 0; # topleft\n#\nmy $fo = sub { (shift() * 100).'%' };\ngeo.tro = join' ',map{$fo->($_)}split' ',geo.tro;\n\nI.d&geo2lin,$geo;\n};"
+      sc: 
+        acgt: here
+        args: A,C,G,T,here
+        code: I
+        dige: 1d242d3c5a8a
+        of: I
+      t: here2geo
+      "y": 
+        cv: '0.1'
+    last2here: 
+      c: 
+        s: "A.I.last2here = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($last,$r,$here,@Me) = @M;\nmy $I = A.I;\nhere.x  = last.x = r.x if exists r.x;\nhere.y = last.y = r.y if exists r.y;\nhere.rad = 4*$G::RADIAN * r.spun if exists r.spun;\nhere.zoom = r.zoom if defined r.zoom;\n\nI.d&atom,$last,$here;\n\nhere.spin = r.curve if exists r.curve; # on the level\n#\nhere.x = I.d&ron,here.x;\nhere.y = I.d&ron,here.y;\nhere.rad = I.d&ron,here.rad;\n};"
+      sc: 
+        acgt: last,r,here
+        args: A,C,G,T,last,r,here
+        code: I
+        dige: 527d4812bb36
+        of: I
+      t: last2here
+      "y": 
+        cv: '0.1'
+    ron: 
+      c: 
+        s: "A.I.ron = sub {\nmy ($A,$C,$G,$T,$s,@Me) = @_;\nmy $I = A.I;\n0.0001 * int(10000*$s)\n};"
+      sc: 
+        acgt: s
+        args: A,C,G,T,s
+        code: I
+        dige: dcff73406abd
+        of: I
+      t: ron
+      "y": 
+        cv: '0.1'
+Ii: atom vers:HASH + geo2lin vers:HASH + here2geo vers:HASH + last2here vers:HASH + ron vers:HASH

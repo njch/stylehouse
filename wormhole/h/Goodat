@@ -1,0 +1,64 @@
+--- 
+I: 
+  "0.1": 
+    norp: 
+      c: 
+        s: "A.I.norp = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($pin,@Me) = @M;\nmy $I = A.I;\nI.pwin || die \"nopwin from pin\";\nsort { I.pwin->($pin,$a) <=> I.pwin->($pin,$b) } @Me;\n};"
+      sc: 
+        acgt: pin
+        args: A,C,G,T,pin
+        code: I
+        dige: 4629e7c723bc
+        of: I
+      t: norp
+      "y": 
+        cv: '0.1'
+    pin: 
+      c: 
+        s: "A.I.pin = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($pin,$way,@Me) = @M;\nmy $I = A.I;\nI.pwin || die \"nopwin from pin\";\nI.pwin->($pin,$way);\n};"
+      sc: 
+        acgt: pin,way
+        args: A,C,G,T,pin,way
+        code: I
+        dige: 92bca4ae5de7
+        of: I
+      t: pin
+      "y": 
+        cv: '0.1'
+    pon: 
+      c: 
+        s: "A.I.pon = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($pin,$way,$s,@Me) = @M;\nmy $I = A.I;\nI.pwin || die \"nopwin from pin\";\nI.pwin->($pin,$way,{et=>$s});\n};"
+      sc: 
+        acgt: pin,way,s
+        args: A,C,G,T,pin,way,s
+        code: I
+        dige: 52a8b3012945
+        of: I
+      t: pon
+      "y": 
+        cv: '0.1'
+    pwin: 
+      c: 
+        s: "A.I.pwin = sub {\nmy ($pin,$way,$set,@Me) = @_;\nmy $I = A.I;\nif (exists $way->{$pin}) {\n      my $o = $way->{$pin};\n    $way->{$pin} = set.et if exists set.et;\n    delete $way->{$pin} if set.de;\n    return $o;\n}\nmy @path = split /\\//, $pin;\nmy $h = $way;\nmy $last;\nfor my $p (@path) {\n    if (ref $h ne 'HASH' && ref $h ne 'G') {\n        undef $last;\n        undef $h;\n        last;\n    }\n    $last = [$h,$p];\n    $h = $h->{$p};\n}\nif ($last) {\n    my ($he,$pi) = @$last;\n    $he->{$pi} = set.et if exists set.et;\n    delete $he->{$pi} if set.de;\n}\nreturn $h if defined $h;\n \nreturn undef unless $pin =~ /\\*/;\ndie \"sat rs findy $pin\";\n};"
+      sc: 
+        acgt: s
+        args: pin,way,set
+        code: I
+        dige: eb1d6545728a
+        of: I
+      t: pwin
+      "y": 
+        cv: '0.1'
+    sorp: 
+      c: 
+        s: "A.I.sorp = sub {\nmy ($A,$C,$G,$T,@M)=@_;\nmy ($pin,@Me) = @M;\nmy $I = A.I;\nI.pwin || die \"nopwin from pin\";\nsort { I.pwin->($pin,$a) cmp I.pwin->($pin,$b) } @Me;\n};"
+      sc: 
+        acgt: pin
+        args: A,C,G,T,pin
+        code: I
+        dige: 6a54267d00c0
+        of: I
+      t: sorp
+      "y": 
+        cv: '0.1'
+Ii: norp vers:HASH + pin vers:HASH + pon vers:HASH + pwin vers:HASH + sorp vers:HASH
