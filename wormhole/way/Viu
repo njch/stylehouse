@@ -1,0 +1,48 @@
+my $eu = sub { J.uS = 1 };
+my $unu = sub {
+    J.uS || return;
+    my $y = J.oy;
+    Rw Jamroot $J $y if y.at;
+    Rw uCon;
+    J.uS = 0;
+};
+my $dJ = sub {
+    my @m = @_;
+    shift @m if ref $m[0] && $m[0] eq $J;
+    pop @m while $m[-1] eq '';
+    @m>4&&die"mvelope>4".wdump 2, \@m;
+    [@m]
+} if $ARGV[-1] ne '3';
+my $oAr = sub { # bit of dome escape vector
+    my ($ar) = @_;
+    my $oA = ar.oA = {};
+    oA.subline = (caller(1))[2];
+    oA.D = $F[0];
+};
+# 6 shul start u pha
+J.u = sub {
+   $eu->();
+   my $ar;
+   ar.N = [$dJ->(@_)];
+   ar.J = Rw Elj $J qq;
+   $oAr->($ar);
+   Rw In;
+};
+J.n = sub {
+   $unu->();
+   my $ar;
+   ar.J = $J;
+   ar.N = [$dJ->(@_)];
+   $oAr->($ar);
+   Rw In;
+};
+J.m = J.M = sub {
+   $unu->();
+   shift @_ if ref $_[0] && $_[0] eq $J;
+   my $ar;
+   ar.M = shift;
+   ar.J = $J;
+   ar.N = [$dJ->(@_)];
+   $oAr->($ar);
+   Rw In;
+};

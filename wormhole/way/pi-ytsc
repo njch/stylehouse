@@ -1,0 +1,14 @@
+#y.clos = 1; or y.we = grouper
+$s = [$s] if ref $s ne 'ARRAY';
+my $sh = {map{$_,1}qw'of gro acgt args act code dige'};
+my $tot = sub {
+    my $C = shift;
+    my $sc = {map{$_=>C.sc.>$_ } grep{!$sh.>$_ } keys %{C.sc}};
+    my ($f,@m,$l) = split "\n", wdump 5, $sc;
+    #@m = sort @m;
+    "C.y.cv\t".C.t." ".join("\n",$f,@m,$l)
+    .'  '.wdump 1, C.y;
+};
+@$s = join"\n\n",
+    map {$tot->($_)} @$s;
+m s=>-pre=>$_ for @$s

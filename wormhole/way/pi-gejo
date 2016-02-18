@@ -1,0 +1,20 @@
+y.at.hs = '388';
+y.at.mt = '5';
+y.at.fs = '9';
+y.at.lh = '0.9em';
+#y.at.geo = 'a100 0 0.1 0.2';
+n gate=>2=>"\n.\n.\n.\n.\n.\n.\nGasm: $s\n\n";
+#$s =~ /\/J$/ || die "nogate: $s";
+my $wt = J.mo.jes.trowl;
+my $tal;$tal = sub {
+    my ($d,$wt) = @_;
+    join"\n",map{
+        ind(join("",("  ") x $d), $_)
+    }map {
+        "$_".(!keys %{$wt->{$_}} ? "" : do {
+            ":\n".$tal->($d+1, $wt->{$_});
+        });
+    }sort keys %$wt;
+};
+my $s = $tal->(0,$wt);
+Mn(eo=>''=>"\n$s");

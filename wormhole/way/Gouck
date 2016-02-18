@@ -1,0 +1,105 @@
+u allacgts
+
+n Duck =>''=><<''
+    my $D = $s;
+    my $evs = D.Ds.evs;
+    my $ar = D.ar;
+    my $DOOF; 
+    my $first = 1 unless $@ =~ /DOOF/;
+    $DOOF .= "DOOF D.talk\n" if D.sign eq 'D' || $nodie;
+    $DOOF .= "  D.inter" if D.inter;
+    if ($first) {
+        my $x = $1 if $@ =~ /syntax error .+ line (\d+), near/
+            || $@ =~ /line (\d+)/;
+        my $file = $1 if $@ =~ /at (\S+) line/;
+        undef $file if $file && $file =~ /\(eval \d+\)/;
+        undef $file if $file && !-f $file;
+        my $code = $file ? 
+        read_file($file)
+        : $evs;
+        my $eval = GDuckling($x, $code, $D);
+        if (exists $D->{SigDieStack}) {
+            warn "3MALTY SIGGI" if @{$D->{SigDieStack}} > 3;
+            $DOOF .= "\n";
+            my $i = "  ";
+            for my $s ( reverse flatline($D->{SigDieStack}) ) {
+                $DOOF .= "$i- $s\n";
+                $i .= "  ";
+            }
+        }        
+        $DOOF .= "\n$eval\n";
+    }
+    .
+    if ($first) {
+        $DOOF .= ind("E    ", "\n$@\n\n")."\n\n";
+    }
+    else {
+        my $in = D.sign eq 'D' ? "! " : "";
+        $DOOF .= ind($in, "$@")."\n";
+    }
+    .
+    if ($first) {
+        $DOOF .= ind('ar.', join "\n",
+            map{
+             my $e = $ar->{$_};
+             my $s = "$e";
+             $s .= "(name=$e->{name})"
+                 if ref $e && ref $e ne 'ARRAY'
+                && $e->{name};
+            "$_ = ". $s;
+            }keys %$ar); 
+    }
+    .
+    return $DOOF if $nodie;
+    .
+    D.Error = $DOOF;
+    $@ = $DOOF;
+    sayre $@;
+    exit;
+    if (@F == 1) {
+        # send it away
+        $DOOF = join"\n",map{s/^(\! )+//smg if !/DOOF/; $_}split"\n",$DOOF;
+        sayre $DOOF;
+        G.dooftip && G.dooftip->($@);
+        $@ = "";
+        $_->() for @{G._aft_err_do||[]};
+    }
+    else {
+        die $@;
+    }
+
+n Duckling =>''=><<'',{acgt=>'line,code,D'}
+    my $diag = "";
+    my @code = split "\n", $code;
+    my $whole = @code < 18;
+    if (!D.Verb && $code =~ /^sub \{ my \$ar = shift/
+        && $code =~ /return \@doo_return \};/) {
+        $line -= 2 if $line;
+        shift @code for 1..2;
+        pop @code for 1..2;
+    }
+    my $xx = 0;
+    my $lci;
+    for my $c (@code) {
+        $xx++;
+        $lci = $1 if $xx < $line && $c =~ /^\s*(#\s*\d.*)$/;
+        if (!defined $line) {
+            $diag .= ind("⊘  ", $c)."\n"
+        }
+        elsif ($xx == $line) {
+            $diag .= ind("⊘  ", $c)."\n";
+
+            my $bab = (split"\n",D.bab)[$line-2];
+            if ($bab ne $c) {
+                $diag .= ind("⊖r ", $bab)."\n";
+            }
+        }
+        elsif (!$whole && $xx > $line-5 && $xx < $line+5) {
+            $diag .= ind("|  ", $c)."\n"
+        }
+        elsif ($whole) {
+            $diag .= ind("|  ", $c)."\n"
+        }
+    }
+    $diag = "$diag\n#~~~$lci" if $lci && $lci !~ /^# 0.01/;
+    $diag

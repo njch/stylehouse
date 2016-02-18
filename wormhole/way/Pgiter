@@ -1,0 +1,66 @@
+sayyl "Jiterating ! C.t   on J.name";
+Rw talkzyh;
+#
+# not =>$E properly, C is first C,c.e $E is from before $E
+my @Js = @{ e&hJ };
+my ($tW,$tl) = @Js[0,-1];
+tW.mo.J eq $tW || die "not most 1: ".ki $tW;
+my $ing = tl.C;
+my $ip = {map{$_=>ing.sc->{$_}}@{J.uzk}};
+ip.mean && ip.onto || die " notmeanonto compre ".ki $ing;
+ip.pi = 'edr';
+ip.onto =~ /^\w+$/ || die "Confuse onto: ".ki $ip;
+
+my $duvi = sub {
+    my $tl = shift;
+    my $uv = tl.El.Duv || die "HJiter not Duv tl.name";
+    map{uv.tv->{$_}}@{uv.os}
+};
+my $gre = sub {
+    grep { I.d&ip,$ip,_.sc } $duvi->(shift);
+};
+my @bun = $gre->($tW);
+push @bun, $gre->($tl);
+my @s = uniq map{_.c.s} @bun;
+saybl "Make Joint stand: ".ki($ip).": ".wdump 3, \@s;
+my $o = {};
+for my $leng (@s) {
+    my @l = split ';', $leng;
+    o.ops->{$l[0]}++;
+    o.al->{$_}++ for @l;
+    # do head ^ want tree:
+    while (@l > 1) {
+        my $l = shift @l;
+        my $r = shift @l;
+        say "ip.onto - $l <---- $r";
+
+        my $h = G&qh,<<'',ip.onto,$l,$r;
+            select * from t where isle = ? and l = ? and t = ?
+        h.c = djson h.c if h.c && !ref h.c;
+        h.c.todo = 1;
+        h.c = sjson(h.c||{});
+        my $h = G&qp,<<'',h.c,ip.onto,$l,$r;
+            update t set c = ? where isle = ? and l = ? and t = ?
+
+        my $f = ip.onto."/J/$l/$r";
+        o.ave->{$f}++;
+        unshift @l, $r;
+    }
+}
+for (keys %{o.al}) {
+    Rw Gohdown $p:_
+}
+sayyl "You ordered: ip.onto: ip.onto ".wdump $o;
+# jobinate (J1) or fork or acquire fork or wake tests...
+# all tops go via Tp
+# db handle blows up after, more annoying to lose the JJ pile all the time
+#return sayyl "fork fin", do {T.pos = 0} if
+#    Rw waitme fre;
+for (keys %{o.ops}) {
+    my $c = { toisle=>ip.onto, toW=>$_ };
+    Rw waited $J=Tp $c;
+    saybl "Done $_";
+}
+T.pos = 0;
+saybl "All done";
+#exit;

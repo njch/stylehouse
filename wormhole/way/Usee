@@ -1,0 +1,19 @@
+u urw
+u curv=>pi=><<''
+    curve 0 0.11
+
+my @l = `find life/W -type l`;
+my $keep = {map{chomp; readlink($_) =~ /^(.+)\..+?$/; $1=>$_}@l};
+my @r = `find life/W -mtime +0.6 -type f`;
+for (@r) {
+    my $k = $1 if /^life\/W\/(.+)\..+?$/;
+    $keep->{$k} ?
+        sayre "$k \t\tis $keep->{$k}"
+      : `rm $_`;
+}
+sayyl "Keeping life/W: ". join ', ', sort keys %$keep;
+#my @el = `find life/W`;
+y.in=1;
+y.out=5;
+Mn(some=>''=>{pi=>textl=>s=>$_})
+    for split"\n",wdump 2, \@l;

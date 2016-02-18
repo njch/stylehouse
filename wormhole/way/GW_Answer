@@ -1,0 +1,34 @@
+my $J = G.oin;
+say "listened: $name: $s";
+if ($s =~ /^\['/) {
+    Rw Too $name $s;
+}
+if ($s =~ /^CCC (\d+)$/) {
+    my $h = G&qh,<<'',$1;
+        select f,t,s,mid from mez where mid = ?
+    length(h.s) || die "mized mez: $1";
+    Rw timer $d=2 $cb:_ for sub { G&qp,<<'',h.mid };
+        delete from mez where mid = ?
+    $s = h.s;
+    warn "aNm not $name h.t for mezmid=h.mid" if h.t ne $name;
+}
+if (my $J = G.W.noti.>$name ) {
+    my $c;
+    c.e = G&tC,[PgNotify=>{s=>$s}];
+    ref $J eq 'CODE' ? $J->($name,$s) :
+        Rw waited $J $c
+}
+elsif ($s =~ /^(\w+);(.+)$/) {
+    my $m = [split',',$2];
+    Rw $1 $J:G.oin $m;
+}
+elsif ($s =~ /^me (.+)$/) {
+    $J = G.U;
+    J.me = $1;
+    Rw forked $J;
+}
+else {
+    my $c;
+    c.e = G&tC,[PgNotify=>{s=>$s}];
+    Rw waited $J:G.W $c;
+}

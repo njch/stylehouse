@@ -1,0 +1,36 @@
+my $phi = sub {
+    my $s = shift;
+    $s = {n=>1,cv=>$s} if !ref $s;
+    my $n = s.n || 9;
+    s.w ||= 100;
+    s.h ||= 100;
+    my $cx = s.x || (s.w / 2);
+    my $cy = s.y || (s.h / 2);
+    my $lg_diam = s.w * 0.85;
+    my $lg_rad = $lg_diam / 2;
+    my $outer_rad = s.w * 0.45;
+    my $angle_incr = s.ai || 9 / $n;
+      my $xy = [];
+      for my $i (1..$n) {
+          my $ratio = $i/$n;
+          $ratio = s.cv if s.cv;
+          my $spiral_rad = ($ratio *1.43) * $outer_rad;
+          my $angi = $angle_incr + 1.15;
+          my $angle = 0.3 + $i *$angi;
+          my $x = $cx + cos($angle) * $spiral_rad;
+          my $y = $cy + sin($angle) * $spiral_rad;
+          push @$xy, {
+              rad => sprintf('%.4f', atan2($x - $cx, $y - $cy)),
+            # angle => sprintf('%.3f', $angle),
+              x => sprintf('%.4f', $x/100),
+              y => sprintf('%.4f', $y/100),
+          };
+      }
+      wantarray ? @$xy : $xy->[0]
+};
+
+my $x;
+x.n = @in;
+my @phi = $phi->($x);
+
+m s=>''=>$_=>{geo=>G&here2geo,shift@phi ,fs=>40, cola=>1} for @in;

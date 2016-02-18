@@ -1,0 +1,28 @@
+my $poing = qr/\w+(?:\.\w+)?/;
+my $nlp = qr/[^\n]+/;
+
+C.c.s =~ s/\bs&(\w+)\b/C\.sc\.$1/g;
+C.c.s =~ s/\bC&(\w+)\b/C\.sc\.$1/g;
+C.c.s =~ s/\bc&(\w+)\b/C\.c\.$1/g;
+
+C.c.s =~ s/^t\&([^\s;]+)(;)?/!G\&t,$1 and return;/gm;
+C.c.s =~ s/($poing)\&(\$)?(\w+)(,[^\s;]+)?(;)?/
+    my $t = $2 ? "$3" : "'$3'";
+    my $h = $1 eq 'G' ? ".h(A,C,G,T,$t" : "\[$t\](A,C,G,T";
+    $1.$h."$4)$5"
+/smge;
+C.c.s =~ s/^\s*($nlp) \|\|\= ($nlp)(;)?$/if (!$1) {
+    $1 = $2
+}/gm;
+C.c.s =~ s/^\s*([^\n]+?) and ($nlp)(;)?$/if ($1) {
+    $2
+}/gm for 1..3;
+
+C.c.s =~ s/[^G&]&(\w*(,\w+)*)\{/function($1){/gm;
+
+C.c.s =~ s{(^|\{) *~(?:(\w+)~)?(\w+(?:$nlp:)?)(?: ($nlp))?;?$}{
+    my $ope = $1;
+    my $r = 'A,C,G,T,' if $2;
+    my$c=$2||'c';my$s=$3;my$e=$4;$s=~s/:$//; $ope."a\.$c($r'$s',[$e]);"}segm;
+
+C.c.s =~ s/^\s*\$(\w+)\b/var $1/gm;

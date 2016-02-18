@@ -1,0 +1,59 @@
+u UpPg
+$A=
+s:
+    t
+
+G.Websock = J.Websock ||= sub {
+    my $mojo = shift;
+    say "Web is socked!";
+    my $s = $mojo;
+    my $tx = $s->tx;
+    J.tx = $tx;
+    my $addr = $tx->remote_address;
+    Mojo::IOLoop->stream($tx->connection)->timeout(300000);
+    $tx->max_websocket_size(512000);
+    $s->on(message => sub {
+        my ($M, $m) = @_;
+        $m = encode_utf8($m);
+        sayyl "Message from $addr ".$m;
+        my $dec = eval { djson $m };
+        $@ && die "Message doesnt decode: $@\n\n$m";
+
+        if (my $W = dec.event.W) {
+            my $db = G&db;
+            $db->notify($W,decode_utf8($m));
+            say "Sent ".length($m)." to $W";
+        }
+        else {
+
+        }
+    });
+    $s->on(finish => sub {
+        my ($M, $code, $reason) = @_;
+        sayre "Gone: $addr $code $reason";
+    });
+    $tx->send(' clon();keon();');
+    return;
+    my $M = [];
+    Mn(elvi=>-websock=>{s=>$mojo});
+    n WebSocks => @$M
+    sayyl "Socksdone";
+};
+
+G.Websen = J.Websen ||= sub {
+    my $m = shift;
+    J.tx->send(decode_utf8($m));
+};
+
+my $ya = G.onfork.Web = sub {
+    my $db = G&db;
+    $db->on(notification => sub {
+        my ($db, $s, $pid, $m) = @_;
+        $m = encode_utf8($m);
+        say "$s: $m";
+        J.Websen->($m);
+    });
+    $db->listen(G.c.in || 'Js');
+};
+$ya->();
+saybl "Web done";

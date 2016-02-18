@@ -1,0 +1,49 @@
+G.samv ||= [
+    ["w", 7*86400], ["d", 86400, " "], ["h", 3600, ":"],
+    ["m", 60, ":" ], ["s", 1, 0],
+    [ "ms", 0.001 ], [ "us", 1e-6 ], ["ns", 1e-9],
+];  
+
+my $scalar = $d;
+my $neg = $scalar < 0;
+if ($neg) {
+    $scalar = -$scalar;
+}
+my $d = 4;
+if ($scalar == 0) {
+    return "0s";
+}
+my $quanta = exp(log($scalar)-2.3025851*$d);
+my $rem = $scalar+0;
+my $rv = "";
+for my $i (0..@{G.samv}) {
+       my $unit = G.samv->[$i];
+    if ($rv or $unit->[1] <= $rem ) {
+       my $x = int($rem/$unit->[1]);
+       my $new_rem = ($x ? $rem - ($x*$unit->[1]) : $rem);
+       my $last = (G.samv->[$i+1][1]<$quanta);
+       if ($last and $new_rem >= $unit->[1]/2) {
+           $x++;
+       }
+       if (!$last and $unit->[2]) {
+           $rv .= $x.$unit->[0].$unit->[2];
+       }
+       elsif (defined $unit->[2] and !$unit->[2]) {
+           # stop at seconds
+           my $prec = ceil(-log($quanta)/log(10)-1.010000001);
+           if ( $prec >= 1 ) {
+                   $rv .= sprintf("%.${prec}f", $rem).$unit->[0];
+           }
+           else {
+                   $rv .= sprintf("%d", $rem).$unit->[0];
+           }
+           last;
+       }
+       else {
+           $rv .= $x.$unit->[0];
+       }
+       last if $last;
+       $rem = $new_rem;
+    }
+}
+($neg?"-":"").$rv;

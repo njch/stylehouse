@@ -1,0 +1,49 @@
+my ($re,$ar,$d) = @_;
+$d++;
+if ($re !~ /^\d+$/ && !$ar) {
+    $ar = $re;
+    $re = 2;
+}
+if (!ref $ar || "$ar" !~ /(HASH)/) {
+    my $s = "!%:$ar";
+    $s =~ s/\n/\\n/g;
+    return slim(30,$s);
+}
+return ref $ar if ref $ar =~ /^[A-Z][a-z]/;
+my $lim = 150 - (150 * ($d / 3));
+my @keys = sort keys %$ar;
+@keys = ('name') if ar.name && ar.bb;
+@keys = ('t','y','c','sc') if ar.t && ar.y && ar.c && ar.sc;
+if (ar.cv eq '0.3' && ar.aspace eq '0.6') {
+      my $t = {map{$_=>1}qw'aspace in out ov pcv space spc mu i u thi'};
+    @keys = grep{!$t->{$_}}@keys;
+}
+join ' ', map {
+      my $k = $_;
+    my $v = $ar->{$k};
+    $v = "~" unless defined $v;
+    ref $v eq 'HASH' ? do {
+        v.bb && v.name ?
+            ($d > 1 && (v.name eq 'Duv' || v.name eq 'Pre') ? "$_:v.name"
+          : $d > 1 && $_ eq 'at' ? "at:".slim(5,v.t)
+          :
+            "$_={@".v.name."&".slm(3,v.id)."@}"
+          )
+        : 
+              "$_=".($re?"{ ".slim($lim,ki($re-1,$v,$d))." }":"$v")
+    }
+    : ref $v eq 'ARRAY' ? do {
+          my $x;$x = sub {
+              my $n = shift;
+              my $y = shift || 1;
+              if (ref $n ne 'ARRAY' || $y > 3) {
+                  return ref($n)||$n if ref $n ne 'HASH' || !defined n.t;
+                  return "n.t";
+              }
+              '[ '.slim((160 / $y) + 10,join(',',map{$x->($_,$y+1)}@$n)).' ]'
+          };
+          my $p = $x->($v);
+          "$_=$p" #\@x".@$v.(@$v < 9 && slim(19, join", ",@$v))
+    }
+    : "$_=".slim(150,"$v")
+} @keys;

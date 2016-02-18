@@ -1,0 +1,19 @@
+C.sc.nspc = 0.01;
+     $s =~ s/\n/↯/g;
+
+     my $tev = int(J.cv * 200); # 0.4 = 100
+     if (C.c.si > $tev) {
+         $s = ($s=~/^(.{$tev})/s)[0];
+     }
+     else {
+         delete C.c.si;
+     }
+
+     if ($s =~ /^\d{10,11}(\.\d*)?$/) {
+         Jn(timestamp => 0.1 => {pi=>'now',s=>$s})
+         && return;
+     }
+
+     J.bz->('line 0.1' => "$s",
+            '%css' => "background:rgba(200,30,80,0.3);color:#3f3;"
+                ."font-size:70%");

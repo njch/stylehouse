@@ -1,0 +1,35 @@
+my $tw = {};
+my $et = {};
+for my $f (@$N) {
+    my $t = f.t || f.wt;
+    $et.>$t = $f;
+    my $l = f.l || sayre("No l on f.t") && next;
+    $tw->{$l}->{n}->{$t} = 1;
+    $tw->{$t}->{u}->{$l} = 1;
+}
+$tw->{$_}->{e} = $et->{$_} for keys %$et;
+my $wt = {};
+$wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
+keys %$wt || die "No top level! Circular? ".wdump 3, [sort keys %$tw];
+my @ne = $wt;
+my $i;
+while (@ne) {
+    $i++ > 600 && die "join wanders for $i from lines, maybe circular?";
+    my @m = @ne;
+    @ne = ();
+    for $wt (@m) {
+        for my $k (sort keys %$wt) {
+            my $t = $tw->{$k};
+            if (t.n) {
+                my $n = $wt->{$k};
+                $n->{$_} = {} for sort keys %{t.n};
+                push @ne, $n;
+            }
+            else {
+                #
+            }
+        }
+    }
+}
+J.mo.jes.tower = $tw;
+J.mo.jes.trowl = $wt;

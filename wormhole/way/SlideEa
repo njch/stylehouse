@@ -1,0 +1,193 @@
+u allacgts
+
+Ci 12: %act
+    my $r = ref $s;
+    !$r ? G&string,$s :
+    'ARRAY'eq$r ? G&array,$s :
+    'HASH'eq$r ? G&hash,$s :
+    'SCALAR'eq$r ? do {
+        C.t ||= '';
+        C.y = $s;
+    } :
+    die "mmtype:$r for $s"
+
+string:
+    die "string: $s ".wdump 5, [A.N];
+
+array:
+    return I.d&fourreal,$s if @$s != 1 && !ref $s->[0] || $s->[0] =~ /^\w+$/;
+    return I.d&fourstring,$s->[0] if @$s == 1 && !ref $s->[0];
+    # should stick In in first and M it? 
+    # kind of motion that wants to be unsure in the wild
+    unshift @{A.N}, @$s;
+    T.not = 1;
+
+hash:
+    return %$C = %$s if exists s.t && s.y && s.c;
+    I.d&servehash,$s;
+
+fourstring:
+    I.d&MZu,$1 if $s =~ /^\s*#?\s*MZ (.+)$/;
+    $s =~ s/^\s+//;
+    if ($s =~ /^\s*(#.*)$/) {
+       T.not = 1;
+       T.com = $1;
+    }
+    elsif ($s eq '') {
+       T.not = T.space = 1;
+    }
+    else {
+       my $ci = $s;
+       for my $nk (qw't y c sc') {
+           if ($ci =~ s/^(\S+) *//) { # some t are types of space
+               my $v = $1;
+               $v = I.d&peel,$v if $nk ne 't' && $v =~ I.peels;
+               # << consumes more lines into $nk, then ...
+               $v = '' if $v =~ /^(''|"")$/;
+               $C->{$nk} = $v;
+           }
+       }
+    }
+    saybl "4string: $s            ".ki $C if A.V&C;
+
+fourreal:
+    (C.t, C.y) = @$s;
+    C.c  = $s->[2] if exists $s->[2];
+    C.sc = $s->[3] if exists $s->[3];
+    die'@>4'.wdump $s if @$s > 4;
+    if (ref C.t eq 'SCALAR') {    
+        die "scalaref Ct had Cc".wdump 4,$C if C.c;
+        (C.t,C.y) = ('',$s);
+    }
+    die"C.t from ".wdump $s if ref C.t; # dives
+
+reasonlock 18: %act
+    die"reft" if ref C.t;
+    if (A.J && (A.J.name eq 'qq' || A.J.most.J eq A.J)) {
+        C.c.W = C.t unless C.c || C.sc || C.y;
+    }
+    I.d&renc if ref C.c ne 'HASH';
+    .
+    my $yy = C.y;
+    C.y = {} if ref C.y ne 'HASH';
+    I.d&givy,$yy;
+    .
+    I.d&rensc if ref C.sc ne 'HASH';
+    .
+    I.d&isC,$C && ref C.sc
+        || die "reaso fail".wdump [A.s,$C];
+    I.d&scyvle;
+
+#curv=>pi=>see
+renc:
+    (my $s,C.c) = (C.c,{});
+    if (ref $s eq 'REF' || ref $s eq 'SCALAR') {
+        C.c.s = $$s;
+        return;
+    }
+    if (ref $s eq '' && $s =~ /I.peels/) {
+        # peels for now
+        G&xo,C.c,$_ for G&peel,$s;
+    }
+    else {
+        A.btw.cwass = 1 if "" eq $s;
+        A.btw.cwasnd = 1 if !defined $s;
+        C.c.s = $s;
+    }
+
+rensc:
+    C.sc = '%'.${C.sc} if ref C.sc eq 'SCALAR';
+    C.sc = C.sc eq '' ? {}
+        : C.sc =~ I.peels
+        ? G&peel,C.sc
+        : die "C sc nostr: C.sc   of I.peels  ".ki $C
+
+givy:
+    my $y = C.y;
+    if (ref $s eq 'SCALAR') {
+        my $z = $s;
+        $s = $$s;
+        $s = '%'.$s if $s !~ /^%/;
+        $s =~ /I.peels/ || die "scalarnopeel $s";
+        G&xo,C.c,$_ for G&peel,$s;
+
+    }
+    elsif (ref $s eq 'ARRAY') {
+        for my $yy (@$s) {
+            C.y = {};
+            G&givy,$yy;
+            ref $y || die "notash ".ki $y;
+            G&xot,$y,C.y;
+            C.y = $y;
+        }
+    }
+    elsif (ref $s) {
+        ref $s eq 'HASH' || ref $s eq 'REF'
+            || die "no $s  ref=".ref $s;
+        if (G&taJe,$s ) {
+            my $yy = C.y;
+            C.y = {} if ref C.y ne 'HASH';
+            G&givy,$yy;
+        }
+        elsif ($y ne $s) {
+            G&xot,$y,$s;
+        }
+    }
+    elsif ($s eq '') {
+        my $x = I.blanky ? G&blanky : {};
+        G&xot,C.y,$x if keys %$x;
+    }
+    elsif ($s =~ /^($G::NUM)$/) {
+        y.cv = $1;
+    }
+    elsif ($s =~ /^($G::NUM)-($G::NUM)$/) {
+        y.in = $1;
+        y.out = $2;
+    }
+    elsif ($s =~ /^($G::NUM)-($G::NUM)x($G::NUM)$/) {
+        y.in = $1;
+        y.out = $2;
+        y.thi = $3;
+    }
+    elsif ($s =~ /^-(\w+)$/) {
+        C.c.pi = $1;
+        C.c.s = C.t if !exists C.c.s || A.btw.cwass;
+    }
+    elsif ($s =~ /^([a-zA-Z]+)(?::(.+))?$/) {
+        C.c->{$1} = $2 || C.t;
+    }
+    else {
+        die "C y wtf: $s";
+    }
+
+isC:
+    return 0 unless ref $s eq 'HASH';
+    exists s.t && defined C.t && !ref s.t
+    && ref s.y && ref s.c && 9 > keys %$s;
+
+isJ:
+    ref $s eq 'HASH' && ref s.bb eq 'HASH';
+
+# will put Js in s and Cs in e
+# knows enough by A.J speaking
+# its about expression
+# n Remote=>$Jehalf=>$Cof
+# n Ghost=>\$Definite_s
+# they might like certain e, s
+# e&yU accesses .y.U on the e particle,
+# barfs if e is not C enough
+# e.c.us is like s but cleaner
+taJe:
+    my $r = $s = $$s if ref $s eq 'REF';
+    $r || G&isC,$s || G&isJ,$s || return;
+    if ($r || s.bb) {
+        C.c = {e=>C.c} if G&isC,C.c;
+        C.c.s = $s;
+    }
+    else {
+        C.c = {s=>C.c} if G&isJ,C.c;
+        C.c.e = $s;
+    }
+    C.y = {};
+    C.c.W = C.t;
+    return 1

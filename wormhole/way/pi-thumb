@@ -1,0 +1,20 @@
+return warn"nontypeimage: $s" unless $s =~ /(tga|png|gif|jpe?g)$/i;
+my $mou = "public/";
+my ($first) = split '/', $s;
+die "$first not $mou?" unless -e "$mou$first";
+my $thl = "th/$s";
+my $th = "$mou$thl";
+if (!-f $th){
+    my $thd = $1 if $th =~ /^(.+)\/(.+?)$/ || die $th;
+    !-d $thd && `mkdir -p $thd`;
+    if ($s =~ /(mov|avi|mp4)$/i) {
+        `ffmpegthumbnailer -s 420 -t 20% -i $s -o $th`
+    }
+    else {
+        -s $s < 200_000 ?
+            `cp $s $th` # webserver likes no symlink
+            :
+            `convert $s -thumbnail 1200x1200 $th`
+    }
+}
+C.sc.src = $thl;

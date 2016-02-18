@@ -1,0 +1,54 @@
+u allacgts
+
+0&&
+n dolphy =>'',<<''
+    my $J;
+    my $j;
+    my $whe;
+     my $p;
+     p.n = 1 + (@$s||9);
+     p.ai = 0.06;
+     p.modi = { map { $_ => 0.5 } 18..p.n };
+     my $where = G&phi,$p;
+     for my $lv (@$where) {
+          # sort out osc way
+         J.bz->(j.t."%css#phi"."\t".j.cv =>
+               'position:absolute;'
+               .'top:'.whe.x.'%;'
+               .'left:'.whe.y.'%;'
+               .'-webkit-transform:rotate('.whe.radial.'rad);'
+               .'transform-origin:-10% -10%;' # animate that bit
+         ); 
+         J.bz->(j.t."%tt#phiro"."\t".j.cv => "^".whe.angle);
+             # + font-size fit + whe.angle
+     }
+
+n phi =>'',<<''
+    $s = {n=>1,cv=>$s} if !ref $s;
+    my $n = s.n || 9;
+    s.w ||= 100;
+    s.h ||= 100;
+    my $cx = s.x || (s.w / 2);
+    my $cy = s.y || (s.h / 2);
+    my $lg_diam = s.w * 0.85;
+    my $lg_rad = $lg_diam / 2;
+    my $outer_rad = s.w * 0.45;
+    my $angle_incr = s.ai || 9 / $n;
+    .
+      my $xy = [];
+      for my $i (1..$n) {
+          my $ratio = $i/$n;
+          $ratio = s.cv if s.cv;
+          my $spiral_rad = ($ratio *1.43) * $outer_rad;
+          my $angi = $angle_incr + 3.15;
+          my $angle = 1.8 + C.y.i *$angi;
+          my $x = $cx + cos($angle) * $spiral_rad;
+          my $y = $cy + sin($angle) * $spiral_rad;
+          push @$xy, {
+              rad => sprintf('%.4f', atan2($x - $cx, $y - $cy)),
+            # angle => sprintf('%.3f', $angle),
+              x => sprintf('%.4f', $x),
+              y => sprintf('%.4f', $y),
+          };
+      }
+      wantarray ? @$xy : $xy->[0]

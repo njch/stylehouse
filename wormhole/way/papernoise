@@ -1,0 +1,20 @@
+my ($no,$i,$se) = ($1,$2,$3)
+    if `uptime` =~ /([\d\.]+), ([\d\.]+), ([\d\.]+)/;
+my $fo = $no - $i;
+shuffle 1, 2, 3 for 1..int($no);
+
+C&src || sayre "no src..";
+delete C&src if C.t eq C&src;
+C&pxp = -70 * (rand(2) -1.9);
+C&pyp = -70 * (rand(2) -1.9);
+C&sca = 3.421 * rand(3) ^ 2;
+C&sca += 3;
+C&sca *= 0.2 if C&sca > 0.5;
+C&opa = 0.6 * (0.5 + rand 0.9);
+C&b = (shuffle 'normal', 'multiply','multiply',, 'multiply',, 'multiply',, 'multiply',, 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'color-dodge', 'color-burn', 'darken', 'lighten', 'difference',
+'exclusion', 'hue', 'saturation', 'luminosity', 'color', 'add', 'subtract'
+#, 'average', 'pin-light', 'negation', 'source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'darker', 'copy', 'xor'
+)[0];
+C&r = int(700 * $fo);
+
+C.sc->{$_} = I.d&ron,C.sc->{$_} for grep{C.sc->{$_}} qw'pxp pyp sca opa r';

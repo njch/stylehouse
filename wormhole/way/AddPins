@@ -1,0 +1,15 @@
+# given GW's A for UpPg, and J Oth whose id GW is listening to
+my $o;
+o.w = G.GW.at.Wid || die "No wid G_W";
+o.t = G.GW.at.Mid || die "no mid G_W";
+o.pid = $$;
+if (!J.gwup++) {
+    #G&tyable,gw=>'w:text:primary:key,pid';
+    #G&tyable,gw_pin=>'w:text:references:gw:on:delete:cascade';
+    G&qp,<<'',o.w;
+        delete from gw where w = ?
+}
+my $h = G&pet,gw=>$o;
+sayyl "Adding h.w -> ".join',  ', @$new;
+G&qp,<<'',h.w,$_ for @$new;
+    insert into gw_pin (w,t) values (?,?)

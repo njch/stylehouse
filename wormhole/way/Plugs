@@ -1,0 +1,80 @@
+u allacgts
+n UpPg
+
+Pugweidb:
+    #G&tyable,W=>'isle,ts:timestamptz';
+    #G&tyable,T=>'isle,l,ts:timestamptz';
+
+orb:
+    use List::MoreUtils 'zip';
+    my @arg = map{ref $_ ? @$_ : split ',',} shift @Me;
+    $s = ref $s ?
+        "$$s (".join(',',@arg).") values (".join(',',map{'?'}@arg).")"
+        : 
+        "$s where ".join(' and ',map{"$_=?"}@arg);
+    if ($s =~ /^select/i) {
+        my ($j,$ba) = G&qh,$s,@Me;
+        $ba && die "Many $s ---- @Me";
+        sayre "ARGME mis ".wdump 3, [$s,\@arg,\@Me, [zip @arg, @Me]]
+            if @arg != @Me;
+        $j ||= {do{ zip @arg, @Me }};
+        G&decj,$j,'';
+        ref j.c && ref j.sc || die "JOS of $s  ".wdump 3, $j;
+        $j
+    }
+    else {
+        G&qp,$s,@Me;
+    }
+
+sorb:
+    my $q = "select * from $s";
+    G&orb,$q,@Me;
+
+# header for a W in isle, 
+getW:
+    G&sorb,W=>'isle,t',$s,@Me;
+
+# heads together Talking
+geT:
+    G&sorb,T=>'isle,l,t',$s,@Me;
+
+# table, a j to put, index columns, other columns
+replace:
+    my $j = pop @Me;
+    my @ind = split',',shift @Me;
+    my @del = map { $j.>$_ || die "NO $_ on ".ki$j } @ind;
+    G&orb,$_,\@ind,@del for "delete from $s";
+
+    my @ins = uniq @ind, qw't y c sc', @Me;
+    @Me = map{ my $v = $j.>$_; /^s?c$/ ? sjson $v : $v } @ins;
+    G&orb,\$_,\@ins,@Me for "insert into $s";
+
+putW:
+    s.ts = G&qh,<<'' ->{s};
+        select now() as s
+    G&replace,W=>'isle,t','ts',$s;
+
+# notes states from $s = T.isle, ball of data to join join
+puTsj:
+    my $j = s.j||die"noj".ki$s;
+    my $o = G&xonly,j.sc,$s,grep/../,keys%$s;
+    G&replace,T=>'isle,l,t',s.j;
+
+xonly: %acgt:s c
+    my $o = {%$s};
+    %$s = ();
+    for (@Me) {
+        $s.>$_ = $c.>$_;
+    }
+    $o
+
+xery: %acgt:s c
+    my $tt = {map{ref $_ ? %$_ : ($_,$_) }@Me};
+    while (my($f,$t) = each %$tt) {
+        if (!exists $c.>$f ) {
+            delete $s.>$t
+        }
+        else {
+            $s.>$t = $c.>$f
+        }
+    }

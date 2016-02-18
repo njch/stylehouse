@@ -1,0 +1,9 @@
+my $di = 'public/art/';
+(my $see = C.t) =~ s/\W/?/g;
+my @o = glob "$di*$see*";
+saybl "From $see: ".wdump 3,\@o;
+map{
+    my ($t) = /^$di(.+)\.\w+$/;
+    s/^public\///;
+    m $t=>-video=>$_
+} @o

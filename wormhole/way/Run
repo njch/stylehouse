@@ -1,0 +1,26 @@
+my @m = @ARGV;
+
+G.t = shift @m if $m[0] =~ /^((?!\d)\w)/ && $1 eq uc($1);
+
+G.cv = $m[0] =~ /^\d+/ ? shift @m : 3;
+
+for (map {split ','} @m) {
+    my ($k, $v) = split ':', $_, 2;
+    $v = 1 if !defined $v;
+    G.c.>$k = $v;
+}
+
+my $ta = G.cv <3 ? 'd/Stable' : 'd/Black';
+G.IIII = [map{'G/T/'.$_}'q/Boat','h/Rest','p/Ang',$ta];
+
+G.y = $G;
+$C = $G;
+
+c&n = 'Sen' if c&b eq '1';
+c&u ||= '1' if G.t =~ /^W/;
+Rw ${_}_up for grep{c&u eq '1'} G.t;
+
+Rw iolam if c&i;
+Rw $_ for grep{$_&&'1'ne$_} c&u;
+
+Rw Top

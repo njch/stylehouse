@@ -1,0 +1,51 @@
+my $file = $u;
+C.sc.nspc = 0.03;
+y.lum = 2;
+y.limn = 5;
+
+Jn('fiule',0.1,{s=>C.t,pwth=>'somewhere'},'{hs:4889,sz:8/1.6,sha:2 2 2 000}');
+
+return
+Jn('ends',0.2,'@'.C.y.spc,'{hs:6984,ml:-0.3em}')
+if C.y.spc < 0.005;
+
+if (-l $file) {
+    Jn('-s',0.12,'-s','{co:fca}');
+    my $to = readlink $file;
+    my $oo = $file;
+    $oo =~ s/(^|\/)[^\/]+$//;
+    undef $oo if $oo eq '' || $to =~ /^\//;
+    $oo = (defined$oo?"$oo/":"").$to;
+
+    Jn('sb',0.1231,"$to",'{co:f6a,sz:8/1.6}');
+
+    $oo || die "$file => $oo";
+    $file = $oo;
+}
+
+# cm smartIndent 
+if (!-e $file) {
+    Jn("not",0.2,"!$file:$!",'{co:fca}');
+}  
+elsif (-f $file) {
+    Jn('-f',0.2,'-f','%fs:7,hs:392');
+
+    Mn(C.t,'',{pi=>'fi',s=>$file});
+}
+elsif (-d $file) {
+    Jn('diry',0.2,'/','{hs:3555}');
+    opendir(my $dh, $file) || die "can't opendir $file: $!";
+    my @ma = readdir($dh);
+    closedir $dh;
+
+    @ma = grep {!/^\..+\.swp$/} @ma;
+    @ma = sort grep {$_ ne '.' && $_ ne '..' && -e "$file/$_"} @ma;
+
+    my (@fa,@la);
+    map { -d "$u/$_" ? push @fa, $_ : push @la, $_ } @ma;
+    @ma = (@fa,@la); 
+
+    y.limn = 7;
+
+    Mn($_,{},{pi=>'ls',s=>"$u/$_"}) for @ma;
+}

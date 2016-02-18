@@ -1,0 +1,72 @@
+y.at.jsl = 1;
+u alljs
+# & sitting
+
+ps: %args:s
+    with (paper) {
+      try {
+        eval(s);
+      }
+      catch (er) {
+        a.er(s, er);
+      }
+    }
+
+# https://github.com/tweenjs/tween.js/blob/master/docs/user_guide.md
+
+pzl:
+    with(paper){
+        var shape = new Path.RegularPolygon(view.center,3, 100);
+        shape.fillColor = '#8C8A00';
+        var al = function (event) {
+            shape.rotate(1);
+            shape.fillColor.hue += 1;
+            shape.position.x += shape.bounds.width / 50;
+            if (shape.bounds.left > view.size.width) {
+                shape.position.x = -shape.bounds.width;
+            }
+        }
+        G&nim,al;
+    }
+
+sitandspin:
+    with (paper) {
+        var mousePoint = view.center;
+        var amount = 44;
+        var colors = ['red', 'black', 'blue', 'black'];
+        var gr = [];
+        for (var i = 0; i < amount; i++) {
+            var rect = new Rectangle([5, 0], [25, 25]);
+            rect.center = mousePoint;
+            var path = new Path.Rectangle(rect, 6);
+            path.fillColor = colors[i % 4];
+            var scale = (1 - i / amount) * 25;
+            path.scale(scale);
+            path.blendMode = 'difference';
+            i % 2 and path.blendMode = 'divide';
+            path.opacity = 0.3;
+            gr.push(path)
+        }
+        var gop = new Group(gr);
+        view.onMouseMove = function (event) {
+            mousePoint = event.point;
+            a.m('mm!');
+        }
+        var children = gop.children;
+        var al = &event{
+            for (var i = 1, l = children.length; i < l; i++) {
+                var item = children[i];
+                var delta = (mousePoint - item.position) / (i + 5);
+                item.rotate((Math.sin((event.count + i) / 10)+0.617) * 3);
+                if (delta.length > 0.1)
+                    item.position += delta;
+                item.fillColor.hue += 1;
+                var shape = item;
+                shape.position.x += shape.bounds.width / 20;
+                if (shape.bounds.left > view.size.width) {
+                    shape.position.x = -shape.bounds.width;
+                } 
+            }
+        }
+        G&nim,al;
+    }

@@ -1,0 +1,84 @@
+u allsvse
+n '','','%of:Styles'
+my $for = Rw forerstir;
+
+my $patterns = [map{!ref $_ ? [split /\s+/,$_] : $_}
+    map{$for->(@$_)}
+    [numb=>qw'z index'],
+    ['numb+plus:-20',qw'z ig^^index'],
+    ['numb+plus:-10',qw'z ie^^index'],
+
+    [empc => qw'letter spacing'],
+    [empc => qw'line height'],
+
+    [empc => 'margin' =>[qw'left right top bottom']],
+    [empc => 'padding' =>[qw'left right top bottom']],
+    [empc => 'ma^rgin'],
+    [empc => 'mi^n'=>[qw'width height']],
+    [empc => 'max'=>[qw'width height']],
+    [empc => [qw'lef^t ri^ght top^ bo^ttom']],
+    [empc => [qw'left^ right^ top^ bottom^']],
+    [empc => [qw'width^ height^']],
+    [empc => [qw'wi^dth he^ght']],
+
+    ['' => 'over^flow'],
+    ['' => 'float^'],
+    ['' => 'bo^rder'],
+    [sca => 'opa^city'],
+
+    ['' => qw'tr^ansform origin'],
+    [radun => qw'^transform rad^^rotate'],
+    ['' => qw'^transform scale^'],
+
+    [saypx=>qw'^filter blr^^blur'],
+    ['' => qw'^filter sat^urate'],
+    ['' => qw'^filter con^trast'],
+    ['' => qw'^filter bri^ghtness'],
+    [saydeg => qw'^filter hue^-rotate'],
+    ['' => qw'^filter sep^ia'],
+    ['' => qw'^filter inv^ert'],
+    ['' => qw'^filter gray^scale'],
+
+
+    [sayurl => background=>'gi^^image'],
+    ['' => 'bg^^background'],
+    [hsle => 'bgh^^background-color'],
+    [hunine => font=>'size'],
+    [hundr => font=>'si^ze'],
+    [hundr => font=>'weight'],
+    [whipre => white=>'space'],
+
+    [shadole => '^text'=>'sha^dow'],
+    [cole => 'co^lor'],
+    [hsle => 'hs^^color'],
+    ['defsa:underline' => '^text'=>'deco^ration'],
+    ['ori:all~none' => 'poi^nter'=>'^events'],
+    ['wordbreakwords'=>'word'=>'break'],
+    ['ori:block~none'=>'dis^play'],
+];
+
+for (@$patterns) {
+    my $sc = {};
+    (my($t), sc.filt, sc.cssk, sc.mor) = @$_;
+    if (sc.filt =~ /\W/) {
+        my @l = split /\+/, sc.filt;
+        my $i = 0;
+        map{
+            my ($k,$v);
+            if (/\W/) {
+                ($k,$v) = /^(\w+):(.+)/;
+                $v = [split'~',$v] if $v =~ /^\w+(~\w+)+$/;
+            }
+            else {
+                $k = $_;
+            }
+            $k || die "noundo $_";
+            sc.flex->[$i++]->{$k} = $v;
+        } grep{defined} @l;
+    }
+    sc.mor || delete sc.mor;
+    n $t=>4=><<'',$sc
+        I.d&stri,T.D,$s;
+
+}
+J.VV.N = 1;

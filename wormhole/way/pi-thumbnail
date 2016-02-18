@@ -1,0 +1,49 @@
+my $size = -s $u;
+C.sc.nspc = 0.46;
+C.sc.nspc_max = 2;
+C.sc.sz = 10;
+y.at.qs = 1;
+
+return "nontypeimage: $u" unless $u =~ /(tga|png|gif|jpe?g)$/i;
+my $mou = "public/";
+#return if $size > 3_000_000;
+my ($first) = split '/', $u;
+die "$first not $mou?" unless -e "$mou$first";
+Jn(spc=>0.09, C.y.spc, '{hs:9976,fs:7}');
+
+my $thl = "th/$u";
+my $th = "$mou$thl";
+
+# TODO mod slowness
+# make this thumbnail J even more forky than usual
+# TODO wander 90deg radial over phatness...
+# tape twist effect coming from somewhere
+if (!-f $th && 1){#J.fop->()) {
+    sayyl " thumbnail++$u";
+    my $thd = $1 if $th =~ /^(.+)\/(.+)$/ || die $th;
+    if (!-d $thd) {
+        run 'mkdir', '-p', $thd;
+    }
+    if ($u =~ /(mov|avi|mp4)$/i) {
+        run 'ffmpegthumbnailer -s 420 -t 20% -i '.$u.' -o '.$th
+    }
+    else {
+        run 'convert', $u, '-thumbnail','500x500', $th
+    }
+}
+#sayyl "Pi thumbnAIL of J.most.J.name";
+#J.V = 1;
+if (-f $th) {
+    my $sc = {
+        tag => 'img',
+        src => $thl,
+        height=>'9em',#(24*C.y.spc).'em',
+        ab=>1,
+        ml=>'-3em',
+        tt=>" J.d.y.spc   of C.y.cv - C.y.ov",
+        opa=>0.16,
+        zig=>2,
+        css=>'height:12em',
+    };
+    Jn(yowl=>0.3=>'',$sc);
+}

@@ -1,0 +1,43 @@
+u urw
+if (0) { # way over in njio now, see the 87s for Z... card shufflers
+    my @sc= qw'Vind'; # Movy Viow
+    my @take;
+    for my $sc (@sc) {
+        my $d = "life/W/";
+        my $f = $sc.'.sc';
+        my @l = read_file($d.$f);
+        push @take, map{$d.$_}$f,@l;
+    }
+    chomp for @take;
+    n ze=>-pre=>wdump 3, \@take
+    `mkdir n/W`;
+    `cp $_ n/W` for grep{!/EarlyCoast/}@take;
+}
+
+
+my $in = "public/lowcal\.html";
+my $s = read_file($in);
+
+$s =~ s/(div id=')(msgs')/${1}no$2/s;
+
+$s =~ s/ (\S+window\).on\()/0 && $1/sg;
+
+
+$s = join"\n",grep{!(
+    /(href|src)=.(codemirror|light)/ || /a\.con\(w\);/
+)}split "\n",$s;
+
+$s =~ /a\.codeso.+\['(.+)'\];/;
+$1 || die "Canotfind codeso!";
+my @codes = split "', '", $1;
+
+
+`cp life/$_ n/W` for @codes;
+
+write_file("n/index\.html", $s);
+
+`cd n; rsync -Prua --delete * /home/s/njio/`;
+
+
+
+#

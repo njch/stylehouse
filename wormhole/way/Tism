@@ -1,0 +1,32 @@
+0 && <<'';
+    require Image::Magick;
+    my $cand_photo = Image::Magick->new;
+    #my $decoded = decode_base64($args{image_string});
+    $cand_photo->read(blob=>$decoded);
+
+    #save original
+    $cand_photo->Write($f.".igk\.jpg");
+
+    #resize
+    $cand_photo->Set( Gravity => 'Center' );
+    $cand_photo->Resize( geometry => '120x120' );
+    $cand_photo->Extent( geometry => '120x120' );
+    #save thumbnail
+    $cand_photo->Write($f.".gth\.jpg");
+
+
+put '/tism' => sub {
+    my $m = shift;
+    my $c = $m->req->body;
+    $c =~ s/^data:image\/jpeg;base64,//;
+    my $decoded= MIME::Base64::decode_base64($c);
+    my $run = substr($G->{id},0,4);
+    my $dir = "znap";
+    my $rundir = "znap/$run";
+    `mkdir $rundir` unless -d $rundir;
+    my $f = sprintf "$rundir/%06d\.jpg", $G->{tismi}++;
+    say "Go to $f for ".length $c;
+    $f = "/home/s/shed/$f";
+    write_file($f,{binmode=>':raw'},$decoded);
+    $m->render(text => 'yup');
+};

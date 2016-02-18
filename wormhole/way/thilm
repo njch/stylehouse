@@ -1,0 +1,73 @@
+u GBabz
+my ($A) = 
+n s=>'13'=>see
+my $I = A.I;
+y.at.isle = 'U';
+# 
+my @to;
+my $tld; # 'StyleHose'
+for my $k (sort keys %{E.from}) {
+    $k || die "THere's a weird from";
+    my $t = {};
+    my ($il,$i) = $k =~ /^(.+)\/(.+?)$/;
+    my $N = E.from->{$k};
+    @$N = I.d&sorp,'t',@$N;
+    @$N = I.d&sorp,'y/cv',@$N;
+    t.pack = join("::",grep{defined}$tld,split'/',$k);
+    t.head = [];
+    t.l = [];
+    for my $D (@$N) {
+        ref D.y || die "Dy nonref ".ki $D;
+        D.sc.eg = t.pack;
+        $D = I.d&hup,$D;
+        my $s = delete D.c.s;
+        $s =~ s/A\.I\.d {0}\&An;\s*$//s if D.t eq 'An';
+        $s = I.d&parse_babbl,$s unless D.sc.bab eq 'non';
+        $_ && $_ ne 'non' && die "INter bab D.t bab=$_" for D.sc.bab;
+        my $nov = wdump 5, $D;
+        die "TOo long D D.t: $nov" if length($nov) > 600;
+        my $wh = D.sc.head ? 'head' : 'l';
+        unless (D.sc.head || D.sc.subis || D.sc.code eq 'Pack') {
+            t.II->{D.sc.of}->{D.y.cv}->{D.t} = $D;
+            $s =~ s/^(\$A->\{I\}->\{(\S+)\} = sub \{)/sub $2 {/s;
+            $2 eq D.t || die "Replaceo subAI $2 for D.t but it looks like $1\n"
+                .ki($D)."   which is".(split"\n",$s)[0];
+        }
+        acum $t=>$wh=>$s;
+        if (my $e = D.sc.export) {
+            $e = $e ne '1' ? $e : D.t;
+            acum $t=>export=>$e;
+        }
+    }
+    if (t.II) {
+        push @{t.l}, '$A->{II} = Load(<'.'<STEVE);', Dump(t.II), 'STEVE','';
+    }
+    if (my $e = t.export) {
+        push @{t.head},
+            "use Exporter 'import';",
+            'our @EXPORT = qw('.join(' ',@$e).');',
+            '';
+    }
+    unshift @{t.l},grep{defined}
+        "package t.pack;",
+        G.way.strictwarn,
+        (t.pack ne "G" ? "use G;" : ""),
+        "our \$A = {};",
+        @{t.head},
+        '';
+    push @to, $t;
+}
+my $lib = 'othlia';
+my @inc;
+for my $t (@to) {
+    my @el = split '::', t.pack;
+    my $fi = pop @el;
+    my $dir = join '/', $lib, @el;
+    `mkdir -p $dir` if !-d $dir;
+    my $code = join "\n", @{t.l};
+    my $f = "$dir/$fi\.pm";
+    write_file($f, $code);
+    push @inc, t.pack;
+}
+n othing=>''=><<'','%code'
+    say "Not nothing here";

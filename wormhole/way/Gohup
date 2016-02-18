@@ -1,0 +1,25 @@
+$A = J.lA||die "Need an init J.name A"; #! ! !
+my $c;
+c.t = E.t;
+c.s = E.c.s;
+$c.>$_ = E.sc.>$_ for qw'ts file dig';
+my($o) = my @m = G&qh,<<'',c.t;
+    select * from gho where t = ?
+die "Many c.t: ".wdump 4,\@m if @m > 1;
+# ts was noticed time
+saygr "Gohup c.file c.t";
+# tos is mtime of the paddock
+my ($ts) = map{_.ts} G&qh,<<'';
+    select now() as ts
+my @s = (c.file,c.t,c.s,c.dig,$ts);
+if ($o) {
+    G&qp,<<'',@s,c.t
+        update gho set file=?, t=?, s=?, dig=?, ts=? where t = ?
+}
+else {
+    G&qp,<<'',@s
+        insert into gho (file,t,s,dig,ts) values (?,?,?,?,?)
+}
+c.ts = $ts;
+Rw Gonews $J $c;
+Rw w_way_file $k:c.t $v:c.s;

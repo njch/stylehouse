@@ -1,0 +1,113 @@
+u allacgts
+n T
+# modem sounds etc.
+# dome props, repeatable tests
+# fold space til fit
+sca:
+    $s /= 10 while $s > 1 || $s < -1;
+    return $s
+
+scyvle:
+    map { my$i;
+        C.y->{$_} /= 10 while
+        (C.y->{$_} <= -1 || C.y->{$_} >= 1)
+        &&
+        (++$i < 10 || die "Many i chewing on $_: ".ki C.y)
+    }
+    grep { C.y->{$_} }
+    qw'in out cv'
+
+peels: %subpeel
+    qr/^[\{\%]\w+/;
+
+peel:
+    return $s if ref $s;
+    $s =~ s/^%//;
+    my $c = {};
+    for (split ',', $s) {
+        my ($k, $v) = split ':', $_, 2;
+        $v = 1 if !defined $v;
+        $c->{$k} = $v;
+    }
+    $c
+
+# for getting click together:
+c: %acgt:D
+    G&inDin,$C,@M;
+
+e: %acgt:D
+    my $e = G&sces,C.c.e||return();
+    G&inDin,$e,@M;
+
+us: %acgt:D
+    my $e = G&sces,C.c.e||return();
+    my $us = e.c.us||return();
+    push @M, 'NOGK' if @M == 1;
+    G&inDin,$us,@M;
+
+sces:
+    my $i = 0;
+    while (s.c.e) {
+        $s = s.c.e;
+        $i++ > 9 && die "HUGE $i recursing CceCceCceCce... by ".ki $s;
+    }
+    return $s;
+
+# index fancies
+inDin: %acgt:s D
+    return () unless defined $s;
+    return $s if $D eq 'C';
+    #
+    shift @M; # s
+    $D = G&interpD,@M if !ref $D;
+    #
+    my $v = G&Cngk,$s,$D;
+    saybl "Got cnkgk: ".wdump 3,[\@M,$D,$v,$s] if A.VV.D;
+    die "Unhandles any: $v: ".ki $D if $v eq '1';
+    #
+    return () unless $v;
+    # blankgk
+    A.note->{D.c.nk}->{D.c.gk} = $v if A.note;
+    #
+    @$v == 1 || die "Many somehowed ".wdump 3,[ki($D),$v];
+    ($v) = @$v;
+    if (D.c.as eq 'list') {
+        ref $v eq 'ARRAY' || die 'Cngk for list not array '.ki $D;
+        return @$v;
+    }
+    return $v;
+
+interpD: %acgt:nk gk
+    my $defnk = 'c';
+    return $nk if ref $nk;
+    my $D = {};
+    D.c.as = 'list' if $nk =~ s/^_//;
+    while ($gk =~ s/^%(.+?):(.+?)(?=%|$)//g) {
+        D.c->{$1} = $2;
+        pop @M if @M == 2;
+    }
+    if (@M == 1 && $nk eq 't') {
+        D.c.nk = $nk;
+    }
+    elsif (@M == 1) { # or from t,,,
+        D.c.nk ||= $defnk;
+        D.c.gk ||= $nk;
+    }
+    elsif (@M == 2) {
+        D.c.nk = $nk;
+        D.c.gk = $gk;
+    }
+    delete D.c.gk if D.c.gk eq 'NOGK';
+    $D
+
+Cngk: %acgt:s D
+    ref $A || die "nmonref A!";
+    A.bangdesk.bang->{Cngek} = sub {
+        sayre "was Cngk; ".ki($s)."\nWith: ".ki($D)
+    } if 0;
+    return 1 if D.c.any;
+    die "nonNKnk".ki$D if !D.c.nk;
+    return 0 if !exists $s->{D.c.nk};
+    return [$s->{D.c.nk}] if !exists D.c.gk;
+    return 0 if !exists $s->{D.c.nk}->{D.c.gk};
+    return [$s->{D.c.nk}->{D.c.gk}];

@@ -1,0 +1,21 @@
+G.now = hitime();
+G.delta = G.last - G.now if G.last;
+G.gap = G.lastout - G.now if G.lastout;
+saybl "T of G.t G.cv G.s      ".join'  ',@{ar.m||[]};
+
+my $J;
+my $t = 'Oth';
+my $cv = 0.3;
+$J = G.sc.>not$t ||= do {
+    $J = Rw Jto $t=not$t;
+    my $sc;
+    G.s = G.oin = sc.J = Rw Jto $t;
+    Rw jamsc $J $t $cv $sc;
+    Rw jamsc $J:G.s $t $cv $sc;
+    $J
+};
+
+n $t,$cv,{J=>$t,vv=>6,s=>G.t}
+
+G.lastout = hitime();
+G.last = G.now;

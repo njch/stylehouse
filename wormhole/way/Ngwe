@@ -1,0 +1,86 @@
+u allacgts
+
+n init=>'',<<''
+    G.T = G&T,'w',G.T||{};
+    G.way = G&T,'w/way',{nonyam=>1};
+
+n h =>'',<<''
+    my $y = A.I->{$s} || A.om && A.om.I->{$s} || do {
+        sayre "Above for $s on A.talk isssssssss A.up.talk";
+        A.up.I->{$s} || die "No whay named $s on A.talk or A.up.talk: ".wdump 1, $A;
+    };
+    say "A.talk h :  $s   < C.t"
+        unless C.t =~ /^_/ || !A.J || A.J.V < 2;
+    $y->($A,$C,$G,$T,@Me);
+
+# ww make ar @Me, always in order, ref $k = +ar mixin 
+n w =>'',<<''
+    my $pin = $s;
+    my ($t,@k);
+    my @Eat = @Me;
+    while (@Eat) {
+        my $k = shift @Eat;
+        if (ref $k) {
+            my @or = map{$_=>$k->{$_}} sort keys %$k;
+            unshift @Eat, @or;
+        }
+        else {
+            push @k, $k;
+            $t->{$k} = shift @Eat;
+        }
+    }
+    my @src = ($A,$C,$G,$T);
+    my @got;
+    for (qw'A C G T') {
+        my $sr = shift @src;
+        if (!exists $t->{$_}) {
+            $t->{$_} = $sr;
+            push @got, $_;
+        }
+    }
+    unshift @k, @got if @got;
+    (my $fi = $pin) =~ s/\W/-/g;
+    my ($way,$dige);
+    my $D;
+    if ($D = t.__D) {
+        $dige = D.sc.dige || die "wayzipin wasnt scdige: ".ki$D;
+        $way = D.c.s;
+        $way =~ s/^A\.I\.(\w+) = //s;
+        $way =~ s/}A\.I\S+\n/\n/s if D.t eq 'An'; # redoes, too trouble
+    }
+    else {
+        $way = G.way->{$fi} || die "No way: $fi";
+        $dige = G.way.o.dige->{$fi}
+            || die "Not Gway not diges $fi: wayo: ".ki G.way.o;
+    }
+    my $ark = join',',@k;
+    my $code;
+    my $sub = G.dige_pin_ark->{$dige}->{$pin}->{$ark} ||= do {
+        my $C = {};
+        C.t = $pin;
+        C.c = {s=>$way,from=>"way"};
+        C.sc = {code=>1,noAI=>1,args=>"ar,$ark"};
+        if ($D) {
+            delete C.sc.args unless D.sc.subpeel;
+            C.c.from = "I D.c.from";
+        }
+        $code = G&won;
+        $@ && die ":BEFORE $pin www $@";
+        $SIG{__WARN__} = G.I.sigstackwarn || die "NO sigstackwarn";
+        my $sub = G.airlock->($code);
+        $@ && sayre "DED:\n".$code;
+        $@ && die "way nicht compile: $pin:\n$@";
+        !$sub && die "way nicht sub returned: $pin (no error tho)";
+        $sub;
+    };
+    if ($D && !D.sc.subpeel) {
+        return $sub;
+    }
+    $sub->($t,map{$t->{$_}}@k);
+
+n won=>'',join("\n",map{G.way->{$_} || die "no $_"}qw'cono ersl');
+
+n airlock=>''=><<'','%args:1'
+    eval shift
+
+# etc

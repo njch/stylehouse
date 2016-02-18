@@ -1,0 +1,79 @@
+my @each = lv.oso ? @{V.os} : sort keys %{lv.do};
+my $san = {map{$_=>1}keys %{lv.do}};
+
+my $ded = [];
+my $z = [];
+# occasionally wants to add/subtract from the thing
+# the whole sending rms vs moving the remainders
+# also if re-c desired soon, factor vortex
+if (my $go = lv.od.go) {
+    for my $ea (sort keys %$go) {
+        my $ov = $go->{$ea};
+        ref ov.c || die "noovc";
+        my $oov = vl.do->{$ea} if $vl;
+        $ov eq $oov || die "difoov $ov, $oov";
+        $san->{$ea} && die " $ea goes but still in do..";
+        if (!ov.rmnsc) {
+            lv.op.V->{$ea} = 1 && die " wtf";
+        }
+        delete V.lv.>$ea;
+        delete V.tv.>$ea;
+        delete V.alv.>$ea;
+        delete V.ta.>$ea;
+        push @$ded, ov.rmnsc;
+    }
+}
+
+my $left;
+for my $ea (@each) {
+    delete $san->{$ea};
+    my $iv = lv.do->{$ea}||die;
+    my $ov = vl.do->{$ea} if $vl;
+
+    if (lv.od.new->{$ea}) {
+        $ov && die "new had ov";
+        if ($left && left.grab) {
+            push @$z, left.grab if lv.od.ll->{left.k};
+            # om lv.prepend(iv) until one
+            # then last z/c:el:* gives iv.appendAfter(left)
+            # chuck in the el:8 if we skip over anything
+            # ie if left is od.ll this round...
+            # can have no el:8 and switch everything else out
+        }
+        push @$z, grep{defined} @{iv.c}, @{iv.sc};
+    }
+    elsif (lv.od.gr->{$ea}) {
+        $ov || die "novodo $ea";
+        iv.c eq ov.c || die "wasn't satbv c";
+        my $ray = Rw scd $rl:ov $rv:iv;
+        #sayyl "gr $ea    ov.i     iv.i    ".ki $ray if J.V;
+
+        push @$z, @{ray.z};
+
+    }
+    elsif (lv.od.over->{$ea}) {
+        sayyl "OVER $ea";
+        lv.selfs || die "no way to...";
+        # el:1 will replace the old by t/y or something
+        # chuck ids on everything?
+        #saybl "Everything under C.t supposed: ".wdump 6, [iv.c,iv.sc];
+        saybl "Usposed under C.t: ".ki $_ for @{iv.c}, @{iv.sc};
+        push @$z, grep{defined} @{iv.c}, @{iv.sc};
+    }
+    elsif (lv.od.ll->{$ea}) {
+        #say "keep $ea" if J.V;
+    }
+    else {die " C.t C.y.cv wtf $ea :".wdump [ lv.od.ll]}
+    $left = $iv;
+}
+my @have = map { keys %{lv.od->{$_}} } grep {$_ ne "go"} keys %{lv.od};
+my $ha = {map{$_=>1}@have};
+delete $ha->{$_} for @each;
+die "difs".wdump $ha if keys %$ha;
+die "!!! forgot $_" for keys %$san;
+
+unshift @$z, @$ded if @$ded;
+
+@$z = () if C.sc.J && $J eq C.sc.J;
+
+ne.sc.z = $z if @$z;

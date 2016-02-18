@@ -1,0 +1,18 @@
+my $J = G.GW || die "No GW";
+$A = J.lA || die "Need init GW A";
+
+my @w = G&qh,<<'',$p;
+    select file,t,s,dig from gho where t = ?
+@w > 1 && die "Many ways to $p: ".wdump 3, \@w;
+my $w = shift @w;
+say "Gohdown way: $p";
+(my $fi = $p) =~ s/\W/-/g;
+my $was = G.way.>$fi;
+
+G.way.>$fi = w.s;
+
+if ($was) {
+    write_file('/tmp/gohgon',$was);
+    write_file('/tmp/gohdon',w.s);
+    sayre "WAOKs out $p: ". `diff /tmp/gohgon /tmp/gohdon`;
+}

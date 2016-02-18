@@ -1,0 +1,55 @@
+C.c.mtime = 1;
+Rw pi/file;
+
+ my $file = $s;
+ C.sc.nspc = 0.02;
+ #y.limn = 18;
+ #y.lumfa = 2; 
+
+ Atime(2)||return; 
+ -f $s || return
+ n 404 =>2=>'404','%hs:388';
+
+ my $be = `wc -l $file`; chomp $be;
+ saybl "Loading    cfile $be";
+ if ($be =~ /^\d{4}/) {
+     Mn(massive=>'',{pi=>text=>s=>"MASSIVE"});
+     sayre "massive s";
+     return;
+ }
+  #
+ # etc
+ my $s = read_file($file);
+ unless ($s =~ /^\s*[\w]+.*:\s/s) {
+     n notyaml=>''=>{pi=>lines=>s=>$s}
+     return
+ }
+ my $m = Load($s);
+
+ my $kf = qr/^(\S+)(:.+?)(?=^\S|\Z)/sm;
+ my $tsc = {};
+
+ if (m.R_Jz || m.Ds) {
+     Rw pi/mRJz + $file $m $tsc;
+     my $k = qr/^\s*- K: /sm;
+     $kf = qr/$k(\S+)(.+?)(?=$k|\Z)/sm;
+ }
+
+ my $h;
+ my @ks; 
+ while ($s =~ m/($kf)/smg) {
+     push @ks, $2;
+     $h->{$2} = $1;
+ }
+ my $in = {map{$_=>1}@ks};
+ $in->{$_} || die wdump ["nothave $_", [sort @ks], [ sort keys %$m ]] for keys %$m;
+
+ for my $p (@ks) {
+     my $n = $m->{$p};
+     my $s = $h->{$p};
+     $s || die "no $p $s ".wdump $h;
+     my $sc = $tsc->{$p}||{};
+     sc.dige = substr dig($s), 0, 8;
+     sc.nspc = 0.2;
+     Mn($p => '', {pi=>'clife',pwth=>'somewhere',s=>$n},$sc);
+ }

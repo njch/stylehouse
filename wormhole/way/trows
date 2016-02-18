@@ -1,0 +1,84 @@
+u allact
+n UpPg
+
+n Arow =>32,<<'','%code:U,v:scJ'
+    if (0) {
+        G&tyable,@$_
+        for 
+        [goat=><<''],
+            s,ts:timestamptz,jid:serial:primary:key,jup:int
+        [cheese=><<''];
+            s,ts:timestamptz,jid:int:references:goat:on:delete:cascade
+
+    }
+    my $o = {t=>C.t};
+    o.jup = C.c.W ? \'is null' : do {
+        my $up = J.Jiter.trow || die "No trow upin ".ki J.Jiter;
+        up.jid
+    };
+    J.trow = G&pet,goat=>$o;
+
+    J.aws = {map{_.t=> $_} G&qh,<<'',J.trow.jid };
+        select * from cheese where jid = ?
+
+    J.wz = {map{_.t=> G&decj,$_ }values %{J.aws}};
+
+    J.pich.trows = {any=>1,u=>'trows'};
+
+# grab current (just past) things we said
+n rows =>5,<<'','%code:Sev,v:yat'
+    my $V = C.c.V;
+    my $J = C.c.J;
+    if (C.y.cv == 0.9) {
+        return if delete J.lies;
+        my @bu = map { V.ta->{$_} || die "No $_ on V f ".ki$C }
+            C.y.k, sort keys %{at.V};
+
+        my @ea = map {
+            {t=>_.t, s=>_.c.s, c=>sjson(_.c), sc=>sjson(_.sc)}
+        } @bu;
+
+
+        my @gone;
+        my @put;
+        my $tw = {};
+        for (@ea) {
+            my $o = J.aws.>_.t;
+            next if J.lie.>_.t;
+            if (G&heq,$o,$_ ) {
+                $tw.>_.t = 1;
+            }
+            else {
+                push @put, $_;
+            }
+        }
+        while (my ($k,$v) = each %{J.aws}) {
+            next if delete J.lie.>$k;
+            push @gone, $v unless $tw.>$k;
+        }
+
+        my @ts;
+        my $and = join(" or ",map{push@ts,_.t;'t = ?'}@gone);
+
+        my $qa = <<'';
+            delete from cheese where jid = ?
+        $qa .= " and ($and)" if @ts;
+        unshift @ts, J.trow.jid;
+        G&qp,$qa,@ts;
+
+        for (@put) {
+            if (delete J.lie.>_.t ) {
+                $_ = J.wz.>_.t || die "No _.t to same";
+            }
+            G&qp,<<'',J.trow.jid,_.t,_.s,_.c,_.sc;
+                insert into cheese (jid,t,s,c,sc) values (?,?,?,?,?)
+        }
+    }
+
+
+
+
+
+
+
+# #

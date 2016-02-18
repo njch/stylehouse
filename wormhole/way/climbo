@@ -1,0 +1,61 @@
+my $tj = $J;
+my $h = E.c.us.hopel ?
+    djson E.c.us.hopel
+    :
+    E.c.us.ids ?
+    [map{[undef,undef,$_]}@{E.c.us.ids}]
+    :
+    E.c.us.p ?
+    [map{[@$_,undef]}@{E.c.us.p}]
+    :
+    die "No way to climb into J.name with: ".wdump 2, E.c.us;
+shift @$h until !@$h || $h->[0]->[-1] eq J.id || $h->[0]->[0] eq J.name;
+!@$h && die "no hold";
+my @C;
+my $i = -1;
+for my $l (@$h) {
+    $i++;
+    my $f;
+    my ($t,$cv,$id) = @$l;
+    if ($i == 0 && ($id eq J.id || $t eq J.name)) {
+        #say "hop 1 is J.name";
+        $f = tj.C;
+    }
+    elsif (defined $t && defined $cv) {
+        my $vt = $cv."\t".$t;
+        my $tv = tj.El.Pre.tv;
+        $f = $tv->{$vt}
+            || return sayre "NO $vt on tj.name!!!"
+            .wdump 3, [$l, OF=>$h,HAD=>$tv];
+
+        #f.sc.J || die "no J for $t $cv on tj.t tj.name: ".sayyl wdump 2, $f;
+    }
+    elsif (defined $id) {
+        my $oj = Rw lookiDuv $J:tj $id;
+        $f = $oj || return sayre "No J on oj.name $id . .. ";
+    }
+    else {
+        die "L hop: $i ? ".wdump 3, $h;
+    }
+    if ($f && f.y.cv == 0.9 && !f.sc.J) {
+        saybl "SKipping: ".ki $f;
+        next;
+    }
+    sayyl "Found: f.t";
+    push @C, $f;
+    my $fo = $tj;
+    $tj = f.sc.J;
+    if (!$tj && f.y.cv == 0.9) {
+        $tj = f.c.J;
+        $tj eq $fo || die "Tried to J find ".ki($f)
+            ."\n but its cJ: tj.name   ne   fo.name";
+    }
+}
+E.c.hJ = [grep{defined}map{_.sc.J}@C];
+E.c.hC = [@C];
+
+return sayre("JevBo: J.ev.bo: J.name  C.sc.J.name  E.sc.J.name") &&
+    Rw J.ev.bo
+    if J.ev.bo;
+
+Rw clack;

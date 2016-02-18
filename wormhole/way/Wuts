@@ -1,0 +1,46 @@
+u allsvse
+n '','','%of:em'
+# (ais coming soon: (only space or)
+n Wc =>446=><<'',{cg=>'J,em'}
+    saybl join"\n","Downing em.is.M: em.is.W: ",
+        map{!ref $_ ? $_ : wdump 5,$_} @{em.lines}
+        if A.V&W;
+    I.d&writef,"life/W/em.is.W\.c",em.lines,em.i;
+    .
+    C.c.as = !C.c.os;
+    C.c.As = C.c.as;
+    C.sc.meta = 1;
+    C.sc.speak = 1 if C.c.as;
+    C.sc.takeover = 1 if C.c.As;
+    saybl "WHITESPACE S em.is.M" if C.c.os;
+
+# inter intros
+n meta =>47=><<'','%cg:em'
+    G.M->{em.is.M} = A.J;
+    G.Wh->{em.is.W} && return;
+    G.Wh->{em.is.W} = A.J;
+    my $me = I.d&hup,$em;
+    delete me.lines;
+    I.d&writef,"life/W/em.is.W\.i",sjson($me);
+
+n speak =>48=><<'','%cg:em'
+    return if G.Jlone;
+    .
+    my $jf = "life/J/em.id\.c";
+    my $l = I.d&writef,$jf,em.lines;
+    if (G.Jsem) {
+        if ($l > 4000) {
+            sayre "Big em.is.M: $l";
+            my $q = G&ajam,$jf;
+            sayyl "Sending in $q";
+            G.Jsem->($q);
+        }
+        else {
+            G.Jsem->($em);
+        }
+    }
+    .
+    I.d&writef,"life/J\.s",sjson({y=>'J',id=>em.id}),1;
+
+n takeover =>49=><<'','%cg:em'
+    G&dlin,'life/W',"em.is.W\.c","em.is.M";

@@ -1,0 +1,36 @@
+my $try = sub {
+    my $s = shift;
+    return sjson($s) if grep{/\n|\t|,|:/}
+        keys(%$s), values(%$s);
+    join ',', map { join':', $_, $s.>$_ } sort keys %$s;
+};
+my $M = [map{
+    my $C = G&tC,$_;
+    $C = G&hup,$C;
+    my $z = delete C&z;
+    delete C&J;
+    delete C&geo;
+    delete C&z;
+    delete C.sc.pi;
+
+    C.c = $try->(C.c);
+    C.sc = $try->(C.sc);
+    my $y = C.y.cv;
+    $y =~ s/^0\.//;
+    my @m = join("\t", '', C.t, $y, C.c, C.sc);
+    if ($z) {
+        my $n = Rw wave + $N:z $oo=1;
+        push @m, map {" $_"} @$n;
+    }
+    @m
+}@$N];
+if (ar.oo) {
+    return $M
+}
+else {
+    J.Wayout || die "Wayout wave J.name";
+    say "Wave tabulated: J.name ".@$M;
+    @$M = grep {!/nosc:1$/}@$M;
+    G&wraf,"life/W/J.Wayout",$M;
+}
+$N;

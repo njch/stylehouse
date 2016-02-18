@@ -1,0 +1,68 @@
+use WWW::Mechanize;
+my $m = new WWW::Mechanize;
+use YAML::Syck;
+
+my $url = "http://st33v\.tumblr\.com/";
+my @posts;
+if (0) {
+my $page = 1;
+my $last;
+while ($posts[-1] !~ /66098836$/) {
+    say "getting page $page";
+    my $url = "$url".($page>1?"page/$page":"");
+    $m->get($url);
+        my $next = $page + 1;
+    push @posts, $m->content =~ /<a href="([^"]+\/post\/\d+)"/sg;
+    saybl "Page $page: ".wdump \@posts;
+    #last unless $m->content =~ m{<a href="(/page/$next)">};
+    $page++> 200 && last;
+    last if $last eq $posts[-1];
+    $last = $posts[-1];
+    DumpFile("posts\.yml", \@posts);
+}
+DumpFile("posts\.yml", \@posts);
+
+@posts = @{LoadFile("posts\.yml")};
+my $i = 1;
+my @photos = 1;
+my $piles = [[]];
+my $pilof = 200;
+my $ii = 0;
+for my $post (@posts) {
+    $i++;
+    $m->get($post);
+    push @{$piles->[-1]}, $m->content =~ m{"([^"]+?jpg)"}smg;
+    if (@{$piles->[-1]} >= $pilof) {
+        push @$piles, [];
+        say "FI ".$i;
+        DumpFile("pILEs",$piles);
+    }
+}
+}
+my $piles = LoadFile("pILEs");
+my $i = 0;
+my @all;
+for (@$piles) {
+    s/\\\//\//g for @$_;
+    @$_ = uniq @$_;
+    push @all, @$_;
+}
+my $tw;
+for (@all) {
+    my $st = /1280.jpg/ ? 'ii' : 'oo';
+    my $sec = $i++ % 4;
+    /http:\/\/(\d+)\.media\.tumblr/ || next;
+    $sec = $1;
+    push @{$tw->{$st}->{$sec}||=[]}, $_;
+}
+my $fl;
+while (my ($k,$v) = each %$tw) {
+    while (my ($s,$e) = each %$v) {
+        push @{$fl->{"st33v\.$k\.$s\.c"}||=[]}, @$e;
+    }
+}
+while (my ($k,$v) = each %$fl) {
+    write_file("n/W/$k", join "\n", shuffle @$v);
+    say "$k";
+}
+exit;

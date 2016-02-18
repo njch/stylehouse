@@ -1,0 +1,45 @@
+my @li = glob "$s/*/*";
+my $tw = {};
+my $et = {};
+for my $f (@li) {
+    my ($gate,$up,$way) = $f =~ /^(.+)\/J\/(.+?)\/(.+?)$/;
+    if ($way =~ /^(.+?)_(.+)$/) {
+        my ($way,$set) = ($1,$2);
+        saybl "  $way trowil join thoughts: $set";
+        my $st = {};
+        my $ts = $et->{$way} ||= {};
+        %$ts = (%$ts, %$st);
+        next;
+    }
+    $up && $way || die "nope $f";
+    $tw->{$up}->{n}->{$way} = 1;
+    $tw->{$way}->{u}->{$up} = 1;
+}
+$tw->{$_}->{e} = $et->{$_} for keys %$et;
+my $wt = {};
+$wt->{$_} = {} for grep{!$tw->{$_}->{u}} keys %$tw;
+keys %$wt || die "No top level! Circular?";
+my @ne = $wt;
+my $i;
+my @las;
+while (@ne) {
+    $i++ > 600 && die "$s join wanders for $i from ".@li." lines, maybe circular? ".join"->",@las[-20..-1];
+    my @m = @ne;
+    @ne = ();
+    for $wt (@m) {
+        for my $k (sort keys %$wt) {
+            my $t = $tw->{$k};
+            push @las, $k;
+            if (t.n) {
+                my $n = $wt->{$k};
+                $n->{$_} = {} for sort keys %{t.n};
+                push @ne, $n;
+            }
+            else {
+                #
+            }
+        }
+    }
+}
+J.mo.jes.tower = $tw;
+J.mo.jes.trowl = $wt;

@@ -1,0 +1,34 @@
+my $wtf = ar.wtf || {};
+my $cur = wtf.cur = y.l->[-1];
+my $last = wtf.last = y.l->[-2];
+wtf.same = 1;
+if (!$last) { # better not get autovivified! 
+    wtf.allnew = 1;
+    wtf.same = 0;
+    #return;
+    last.bb = {};
+}
+$wtf->{$_} = {} for qw'new diff gone';
+#y.l_bb->{$_} = $w for keys %{x.bb};
+# churn stats like 30% of last disappear, 20% new
+
+for (sort keys %{cur.bb}) {
+    if (!exists last.bb->{$_}) {
+        wtf.new->{$_} = cur.bb->{$_};
+        wtf.same = 0;
+    } 
+    elsif (last.bb->{$_} ne cur.bb->{$_}) {
+        wtf.diff->{$_} = cur.bb->{$_};
+        wtf.same = 0;
+    }
+}
+
+for (grep { !exists cur.bb->{$_} } sort keys %{last.bb}) {
+    wtf.gone->{$_} = last.bb->{$_};
+    wtf.same = 0;
+    delete J.bb->{$_};
+}
+
+my $count = keys %{cur.bb};
+cur.wt = $wtf;
+$wtf;

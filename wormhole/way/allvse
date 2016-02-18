@@ -1,0 +1,15 @@
+u allact
+n allvc
+n allof
+# nov not env
+n 'allvse'=>419,<<'','%code:In'
+    if (C.sc.nv) {
+        C.sc.nov = 1;
+        C.sc.v = C.sc.nv;
+    }
+    C.sc.v ||= C.t unless exists C.sc.v;
+    my $cv = C.y.cv;
+    $cv =~ s/^0\.//;
+    $cv = $1 if !$cv && C.sc.code =~ /^\w+ (\d+)$/;
+    $cv||die"nocv: C.y.cv  ".ki 2, $C;
+    C.t .= "_$cv";

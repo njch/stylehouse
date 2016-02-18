@@ -1,0 +1,45 @@
+u allvse
+n '','','%of:em'
+n em =>21=><<''
+    em.lines || die "Not lines";
+    em.hitime = hitime();
+    em.is.W = C.sc.Wid || A.J.id;
+    em.is.M = C.sc.Mid || A.J.name;
+    em.id = em.is.W.'.'.(0+em.i);
+
+u allsvse
+
+n jslines =>3=><<'',{cg=>'J,em'}
+    Rw EmJSlines $A $J $em $C $T;
+
+sq 24: %cg:em
+    em.lines = Rw $sq $N:em.lines $em $J:A.J;
+
+ux 3: %cg:em
+    if (ref em.lines) {
+        my $M = em.lines;
+        if ($ux < 2) {
+            $M = ['','',{W=>G.t},{z=>$M}]
+        }
+        em.lines = [sjson($M)];
+    }
+    C.sc.Wc = 1;
+    return sayyl "Was router for G.W.name" if C.c.J eq G.W;
+    my $J = G.oin;
+    n GW
+    #
+
+n ressur =>3=><<'',{cg=>'J,em'}
+    saybl "Ressurrecting $ressur ...";
+    die "zomp $ressur" if $ressur =~ /\W/;
+    my $resu = "life/W/$ressur";
+    die "bno JSlines" unless -e $resu;
+    if (G.Jsem) {
+        my $q = G&ajam,$resu;
+        say "Sending $resu via Jsem";
+        return G.Jsem->($q);
+    }
+    `cd life; ln -s ../W/$ressur J/em.id\.c`;
+    my $catch = sjson {y=>J=>id=>em.id};
+    I.d&writef,"life/J\.s",$catch,1;
+    T.whack = 1; # out of em

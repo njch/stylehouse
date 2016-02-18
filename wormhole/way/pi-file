@@ -1,0 +1,18 @@
+defined $s || die 'nofile';
+die if C.sc.dir;
+#C.sc.sz = 15;
+my $sc = ar.sc;
+if (C.c.create && !-f $s) {
+     sayyl "Creating $s";
+     `touch $s`;
+}
+if (C.c.mtime) {
+    sc.mtime = (stat($s))[9];
+}
+sc.hs ||= '042';
+if (C.c.met) { # the apply slow yish
+    sc.met = `file '$s'`;
+    chomp sc.met;
+    die sc.met unless sc.met =~ /text/;
+}
+n file =>1=>$s,$sc;

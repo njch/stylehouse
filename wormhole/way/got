@@ -1,0 +1,37 @@
+u GBabz
+my ($A) = 
+n s=>'13'=>see
+my $I = A.I;
+
+my $inc = "othlia";
+my @find = grep {!/\/\./} map{chomp;$_}`find $inc`;
+my $as = {map{$_=>1} grep {-f $_} @find};
+my $se = {};
+for my $in (keys %$as) {
+    (my $o = $in) =~ s/\/\w+(\.pm)$/$1/;
+    $se->{$in} = 1 if $as->{$o};
+}
+my @in = map{delete $as->{$_};$_} keys %$se;
+my @inc = sort keys %$as;
+s/^$inc\/(.+)\.pm/$1/ || die "NOgot $_" for @inc;
+s/\//::/sgm for @inc;
+# ^ include topmosts
+
+my $l=[
+    G.way.strictwarn,
+    'use FindBin qw($Bin);',
+    'use lib "$Bin/othlia";',
+    'use lib "$Bin/slib";',
+    (map{"use $_;"}@inc),
+    'our $A = {};',
+    '$A->{I} = {};',
+    '$A->{AAAA} = [',
+    join(',',map {'$'.$_.'::A'} @inc).'];',
+    I.d&parse_babbl,G.way.gothat ,
+];
+
+write_file('got',join("\n",@$l));
+
+sayyl "Wrote got: ".@$l." lines";
+n othing=>''=><<'','%code'
+    say "Not nothing here";

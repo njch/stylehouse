@@ -1,0 +1,148 @@
+u allacgts
+
+#
+
+scaly: %acgt:s l sc
+    $l ||= 15;
+    $sc ||= {};
+    $sc = G&peel,$sc if !ref $sc;
+    sc.fs ||= 9;
+    my $d = $l - length($s);
+    $d /= ($l/3.14159);    
+    sc.fs += $d;
+    sc.width = int(6+$l/2.13169) if $d < -0.6;
+    sc.fs = 3 if sc.fs < 3;
+    sc.fs = 17 if sc.fs > 17;
+    $s,$sc
+
+ron:
+    0.0001 * int(10000*$s)
+
+mksc:
+    my $t = I.d&mos,$s;
+    I.d&xot,C.sc,$t;
+
+# language expansion
+mos:
+    my @t = split ',',$s;
+    for (@t) {
+        my ($k, $v) = split ':', $_;
+        $T.>$k = $v;
+    }
+
+meat: %acgt:k v
+    my $f = $v;
+    my $mv = C.sc->{$k};
+    $f = I.d&mean,$f,$mv;
+    C.sc->{$k} = $f;
+
+mean: %acgt:to fro mix
+    $mix ||= 0.5;
+    my $yu = $fro - $to;
+    $yu = $yu * $mix;
+    $fro -= $yu;
+    $fro
+
+# it
+cole:
+    my $h;
+    (h.r, h.g, h.b, h.a) = ($1, $2, $3, $4)
+        if $s =~ /^(\w)(\w)(\w)(\w)?$/ || die "not cole: $s";
+    if (defined h.a) {
+       # do an rgba(255,255,255,1)
+       for my $k (qw'r g b a') {
+           my $e = $h->{$k};
+           $e = "$e$e" if length $e == 1; # out of 255
+           $h->{$k} = hex $e;
+       }
+       h.la = sprintf '%.2f', h.la / 255; # out of 1
+       return "rgba(h.r,h.g,h.b,h.a)";
+    }
+    else {
+       return sprintf "#%s%s%s", h.r, h.g, h.b;
+    }
+
+# ray lih, unhassley
+hsle:
+    my @m;
+    for ($s) {
+        @m = split ' ', $_;
+        last if @m == 3 || @m == 4;
+        @m = split /\./, $_;
+        last if @m == 3 || @m == 4;
+        @m = split '', $_;
+        last if @m == 3 || @m == 4;
+        @m = ();
+    }
+    @m || die "not hsle: $s";
+    my $h;
+    (h.h, h.s, h.l, h.a) = map{0+("0.".$_)}@m;
+    .
+    h.h = h.h * 360 if h.h < 1;
+    .
+    $h->{$_} = ($h->{$_}*100).'%' for 's','l';
+    .
+    my $al = ", h.a" if defined h.a;
+    "hsl".($al?'a':'')."(h.h, h.s, h.l$al)";
+
+#c decide space unit TODO init soon
+empc:
+    $s .= 'em' if $s !~ /(%|em|px)/;
+    $s =~ s/^-?0em$/0%/;
+    $s
+
+plus:
+    s.v + s.et
+
+defsa:
+    s.v || s.et
+
+ori:
+    @{s.et} > 2 && die "Many et for ori s.v: @{s.et}";
+    my ($t,$f) = @{s.et};
+    return s.v =~ /[1ay]/ ? $t : $f
+
+n whipre =>''=><<''
+    return $s =~ /[1p]/ ? 'pre' : 
+    $s =~ /[2n]/ ? 'nowrap' : 
+    die "Canot $s whipre?";
+
+n shadole =>''=><<''
+    my @m = split m/\s/, $s;
+    $m[-1] = I.d&cole,$m[-1];
+    return sprintf '%dpx %dpx %dpx %s', @m;
+
+n radun =>''=><<''
+    my $o = $G::RADIAN*4;
+    my $swish = $o;
+    $swish *= -1 if $s < 0;
+    my $i = 0;
+    my $ori = $s;
+    $s -= $swish until
+        do {$i++>5&&die"$i muchwind from $ori ... $s";0}
+        ||
+        $o*-1 < $s && $s < $o;
+    return $s
+
+n saypx=>''=><<''
+    return $s if $s =~ /px$/;
+    $s.'px';
+
+n hundr=>''=><<''
+    int($s*100).'%';
+
+n hunine=>''=><<''
+    int($s*9).'%';
+
+n numb=>''=><<''
+    int($s);
+
+n saydeg=>''=><<''
+    int($s).'deg';
+
+n sayurl=>''=><<''
+    "url('$s')"
+
+n wordbreakwords=>''=><<''
+    die "Wordbreaku: $s" if $s ne '1';
+    'break-word';

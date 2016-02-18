@@ -1,0 +1,24 @@
+my @pos = $J;
+my $d = ar.d || 3;
+my @got;
+for (1..$d) {
+    @got = grep{defined} map{ _.El.Duv.ids->{$id} } @pos;
+    last if @got;
+    my @onp = @pos;
+    @pos = map{ @{_.El.Pre.vs||do{sayre "NO VS on _.name";[]}} }@pos;
+    # ^^ eats Js, get C
+    @got = grep{ _.sc.id eq $id || _.sc.J && _.sc.J.id eq $id } @pos;
+    last if @got;
+    @got = map {_.c.J.C}
+        grep{ _.y.cv == 0.9 && do{
+            saybl "Seem to have 9: _.c.J.name _.c.J.bb ".ki $_;
+            saygr "Also $id for _.c.J.id   (_.c.J.name)";
+            sayyl "Hado ".ki $_ for @onp;
+        _.c.J && _.c.J.id eq $id } } @pos;
+    last if @got;
+    # vv feed back as Js
+    @pos = grep{defined} map{_.sc.J} @pos;
+}
+#@got = map{ _.sc.J || die "$id id no J: ".ki $_ }@got;
+@got == 1 || sayre("Not found $id ! ".@got."\n".wdump(4,\@pos)) && return;
+shift @got;

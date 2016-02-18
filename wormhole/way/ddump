@@ -1,0 +1,12 @@
+my $thing = shift;
+my $ind;
+return
+    join "\n",
+    grep {
+        1 || !( do { /^(\s*)hostinfo:/ && do { $ind = $1; 1 } }
+        ...
+        do { /^$ind\S/ } )
+    }
+    "",
+    grep !/^       /,
+    split "\n", Dump($thing);

@@ -1,0 +1,44 @@
+u allsvse
+
+n args =>5=><<''
+    # quack
+
+n jsc =>5=><<''
+    my $args = cs.args || 'A,C,G,T';
+    at.c = 'e';
+    at.s =  "a.".j.l." = function (".$args.") {\n".at.s."};\n";
+
+n js =>5=><<''
+    if (1 || cs.src) {
+        at.tag = 'script';
+        at.type = cs.type || 'text/javascript';
+        at.title = undef;
+        at.src = cs.src if cs.src;
+    }
+    else {
+        at.c = 'o';
+        at.s =   [J.id, 'do', at.s];
+    }
+
+n st =>5=><<''
+    at.tag = 'style';
+    at.type = 'text/css';
+
+n ps =>5=><<''
+    at.c = 'o'; # etc
+    at.s = [J.id, 'ps', at.s];
+    at.pur = 1; # TODO local lumi
+
+n yt =>5=><<''
+    my $n = {};
+    (n.t, my $ma) = split /\?/, $v;
+    $ma = {map{split '=', $_, 2}split '&', $ma};
+    .
+    n.c.autoplay = 1 if ma.t;
+    n.c.start = ma.t if ma.t;
+    .
+    #die "$v   :". wdump $n;
+    at.pur = 1; # TODO local lumi
+    at.c = 'o';
+    at.s = [J.id, yt => [n.t,n.y,n.c,n.sc]];
+    #<iframe width="420" height="315" src="https://www.youtube.com/embed/DyVnwKcb0YY#t=958" frameborder="0" autoplay="1" start="958" allowfullscreen></iframe>

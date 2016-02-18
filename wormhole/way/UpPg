@@ -1,0 +1,112 @@
+u allacgts
+# not here ! ! ! !
+batik:
+    $s = decode_utf8($s); # o
+    `$s`
+
+hesl: %acgt:s c
+    map{qq[$s.>$_ \n ne \n $c.>$_]}
+        grep { $s.>$_ ne $c.>$_ } keys %$c;
+
+db:
+    use Mojo::Pg;
+    my $sJ = A.J && A.J.mo.s || die "no AJmos: A.talk";
+    my $pg = sJ.A.pg ||= Mojo::Pg->new('postgresql://s@/s');
+    my $mJ = A.J.mo.J || die "nomoJ";
+    delete mJ.A.db if mJ.A.db.process ne $$;
+    mJ.A.db ||= do {
+        my $db = $pg->db;
+        db.process = $$;
+        $db
+    };
+
+
+qp:
+    G&db ->query($s,
+    map{!ref && defined $_ ? decode_utf8($_) : $_ }
+    @Me);
+
+tyable:
+    $s ||= 'names';
+    my @col = map{split','} @Me;
+    push @col, 't','y real','c json','sc json';
+    my $colum = join', ',map{s/:/ /g;/ /?$_:"$_ text"} @col;
+    my $q = "create table if not exists $s ($colum)";
+    say "Create: $q from".wdump 2, [$s,@Me] ;
+    G&qp,$q
+
+qh:
+    my @o;
+    G&qp,$s,@Me ->hashes->map(sub{push @o,$_});
+    for my $o (@o) {
+        for my $k (keys %$o) {
+            my $v = $o.>$k;
+            $o.>$k = encode_utf8($v) if defined $v && !ref $v;
+        }    
+    }
+    sayre "".(@o-1)." rows dropped from: @Me\n$s" if !wantarray && @o > 1;
+    wantarray ? @o : $o[0]
+
+Jr:
+    G&qh,<<'',$s
+        select * from names where t = ?
+
+# select and then insert somewhat, osc updates it
+# with o {k=>v}, scalar ref v is sql hack #
+decj:
+    $s = G&hup,$s unless @Me;
+    my $auto = @Me == 1 && $Me[0] eq '';
+    for (c=>sc=>@Me) {
+        $_ || next;
+        $s.>$_ ||= {} if $auto;
+        $s.>$_ && !ref $s.>$_ || next;
+        $s.>$_ = djson $s.>$_;
+    }
+    $s
+encj:
+    $s = G&hup,$s;
+    $s.>$_ = sjson $s.>$_ for 'c', 'sc';
+    $s
+
+pet: %acgt:s o
+    my @ks = sort keys %$o;
+    my @sel;
+    my $sel = "select * from $s where ".join" and ",map{
+        my $z = $o.>$_;
+        ref $z eq 'SCALAR' ? "$_ $$z" : do {
+            push @sel, $z;
+            "$_ = ?"
+        };
+    }@ks;
+    my $n = G&qh,$sel,@sel;
+    $n ||= do {
+        my @ac = grep { ref $o.>$_ ne 'SCALAR' } @ks;
+        my @in = map { $o.>$_ } @ac;
+        my $in = "insert into $s (".join(',',@ac)
+            .") values (".join(",",('?') x @ac)
+            .") returning *";
+        G&qh,$in,@in;
+    };
+    $n
+
+liz: %acgt:s J
+    $s ||= C.c.W;
+    $J ||= C.c.W;
+    G.W.noti.>$s = $J;
+    G.W.lizdb->listen($s) if G.W.lizdb;
+    1
+
+zen:
+    my $m = @Me > 1 || ref $Me[0] ? sjson(\@Me) : $Me[0];
+    if (length $m > 5000) {
+        #G&tyable,mez=><<'' if !G.tabup++;
+        #    f,s,ts:timestamptz:default:now(),mid:serial:primary:key
+        my $h = G&qh,<<'',G.t,$s,$m;
+            insert into mez (f,t,s) values (?,?,?) returning mid
+        sayyl "Length of zen/notify $s: ".length $m;
+        $m = "CCC h.mid";
+    }
+    else {
+        $m = decode_utf8($m);
+    }
+    G&db ->notify($s,$m);

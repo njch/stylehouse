@@ -1,0 +1,44 @@
+my $ip = C.sc.ip = {};
+for my $k (split ' ', C.sc.t) {
+    my $is;
+    $k =~ s/^(\w+):\^$/"$1:".C.sc.Ct/e;
+    $is = $2 if $k =~ s/^(\w+):(.+)$/$1/;
+    $is = C.sc.>C$k if exists C.sc.>C$k;
+    my $p;
+    my ($n,$g,$m) = $k =~ /^(t|y|c|sc)?(.+?)?(\d+)?$/;
+    $n ||= 'sc';
+    # C.$nk.$gk.$tk
+    p.nk = $n;
+    p.tk = $2 if $n eq 'y' && $g =~ s/^([A-Z])(\w+)$/$1/;
+    p.gk = $g if defined $g;
+    die "merge in? ".ki$is if ref $is;
+    # peels inside peels of sc.t
+    if ($is =~ /^(\w+):(.+)$/) {
+        $is =~ s/(?<!\\)\+/,/g;
+        my $i = G&peel,$is;
+        for (qw'in nin') {
+            my $s = $i.>$_ || next;
+            $s =~ s/\;/,/g;
+            $i.>$_ = G&peel,$s;
+        }
+        G&xo,$p,$i;
+    }
+    elsif (defined $is) {
+        my $i;
+        my $neg = $is =~ s/^\!//;
+        $i = 'gt' if $is =~ s/^>//;
+        $i = 'lt' if $is =~ s/^<//;
+        $i.= 'eq' if $is =~ s/^=//;
+        $i = 're' if $is =~ s/^~//;
+        $i ||= 'is';
+        if ($neg && $i eq 'is') {
+            undef $neg;
+            $i = 'not';
+        }
+        p.neg = 1 if $neg;
+        $p.>$i = $is;
+    }
+    delete p.gk if !p.gk;
+    delete p.tk if !p.tk;
+    $ip.>$k = $p;
+}

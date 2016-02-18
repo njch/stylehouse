@@ -1,0 +1,16 @@
+my $way = shift;
+      my $point = shift;
+      return $way->{$point} if exists $way->{$point};
+      my @path = split /\/|\./, $point;
+      my $h = $way;
+      for my $p (@path) {
+          $h = $h->{$p};
+          unless ($h) {
+              undef $h;
+              last;
+          }
+      }
+      return $h if defined $h;
+
+      return undef unless $point =~ /\*/;
+      die "sat rs findy $point";

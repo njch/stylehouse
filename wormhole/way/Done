@@ -1,0 +1,38 @@
+u allacgts
+tC:
+    @Me = ($s,@Me);
+    @Me = ([@Me]) if !ref $Me[0];
+    my @me = @Me;
+    my @o;
+    push @o,
+    map{_.y = {cv=>_.y} if _.y && !ref _.y;
+        _.y ||= {};
+        _.c ||= {};
+        _.sc ||= {};
+        $_ }
+    grep{defined}
+    map {
+        if (ref $_ eq 'ARRAY') {
+            if (!ref $_->[0]) {
+                my $C;
+                (C.t,C.y,C.c,C.sc,my @r) = @$_;
+                C.c = {s=>C.c} if defined C.c && !ref C.c;
+                C.c = delete C.y if ref C.y && !C.c;
+                $C
+            }
+            else {
+                G&tC,@$_;
+            }
+        }
+        elsif (ref $_ eq 'HASH') {
+            _.y || _.c || _.sc || @Me || return {c=>$_};
+            $_
+        }
+        else {
+            sayre "par".wdump 5,["Looking at:",$_,FromMe=>\@me];
+            die "Notgood: ".wdump 3,\@me;
+        }
+    } shift @Me while @Me;
+    wantarray ? @o :
+        @o != 1 ? die "tC not 1: ".wdump(4,\@o) :
+            $o[0];

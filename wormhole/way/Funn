@@ -1,0 +1,59 @@
+u allvse
+n '','','%of:Mo'
+
+n uni =>33,<<''
+    my $c = ref $cs ? $cs : {};
+    my @s;
+    for my $i (1..(c.thi||24)) {
+        my ($b, $dd) = unico(int(d.pcv*1000+$i*100), 1);
+        my $entoi = $1 if $i =~ /(\d)$/;
+        my $pa = $entoi > 7 ? "  " : $entoi > 3 ? " " : "";
+        push @s, $pa.$b;
+    }
+    C.c.s = join '', @s;
+
+n cow =>33,<<''
+    my @col = hexend($cs);
+    my @wo = grep{/^[1-9]$/} split '', d.pcv;
+    my $wi = sub { $_[0] += $_[1]; $_[0] -= 15 if 15 < $_[0]; };
+    my $win = {};
+    my $wc = {qw{r 0 g 1 b 2}};
+    for (0,1,2) {
+         my $wa = $wc->{$_};
+         $win->{$_} = $cs =~ /w$wa-(\d)/ ? $1 : $_;
+    }
+    my $fore = join ' ', @col;
+    unless ($cs =~ /no/) {
+        my $norgb = $cs !~ /r|g|b/;
+        for my $k (keys %$wc) {
+            my $n = $wc->{$k};
+            my $ad = $wo[$win->{$n}];
+            # patch bay ^
+            my $mult = 9;
+            $mult = $1 if $cs =~ /$k(\d+)/;
+            $ad *= ($mult / 9);
+            $wi->($col[$n], $ad) if $norgb || $cs =~ /$k/;
+        }
+    }
+    my $col = hexbe(@col);
+    d.cs.olo.co = $col;
+
+n fs =>33,<<''
+    my ($n1,$n2) = $cs =~ /^($NUM)(?:_($NUM))?/;
+    # n1 already 0.4 if it wants to be tiny
+    my $siz = $n1;
+    if ($n2) {
+        my $no = d.pcv;
+        my $li = (1/$n2);
+        $no -= $li until $no < $li;
+        my $mu = $no / $li;
+        $siz *= $mu if $mu;
+    }
+    d.cs.fsgy.fs = int $siz;
+
+n fsx =>33,<<''
+    my $si = length(d.c.s);
+    my $curve = {40=>6,30=>7,20=>9};
+    for (sort keys %$curve) {
+        d.cs.fsx.fs = $curve->{$_} if $si > $_
+    }

@@ -1,0 +1,18 @@
+use Mojolicious::Lite;
+use MIME::Base64;
+push @{app->static->paths}, '/home/s/styleshed/public';
+app->secrets([readlink '/home/s/stylehouse/msecret']);
+
+my $s = "http://c:10096";
+
+get '/hello' => sub {
+    my $c = shift;
+    $c->render(text => 'Hello World!');
+  };
+
+Rw Tism;
+
+G.clockon = sub {
+    saybl "Starting  G.t     listens: $s";
+    app->start('daemon', '--listen' => "$s");
+};

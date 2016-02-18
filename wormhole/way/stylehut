@@ -1,0 +1,76 @@
+u alljs
+y.at.jsl = 1;
+
+e: %args:e
+    var m = 
+    eval(e);
+    return m
+
+er: %args:e er
+    console.log("xutbang: ", e, er);
+    var ej = {er: {e: e}};
+    er && er.message and ej.er.m = er.message;
+    s.reply(ej);
+    a.m("!"+ (ej.er.m || e));
+
+# see M, also sand
+m: %args:e
+    var d = e.substr(0,1);
+    d == " " and return a.e(e);
+    d == "[" || d == "{"  and return a.om({},$.parseJSON(e),a,{});
+    d == "." and e = '<span style="font-size:66%">'+e+'</span>';
+    a.c(e);
+
+# #msgs message
+c: %args:s e
+    e ||= [];
+    var says = [];
+    $.each(e,function(i,v){
+        typeof v === 'string' || typeof v === 'number' and says.push(v);
+        else {
+            says.push('%'+typeof v);
+        }
+    });
+    a.log ||= [];
+    a.log.unshift([s,e]);
+    a.lim(a.log,-9);
+    says.length and s = s+': '+says.join(' ');
+    $('#msgs').prepend(s+"\n");
+
+lim: %args:s lim cb
+    var len = s.length;
+    lim ||= 9;
+    var rev;
+    lim < 0 and rev = 1; lim *= -1;
+    var rem = [];
+    while (len > lim) {
+        var v;
+        rev and v = s.pop()
+        else {  v = s.shift() }
+        cb and cb(v);
+        rem.push(v);
+        len--;
+    }
+    rem.length and return rem
+
+yl: %args:delay func
+    setTimeout(func, delay);
+
+ks: %args:s
+    var ks = [];
+    for (var k in s) {
+        ks.push(k);
+    }
+    return ks.join(',');
+
+peel:
+    var c = {};
+    !s.length and return c
+    $.each(s.split(','), function(i,kv) {
+        kv = kv.split(':');
+        var k = kv[0];
+        var v = kv[1];
+        v.match('^-?\\\d+.\\\d+$') and v = v * 1
+        c[k] = v;
+    });
+    return c

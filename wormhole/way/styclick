@@ -1,0 +1,83 @@
+u alljs
+y.at.jsl = 1;
+
+cl: %args:ev ws
+      if (keyjam) {
+          return;
+      }
+      setTimeout(function () { keyjam = 0; }, keyjamfor);
+      keyjam = 1;
+
+      var d = {};
+      a.dscam(d,ev);
+
+      d.x = ev.clientX;
+      d.y = ev.clientY;
+      d.pagex = window.pageXOffset;
+      d.pagey = window.pageYOffset;
+
+      var tag = $(ev.target);
+      if (tag.type == 'range') {
+          d.rval = tag.value
+      }
+
+      a.entag(d, tag);
+      a.ethro(d, ws);
+
+entag: %args:d tag
+      d.name = tag.attr('name');
+      var p = [];
+      while (tag.length) {
+          var nam = tag.prop('tagName');
+          var t = tag.attr('t');
+          var cv = tag.attr('cv');
+          var id = tag.attr('id');
+          if (nam === 'WW') {
+              d.W = id;
+              break;
+          }
+          if (cv || t) {
+              p.push([t,cv]);
+          }
+          tag = tag.parent();
+      }
+      d.p = p.reverse();
+
+ethro: %args:d ws
+      if (d.W) {
+          var conin = conz[d.W];
+          if (conin) {
+              ws = C[conin];
+          }
+      }
+      if (!ws) {
+          ws = w;
+      }
+      ws.reply({event: d});
+
+ke: %args:ev ws
+      if (keyjam) {
+          return;
+      }
+      setTimeout(function () { keyjam = 0; }, keyjamfor);
+      keyjam = 1;
+
+      var d = {};
+      a.dscam(d,ev);
+      d.which = ev.which;
+      if (d.which == 16 || d.which == 17 || d.which == 18) {
+          return;
+      }
+
+      d.k = String.fromCharCode(ev.keyCode);
+
+      ws ||= w;
+
+      ws.reply({event: d});
+
+dscam: %args:d ev
+    d.type = ev.type;
+    d.S = 0+ev.shiftKey;
+    d.C = 0+ev.ctrlKey;
+    d.A = 0+ev.altKey;
+    d.M = 0+ev.metaKey;

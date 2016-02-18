@@ -1,0 +1,9 @@
+my @f = map { map{chomp;$_} `cat n/W/EarlyCoast.${_}.c` } 20..29;
+for (@f) {
+    my $d = $_;
+    $d =~ s/\/[^\/]+$//sg;
+    $d = "n/$d";
+    `mkdir -p $d` if !-d $d;
+    `cp public/$_ $d`;
+    saybl "$d\n$_";
+}

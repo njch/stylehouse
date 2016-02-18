@@ -1,0 +1,21 @@
+return if !G.c.b;
+my $pins = {};
+###
+my $self = J.name;
+$pins->{$_}->{$self} = 1 for keys %{J.pins};
+while (my ($k,$v) = each %{J.inJ}) {
+    $v eq v.mo.J || die "v.name not mo";
+    v.pins || die "$k has no pins...";
+    $pins->{$k}->{$k} = 1;
+    $pins->{$_}->{$k} = 1 for keys %{v.pins};
+}
+my $la = J.pinla ||= {};
+my $new = [grep { !$la.>$_ } keys %$pins];
+if (@$new) {
+    G.GW || return;
+    #say "pin listenings: + @$new";
+    $A = G.GW.lA || die "GW no .lA :".wdump 2, G.W;
+    Rw AddPins $A $J $new;
+    $la.>$_ = 1 for @$new;
+}
+J.supins = $pins;

@@ -1,0 +1,85 @@
+# may +atomb? without compare you are dead
+u allacgts
+n last2here =>''=><<'',{acgt=>'last,r,here'}
+    here.x  = last.x = r.x if exists r.x;
+    here.y = last.y = r.y if exists r.y;
+    here.rad = 4*$G::RADIAN * r.spun if exists r.spun;
+    here.zoom = r.zoom if defined r.zoom;
+    .
+    I.d&atom,$last,$here;
+    .
+    here.spin = r.curve if exists r.curve; # on the level
+    #
+    here.x = I.d&ron,here.x;
+    here.y = I.d&ron,here.y;
+    here.rad = I.d&ron,here.rad;
+
+n atom =>''=><<'',{acgt=>'last,here'}
+    # spacin
+    here.dist = here.cv - last.cv;
+    # twistin spin inherit
+    here.spin += last.spin;
+    # scale local-local change
+    here.rad += here.spin * here.dist * 10;
+    # builds rad on rad
+    here.rad += last.rad;
+    # distort space + more ways, orbital
+    # chuck skeletons for mods
+    # adapt M meta for what kinda places things want
+    # into constellations of high level things
+    # atomised hairs
+    here.zoom ||= last.zoom;
+    here.dist *= here.zoom if here.zoom;
+    # and move
+    here.x = last.x + (here.rad ? cos(here.rad) : 0) * here.dist;
+    here.y = last.y + (here.rad ? sin(here.rad) : 1) * here.dist;
+
+n here2geo =>''=><<'',{acgt=>'here'}
+    my $geo = {};
+    geo.rad = here.rad;
+    # unwind (into...)
+    my $o = $G::RADIAN*4;
+    my $swish = $o;
+    $swish *= -1 if geo.rad < 0;
+    my $i = 0;
+    geo.rad -= $swish until
+        do {$i++>5&&die"$i muchwind".ki$here;0}
+        ||
+        $o*-1 < geo.rad && geo.rad < $o;
+    # pan to hemisphere...
+    # from O- is it in the left hemisphere etc
+    my $rad = geo.rad;
+    my $radleg = -$G::RADIAN;
+    $radleg *= -1 unless $rad < -$G::RADIAN && $rad > $G::RADIAN;
+    $rad -= $radleg;
+    geo.radial = I.d&ron,$rad;
+    geo.x = here.x;
+    geo.y = here.y;
+    geo.ab = '100' if 1; # w=h=100,ab=1
+    geo.ab = '1' if here.swy eq 'atom';
+    # transform about
+    geo.tro = '0 0.5'; # midleft
+    geo.tro = '0 0' if 0; # topleft
+    #
+    my $fo = sub { (shift() * 100).'%' };
+    geo.tro = join' ',map{$fo->($_)}split' ',geo.tro;
+    .
+    I.d&geo2lin,$geo;
+
+n geo2lin =>''=><<'',{acgt=>'geo'}
+    # shove com toeget
+    # OR SOMETHING
+    # loses its compressibility as csz
+    my @am = qw'a? ab  x x  y y  r radial  s scale';
+    my @l;
+    while (@am) {
+        my $k = shift @am;
+        my $v = shift @am;
+        my $sens = $k =~ s/\?$//;
+        push @l, ($sens && $k).$geo->{$v} if exists $geo->{$v};
+    }
+    my $l = join ' ', @l;
+    $l
+
+n ron =>''=><<''
+    0.0001 * int(10000*$s)

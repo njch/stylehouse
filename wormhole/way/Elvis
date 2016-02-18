@@ -1,0 +1,71 @@
+my $wtf = Rw wtfch $Jb:J.bb $Yb:Y.bb;
+
+Y.tw ||= {};
+Y.lo = {};
+
+for my $mo (qw'gone diff new') {
+    for my $r (keys %{$wtf->{$mo}}) {
+        my $j = Rw r2j $r $J;
+        j.r = $r;
+        j.lt = j.cv."\t".j.t;
+        if (!j.lt=~/\S/) {
+            die "Got $r =>   ".ki $j;
+        }
+
+        if ($mo eq 'gone') {
+            delete Y.bb->{j.r};
+            delete Y.tw->{j.lt}->{j.style};
+        }
+        else {
+            Y.bb->{j.r} = j.s;
+            Y.tw->{j.lt}->{j.style} = j.s;
+        }
+        Y.lo->{j.lt}->{$mo}->{j.style} = j.s;
+    }
+}
+
+Y.tv ||= {};
+Y.v ||= {};
+Y.go = {};
+my $same = 1;
+for my $k (keys %{Y.lo}) {
+    my $tf = Y.lo->{$k};
+    my $cs = Y.tw->{$k};
+    if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {
+        $same = 0; # new line to make
+    }
+    if (tf.gone && !keys %$cs) {
+        $same = 0; # line to disappear
+        my $C = Y.go->{$k} = delete Y.tv->{$k};
+        my ($cv,$t) = $k =~ /^(.+?)\t(.*)$/;
+        delete Y.v->{$cv}->{$t};
+        delete Y.v->{$cv} unless keys %{Y.v->{$cv}};
+    }
+    if (tf.diff || tf.new) {
+        keys %$cs || die 'nokeys';
+        my ($cv,$t) = $k =~ /^(.+?)\t(.*)$/;
+        defined $cv || die "twas $k";
+        my $foam = sub {
+            my $C = shift;
+            %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>{%$cs});
+            C.c.s = delete C.sc->{''} if exists C.sc->{''};
+        };
+        $foam->(Y.tv->{$k} ||= {});
+        $foam->(Y.v->{$cv}->{$t} ||= {});
+    }
+}
+if (!$same) {
+    Y.vs = [];
+    for my $k (sort keys %{Y.tv}) {
+        my $C = Y.tv->{$k} || die "wtf $k";
+        push @{Y.vs}, $C;
+    }
+    #sayre "vs re: ".@{Y.vs};
+}
+
+Y.ra = Rw ratio $o:wtf.sami $t:wtf.tot;
+Y.rato = wtf.tot;
+Y.revs = !$same;
+
+
+$Y;

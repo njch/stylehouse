@@ -1,0 +1,21 @@
+sub {
+    my ($y,@b) = @_;
+    my @a = (['',$y,'']);
+    for my $e (@b) {
+        my @na;
+        for my $l (@a) {
+            for my $i (ref $e ? @$e : $e) {
+                my $el = [@$l];
+                $i =~ s/^(.*)\^\^// ||
+                $i =~ s/^(.*)\^/$1/ ||
+                $i =~ /^(.)/;
+                $el->[0] .= $1;
+                $el->[2] = join '-', grep{$_}$el->[2],$i;
+                push @na, $el;
+            }
+        }
+        @a = @na;
+    }
+    die"noper @b" if @a == 1 && $a[0]->[0] eq '';
+    @a;
+};

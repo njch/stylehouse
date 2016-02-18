@@ -1,0 +1,31 @@
+use Mojolicious::Lite;
+use MIME::Base64;
+push @{app->static->paths}, '/home/s/styleshed/public';
+app->secrets(["nothing"]);
+
+G.c.listen = readlink('listen') if -l 'listen';
+my $s = G.c.listen || "s:10094";
+$s = "http://$s" if $s !~/^http:\/\//;
+
+
+
+get '/' => sub {
+    my $c = shift;
+    $c->reply->static("index\.html");
+};
+
+Rw Tism;
+
+websocket '/s' => sub {
+    my $mojo = shift;
+    sayyl "Connect!";
+    die "No GWebsock yet" unless G.Websock;
+    G.Websock->($mojo);
+};
+
+
+
+G.clockon = sub {
+    saybl "Starting  G.t     listens: $s";
+    app->start('daemon', '--listen' => "$s");
+};

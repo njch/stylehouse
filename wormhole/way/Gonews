@@ -1,0 +1,19 @@
+# look at hosts->host_pins table, invents from Gohup
+if (!ar.do) {
+    push @{J.todo||=[]}, ar.c || die "No arc! ".wdump 1, $ar;
+    Rw wayty $J $p=Gonews $do=1 $woping=3oe;
+    return;
+}
+#
+my @pins = uniq map{_.t} @{delete J.todo};
+my $where = join' or ',map{"t = ?"}@pins;
+my $wh={};
+acum $wh, _.w, _.t for G&qh,<<''.$where,@pins;
+    select * from gw_pin where 
+# Go
+while (my ($Wid,$pins) = each %$wh) {
+    my $m = "Pinup;".join',',@$pins;
+    say "$Wid -> $m";
+    G&zen,$Wid,$m
+}
+saygr "No remotes" if !keys %$wh;

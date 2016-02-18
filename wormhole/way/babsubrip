@@ -1,0 +1,34 @@
+my $l = oA.subline;
+$l -= 4; # sub head lines
+my @l = split "\n", D.bab;
+my $st = $l[$l];
+return if $st =~ /Load\(/;
+if ($st =~ /<<['"](\w*)['"]/) {
+    my $mark = $1;
+    $st =~ /^\S/ || die "first line start space: $st";
+    $l++;
+    my $ind;
+    my @up;
+    while (1) {
+        my $s = $l[$l];
+        last unless $s =~ /\S/ || $mark;
+        last if $mark && $s =~ /^$mark$/;
+        $ind = $1 if !defined $ind
+            && ($s =~ /^(    ).*\S+/ || die "no start ind $s");
+        $mark || $s =~ /^$ind(.+)$/ || last;
+        push @up, $1;
+        $l++;
+    }
+    my $co = join '', map{"$_\n"} @up;
+    $co =~ s/\n\s*\.\s*\n/\n\n/sg;
+    @$N == 1 || die "allcode in swa";
+    my $c = $N->[0]->[2];
+    if (!ref $c) {
+        $c = $N->[0]->[2] = {s=>$co};
+    }
+    my $ck = 's';
+    #$ck = $1 if $st =~ /(\w+)=><<['"](\w*)['"]/; # confuse (y)=>$s
+    my $o = $c->{$ck};
+    die "Swap ".wdump [$c,$ck,$o=>FOR=>$co,[@up]] unless split("\n", $o) == @up;
+    $c->{$ck} = $co;
+}

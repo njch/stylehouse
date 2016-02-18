@@ -1,0 +1,49 @@
+u allacgts
+
+n pin =>''=><<'',{acgt=>'pin,way'}
+    I.pwin || die "nopwin from pin";
+    I.pwin->($pin,$way);
+
+n pon =>''=><<'',{acgt=>'pin,way,s'}
+    I.pwin || die "nopwin from pin";
+    I.pwin->($pin,$way,{et=>$s});
+
+n sorp =>''=><<'',{acgt=>'pin'}
+    I.pwin || die "nopwin from pin";
+    sort { I.pwin->($pin,$a) cmp I.pwin->($pin,$b) } @Me;
+
+n norp =>''=><<'',{acgt=>'pin'}
+    I.pwin || die "nopwin from pin";
+    sort { I.pwin->($pin,$a) <=> I.pwin->($pin,$b) } @Me;
+
+# non acgts
+# ref = T makes it look for jointed rest of path in tiedinto {}
+# then Tied hashes make connections, collapses the feely data mesh
+n pwin =>''=><<'',{args=>'pin,way,set'}
+    if (exists $way->{$pin}) {
+          my $o = $way->{$pin};
+        $way->{$pin} = set.et if exists set.et;
+        delete $way->{$pin} if set.de;
+        return $o;
+    }
+    my @path = split /\//, $pin;
+    my $h = $way;
+    my $last;
+    for my $p (@path) {
+        if (ref $h ne 'HASH' && ref $h ne 'G') {
+            undef $last;
+            undef $h;
+            last;
+        }
+        $last = [$h,$p];
+        $h = $h->{$p};
+    }
+    if ($last) {
+        my ($he,$pi) = @$last;
+        $he->{$pi} = set.et if exists set.et;
+        delete $he->{$pi} if set.de;
+    }
+    return $h if defined $h;
+    . 
+    return undef unless $pin =~ /\*/;
+    die "sat rs findy $pin";

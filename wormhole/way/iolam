@@ -1,0 +1,35 @@
+G.cv ||= 3;
+G.pid ||= $$;
+my $proc = 'proc';
+my $n = "$proc/G.cv";
+`mkdir $n` if !-d $n;
+my $pid = $$;
+my $safe = sub {
+    my $s = shift;
+    $s =~ /^proc\/(\d+\/)?\d+\.\w+$/ || die "unsafe: $s";
+    $s
+};
+my $hand;
+if (!-t STDOUT) {
+    for (qw'in out err') {
+        my $k = $_;
+        my @o = grep{-f $_}map{"$_/G.pid\.$k"}$proc,$n;
+        @o||next;
+        @o<=1||die"onso@o";
+
+        my $wh = /in/ ? \*STDIN : /out/ ? \*STDOUT
+            : /err/ ? \*STDERR : die'whatch';
+        my $i = /in/ ? '<' : '>';
+        close($wh) || die "clope $_  @o: $!";
+
+        # origin moves into cv also
+        my $mv = G.pid == $$;
+        G.pid = $$;
+        my $now = $safe->("$n/G.pid\.$k");
+        $mv ? map{`mv $_ $now`} grep $safe, @o
+            : `touch $now`;
+
+        open($wh,$i,$now) || die "bni $now: $!";
+    }
+}
+say "Is G.t $pid";

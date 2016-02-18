@@ -1,0 +1,54 @@
+my $sc = D.sc;
+my $ip = sub {
+    my ($s,$c) = @_;
+    my $z;
+    $s = G&peel,$$s if ref $s eq 'SCALAR';
+    my $n;
+    if (ref $s eq 'REF') {
+        # do s.do
+        $s = $$s;
+        $n = $s;
+        s.ip || die "sip no ref";
+        $s = {map{$_=> \s.ip.>$_ }keys %{s.ip}};
+    }
+    # n.all keeps going after a pass--
+    my $pass = 1;
+    EE: for my $k (keys %$s) {
+        $pass == 1 || n.all || return 0;
+        my $y = $s.>$k;
+        my $x = $c.>$k;
+        if (ref $y eq 'REF') {
+            $y = $$y;
+            if (exists y.nk) {
+                $x = $c;
+                for my $k (grep{defined}y.nk,y.gk,y.tk) {
+                    $pass--, next EE unless
+                        ref $x eq 'HASH' && exists $x.>$k;
+                    $x = $x.>$k;
+                }
+            }
+            my $wa = $pass;
+            !defined $x || $pass-- if y.ndef;
+            defined $x || $pass-- if y.def;
+            y.is eq $x || $pass-- if exists y.is;
+            y.not ne $x || $pass-- if exists y.not;
+            y.in->{$x} || $pass-- if y.in;
+            !y.nin->{$x} || $pass-- if y.nin;
+            $x > y.gt || $pass-- if exists y.gt;
+            $x < y.lt || $pass-- if exists y.lt;
+            $x >= y.gteq || $pass-- if exists y.gteq;
+            $x <= y.lteq || $pass-- if exists y.lteq;
+            $x =~ y.re || $pass-- if exists y.re;
+            $pass = $pass < $wa ? $wa : $pass-1
+                if y.neg;
+        }
+        elsif ($y ne $c.>$k) {
+            $pass--;
+        }
+    }
+    $pass == 1
+};
+ref sc.ip eq 'HASH' || die "NOIP ".ki $D;
+return 0 if !G&ip,\$sc,$C;
+#return 0 if !$ip->(\$sc,$C);
+1

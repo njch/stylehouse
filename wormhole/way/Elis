@@ -1,0 +1,72 @@
+E.c.trJ eq $J && return
+    Rw clack Doublysendo;
+E.c.trJ = $J;
+J.ev.av && sayre("On to J.name: J.ev.av") && # on arrival
+    Rw J.ev.av;
+
+J.ev.o && A.J ne $J && return
+    saygr("othero: J.ev.o: A.J.name to J.name  C.sc.J.name  E.sc.J.name") &&
+    Rw J.ev.o;
+
+J.ev.li && return
+    saygr("JevLi: J.ev.li: A.J.name to J.name  ---  C.sc.J.name  E.sc.J.name") &&
+    Rw J.ev.li;
+
+my @done;
+my @be = $E;
+my @not;
+being: while (@be) {
+    my $E = shift @be;
+    if (my $f = J.ev.f) {
+        $f = {split':',$f,2} if !ref $f;
+        for my $pi (keys %$f) {
+            E.sc.pi eq $pi || next;
+            my $d = $f->{$pi};
+            my $pin = ref $d ? die "ref f d in $pi" : $d;
+            A.V&E &&
+            sayyl "Elis: $pi to $pin";
+            push @done, $E;
+            Rw $pin + $E;
+            next being;
+        }
+    }
+    if (my $t = J.ev.t) {
+        say "J.name t for ".ki $E;
+        for my $k (keys %$t) {
+            E.t eq $k || next;
+            my $pin = $t.>$k;
+            if (ref $pin) {
+                die "More: ".ki $pin if 's' ne join' ',keys %$pin;
+                for my $i (keys %$pin) {
+                    $i eq 's' || die "More to $k/$i: ".ki $t;
+                    my $do = $pin.>$i;
+                    $do eq 'M' || die "More to $k/$i: $do";
+                    my $M = djson E.c.s;
+                    push @be, @$M;
+                    sayyl "MUltied E.t for ".@$M
+                        ."  (".join', ',map{ref$_ eq'HASH'?
+                        _.t : ki $_}@$M;
+                }
+                next being;
+            }
+            push @done, $E;
+            say "t match: $k";
+            Rw $pin + $E;
+            next being;
+        }
+    }
+    push @not, $E;
+}
+return if !@not;
+for my $E (@not) {
+    if (E.sc.was) {
+        saybl "E.t was: $_ ".E.c.s;
+        next;
+    }
+    # double take aft writedown
+    if (J.ev.tr) {
+        Rw J.ev.th;
+        next;
+    }
+    Rw clack + $E Elisi;
+}

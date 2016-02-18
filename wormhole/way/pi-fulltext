@@ -1,0 +1,29 @@
+C.sc.nspc = 0.04;
+C.c.pwth = 'somewhere';
+sayyl "Wegot ".wdump [J.cv,$s];
+# 7
+my @tex = split /\n/, $s;
+
+my $surge = int(100 * (J.cv - 0.7));
+# add interesting o to tex 0.7ishs as surge goes
+(my $one, my @o) = @tex if J.cv < 0.8;
+@tex = $one if @o;
+my $urge = $surge / 2;
+$urge = 0; # TODO colours and
+for (@o) {
+    last if @tex >= $urge;
+    push @tex, $_ if /^#/
+    || /R\./
+    || /\-\>/
+    || /w\ /;
+}
+
+
+my $lim = ";height:10%;z-index:-5;overflow-y:scroll" if @tex > 19;
+$lim .= ";background:rgba(70,40,0,0.3);" if J.cv >= 0.8;
+
+my $fs = int(50 + $surge * 7);
+$fs = "font-size:$fs%;";
+
+my $se = join"\n", @tex;
+n line=>0.1=>{s=>$se}, {tag=>pre=>css=>"margin:0.2em;background:rgba(30,30,60,1);$fs-webkit-filter:hue-rotate(80deg);$lim"}

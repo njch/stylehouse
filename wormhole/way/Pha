@@ -1,0 +1,191 @@
+u allof
+n '','','%of:I'
+
+n pha =>''=><<'',{acgt=>'J,name'}
+    # tracked being
+    # temporal phatness, per suJ (encap $M surges within)
+    if (my $x = J.phy->{$name}) {
+        sayre "J.name 's $name was re entrant";
+        I.d&end,$x;
+        # end - maybe new stuffright as some random part of this process
+        # hold yay minutes of changes in 10 second groups, etc
+    }
+    # bz multicasts
+    my $x = J.phy->{$name} = {};
+    x.begin = hitime();
+    x.name = $name;
+    x.J = $J;
+    x.bb = {};
+    x.ord = [];
+    #x.tim = {};
+    #x.wtf = {}; # F grab
+    #x.ap = sub{}; # bz do aftering
+    x.qui = 1;
+    x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
+    $x;
+
+# abandonupgrade to what's there already, early exity lop
+n bandon =>''=><<''
+    delete s.J.phy->{s.name};
+    s.abandoned = 1;
+    if (my $x = s.head) {
+        I.d&as,$s,$x;
+    }
+    I.d&end,$s
+
+n as =>''=><<'',{acgt=>'s,x'}
+    for (qw'begin bb ord tim wtf') {
+         exists $x->{$_} || next;
+         my $v = $x->{$_};
+         $v = [@$v] if ref $v eq 'ARRAY';
+         $v = {%$v} if ref $v eq 'HASH';
+         $s->{$_} = $v;
+    }
+
+n end =>''=><<''
+    my $y = s.J.phl->{s.name} ||= {name=>s.name, l=>[]};
+    s.ended = hitime();
+    delete s.J.phy->{s.name};
+    shift @{y.l} while @{y.l} > 5;
+    # layers ^ rolling in time index .r -> the y.l
+    # so last phase of $name can be found?
+    push @{y.l}, $s;
+    if (s.bb) {
+        my $w = @{y.l};
+        y.l_bb->{$_} = $w for keys %{s.bb};
+    }
+    # somewhere thinks about what happened
+    $y
+
+n exactl =>''=><<'','%l:#c un-ins things from J'
+    my $q = shift;
+    my $y = I.d&end,$s;
+    my $cur = y.l->[-1];
+    my $last = y.l->[-2];
+    $cur eq $s || die "sidf$cur $s";
+    last.bb ||= {};
+    .
+    my $wtf = I.d&wtfch,cur.bb,last.bb;
+    .
+    delete s.J.bb->{$_} for keys %{wtf.gone};
+    .
+    # see s.extill, time passing interesto...
+    # churn stats like 30% of last disappear, 20% new
+    s.wtf = $wtf;
+    $wtf;
+
+# J future, Y saves
+n wtfch =>''=><<'',{acgt=>'Jb,Yb',l=>'#c diff J'}
+    my $wtf = {};
+    wtf.same = 1;
+    $wtf->{$_} = {} for qw'new diff gone';
+    .
+    for (sort keys %$Jb) {
+        if (!exists $Yb->{$_}) {
+            wtf.new->{$_} = $Jb->{$_};
+            wtf.same = 0;
+        } 
+        elsif ($Yb->{$_} ne $Jb->{$_}) {
+            wtf.diff->{$_} = $Jb->{$_};
+            wtf.same = 0;
+        }
+        else {
+            wtf.sami++;
+            wtf.still->{$_} = $Jb->{$_};
+        }
+        wtf.tot++;
+    }
+    for (grep { !exists $Jb->{$_} } sort keys %$Yb) {
+        wtf.gone->{$_} = $Yb->{$_};
+        wtf.same = 0;
+    }
+    $wtf;
+
+# the mess C-er
+# safe vs doing - sheets of J->Y, dont drop any frames
+# where we start being onlies
+n Elvis =>''=><<'',{acgt=>'J,Y',l=>'#c'}
+    my $wtf = I.d&wtfch,J.bb,Y.bb;
+    .
+    Y.tw ||= {};
+    Y.lo = {}; # compile
+    .
+    for my $mo (qw'gone diff new') {
+        for my $r (keys %{$wtf->{$mo}}) {
+            my $j = I.d&rJ,$r,$J;
+            j.r = $r;
+            j.lt = j.cv."\t".j.t;
+            if (!j.lt=~/\S/) {
+                die "Got $r =>   ".ki $j;
+            }
+            if ($mo eq 'gone') {
+                delete Y.bb->{j.r};
+                delete Y.tw->{j.lt}->{j.style};
+            }
+            else {
+                Y.bb->{j.r} = j.s;
+                Y.tw->{j.lt}->{j.style} = j.s;
+            }
+            Y.lo->{j.lt}->{$mo}->{j.style} = j.s;
+        }
+    }
+    .
+    Y.tv ||= {};
+    Y.v ||= {};
+    Y.go = {};
+    my $same = 1;
+    for my $k (keys %{Y.lo}) {
+        my $tf = Y.lo->{$k};
+        my $cs = Y.tw->{$k};
+        if (tf.new && !tf.gone && !tf.diff && keys %{tf.new} == keys %$cs) {
+            $same = 0; # new line to make
+        }
+        if (tf.gone && !keys %$cs) {
+            $same = 0; # line to disappear
+            my $C = Y.go->{$k} = delete Y.tv->{$k};
+            my ($cv,$t) = $k =~ /^(.+?)\t(.*)$/;
+            delete Y.v->{$cv}->{$t};
+            delete Y.v->{$cv} unless keys %{Y.v->{$cv}};
+        }
+        if (tf.diff || tf.new) {
+            keys %$cs || die 'nokeys';
+            my ($cv,$t) = $k =~ /^(.+?)\t(.*)$/;
+            defined $cv || die "twas $k";
+            my $foam = sub {
+                my $C = shift;
+                %$C = (t=>$t,y=>{cv=>$cv},c=>{},sc=>{%$cs});
+                C.c.s = delete C.sc->{''} if exists C.sc->{''};
+            };
+            $foam->(Y.tv->{$k} ||= {});
+            $foam->(Y.v->{$cv}->{$t} ||= {});
+        }
+    }
+    if (!$same) {
+        Y.vs = [];
+        Y.kvi = {};
+        Y.cvi = {};
+        Y.te = {};
+        my $i = 0;
+        for my $k (sort keys %{Y.tv}) {
+            my $C = Y.tv->{$k} || die "wtf $k";
+            push @{Y.vs}, $C;
+            Y.kvi->{$k} = $i;
+            Y.cvi->{C.y.cv} ||= $i;
+            Y.te->{C.t}->{C.y.cv} = $C;
+            $i++;
+        }
+    }
+    .
+    Y.ra = I.d&ratio,wtf.sami,wtf.tot;
+    Y.rato = wtf.tot;
+    Y.revs = !$same;
+    .
+    $Y;
+
+
+
+n Elj =>''=><<'',{acgt=>'J,name',l=>'#c with a self'}
+    J.El->{$name} ||= Rw Jto - $le:J $name;
+
+n El =>''=><<'',{acgt=>'J,name',l=>'#c without a self'}
+    J.El->{$name} ||= {bb=>{},name=>$name};

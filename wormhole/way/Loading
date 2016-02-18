@@ -1,0 +1,13 @@
+my @l;
+push @l, keys %{G.T} if G.T;
+push @l, keys %{G.Tfor} if G.Tfor;
+@l = uniq @l;
+for my $k (sort @l) {
+    my $f = G.Tfor->{$k} || "w/$k";
+    my $s = -s $f;
+    $s || sayre("Juynk in tied hash? Not $f") && next;
+    G.Tt->{$k} eq $s && next;
+    #sayyl "Loading: $k";
+    G.Tt->{$k} = $s;
+    G.T->{$k} = LoadFile($f);
+}

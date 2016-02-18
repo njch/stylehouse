@@ -1,0 +1,30 @@
+my $e;
+e.thy->{_.sc.gk} = _.sc.cssk for grep {_.sc.cssk} @$N;
+my @pooling = (
+    {k=>transform=>also=>[qw'rotate scale']},
+    {k=>filter=>also=>[qw'
+        blur saturate brightness hue-rotate
+        sepia invert grayscale
+    ']},
+);
+for my $g (@pooling) {
+    for my $al (@{g.also}) {
+        my $lie = g.k.'-'.$al;
+        e.roi->{$lie} = [g.k,$al];
+    }
+}
+
+u alljse
+n css =>58,<<'',{any=>1,s=>$e}
+    $.each(s.thy,function(k,v){
+        C.sc[k] and C.sc.css[v] = C.sc[k];
+    });
+    $.each(s.roi,function(k,v){
+        var o = C.sc.css[k];
+        !o and return;
+        var ve = v[0];
+        var ss = v[1];
+        C.sc.css[ve] ||= {};
+        C.sc.css[ve][ss] = o;
+        delete C.sc.css[k];
+    });

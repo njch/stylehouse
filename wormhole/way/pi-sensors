@@ -1,0 +1,12 @@
+y.at.ws = 1;
+J.diel += 0.4;
+n diel =>1=>"D ".int(J.diel)
+Atime(2) || return;
+my $com = "sensors";
+$com = "ssh v '$com'" if `hostname` !~ /v/;
+my @l = `$com`;
+my @k = qw'pi co no';
+@l = grep{$_} map{/^(Core 0|temp1):\s+(\S+)/ && $2} @l;
+s/^.*?(\d+).*$/$1/ for @l;
+$_ = shift(@k).": $_   " for @l;
+m yolt=>'',$_ for @l;

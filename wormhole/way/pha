@@ -1,0 +1,65 @@
+my $name = ar.k || shift @{ar.m};
+
+if (my $xx = J.phy->{$name}) {
+    # re endtrant
+    xx.end->();
+    # end - maybe new stuffright as some random part of this process
+}
+for my $outx (grep {_.outsidey} values %{J.phy}) {
+   # something? # perhaps a non, fire when no other phy
+}
+
+J.phy ||= {}; # phases
+
+my $x = J.phy->{$name} = {
+   begin => hitime(),
+   name => $name,
+   bb => {},
+   ord => [],
+   #tim => {},
+   #wtf => {}, # F grab
+   #ap => sub{}, # bz do aftering
+   qui => 1,
+};
+x.head = J.phl->{$name}->{l}->[-1] if J.phy->{$name};
+x.abandon = sub { # upgrades what's there already, early exity lop
+    my $why = shift;
+    delete J.phy->{$name};
+    x.abadoned = $why || 1;
+    if (my $xx = x.head) {
+        x.as->($xx);
+    }
+    x.end->();
+};
+x.as = sub {
+    my $ox = shift;
+    for (qw'begin bb ord tim wtf') {
+         exists $ox->{$_} || next;
+         my $v = $ox->{$_};
+         $v = [@$v] if ref $v eq 'ARRAY';
+         $v = {%$v} if ref $v eq 'HASH';
+         $x->{$_} = $v;
+    }
+};
+x.end = sub {
+    my $y = J.phl->{$name} ||= {name=>$name, l=>[]};
+    x.ended = hitime();
+    delete J.phy->{$name};
+    push @{y.l}, $x;
+    shift @{y.l} while @{y.l} > 5;
+    # layers ^ rolling in time index .r -> the y.l
+    # so last phase of $name can be found?
+    if (x.bb) {
+        my $w = @{y.l};
+        y.l_bb->{$_} = $w for keys %{x.bb};
+    }
+    # somewhere thinks about what happened
+    return $y;
+};
+x.exactl = sub {
+    my $q = shift;
+    my $y = x.end->();
+    Rw ph_exactl $J $y $q;
+};
+# ensure phase reset with _after_do
+$x;

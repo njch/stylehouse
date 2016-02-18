@@ -1,0 +1,91 @@
+u allacgts
+
+# pushed to
+n taccept =>'',<<''
+    my $f = C.c.tfile;
+    (my $d = $f) =~ s/\/[^\/]+?$//;
+    `mkdir -p $d` unless -d $d;
+    my $got = C.c.st.got;
+    say "Accepting for $f: ".wdump 2,$got;
+
+    return sayre("Ref leaky ".wdump 6, $got) && sleep 6 if
+        G&oleak,$got,4;
+    DumpFile($f, $got);
+
+n eeply =>'',<<'',{acgt=>'s,K'}
+    C.c.st.got->{$K} = $s;
+    my $e = C.c.st.exp->{$K};
+    .
+    is_deeply($s, $e, $K)
+    && return;
+    .
+    return sayre wdump 3, {"Got for $K: "=>$s,"Expected: "=>$e}
+        if ref $s ne 'ARRAY';
+    .
+    my $i = 0;
+    # chuck into two pis, present W with timer slider
+    while (1) {
+        my $el = $e->[$i];
+        my $l = $s->[$i++];
+        $l || $el || last;
+        if ($l eq $el) {
+            say "Same: $l";
+        }
+        else {
+            sayre "Got:  $l";
+            saybl "Exp:  $el";
+        }
+    }
+
+
+n testNews =>'',<<''
+    my $J = C.c.J;
+    my $st = C.c.st;
+    my $oJ = J.El->{$s};
+    my $rv = oJ.rv;
+    my $rlk = "J.name:$s";
+    my $rl = st.ts.rls->{$rlk} || {};
+    $rl = {} if C.c.norl;
+    .
+    sayre "go rl.c to rv.c";
+    my $r = Rw scd $rl $rv;
+    #my $o = Rw ZNews sold $sc:r.oldz if r.oldz;
+    my $n = Rw ZNews news $sc:r.z;
+    $n = @{r.oldz}." more ^^^:\n$n" if r.oldz;
+    .
+    st.ts.rls->{$rlk} = $rv;
+    my $stuff = $n;
+    my $ids = {};
+    my $here = 3;
+    my $idi = 1;
+    my $idstu = sub {
+        my $id = shift;
+        my $il = $ids->{$id} ||= $idi++;
+        "il$here$il";
+    };
+    for ($stuff) {
+    s/(id=)(\S+)/$1.$idstu->($2)/eg;
+    s/((?:HASH|ARRAY)\()(\w+)(\))/$1.$idstu->($2).$3/eg;
+    s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg;
+    s/("ids":\[")((?:\w+|",")+)("\])/$1.join('","',map{$idstu->($_)}split'","', $2).$3/eg;
+    s/(\=\w+\/\w\/)(\w+)(\.\w)/$1.$idstu->($2).$3/eg;
+    s/(life\/W\/)(\w+)(\.\w)/$1.$idstu->($2).$3/eg;
+    while (1) {
+    s/(opel=.+?)(")(\w{6,})("])/$1.$2.$idstu->($3).$4/eg
+    && (s/($3)/$idstu->($1)/eg || 1) || last
+    };
+    s/(mtime=)(\d{2})(\d+)/$1.$2.join'', (('?') x length $3)/eg;
+    }
+    return [split "\n", encode_utf8 $stuff];
+
+n Wushredids =>'',<<''
+    my $ids = {};
+    my $here = 3;
+    my $idi = 1;
+    my $idstu = sub {
+        my $id = shift;
+        my $il = $ids->{$id} ||= $idi++;
+        "il$here$il";
+    };
+    s/("(?:W|id)":")(\w+)(")/$1.$idstu->($2).$3/eg for @$s;
+    $s

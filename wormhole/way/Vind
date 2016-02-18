@@ -1,0 +1,47 @@
+G.oin.A.tid += 3;
+G.c.i = 1;
+
+J.koe++;
+my $d = 5;
+# sleep if hot
+my $dont;
+if (J.koe > 2) {
+    my $h = {};
+    my @l;
+    for (@l=`ssh v sensors`) {
+        my ($k,$v) = /^(Core 0|temp1):\s+\+(\d+)\./;
+        $k || next;
+        $k =~ s/\W//g;
+        $k .= "2" while $h.>$k;
+        $h.>$k = $v;
+    }
+    saybl "SEnse: ".ki $h;
+    if (!keys %$h) {
+        sayre "nonsense ".wdump \@l;
+        $dont = 1;
+        $d = 20;
+    }
+    if (grep{$h.>$_ > ('temp12'eq$_?88:84)}keys %$h) {
+        sayre "Hot: ".ki $h;
+        sleep 6;
+        $dont = 1;
+        $d = 35;
+    }
+    else {
+        J.koe = 0;
+    }
+}
+if (J.rem++ == 0) {
+    n uncan
+    saybl "wipe" for 1..9;
+    J.rem = 1;
+}
+J.rem > 100 && Rw restar;
+
+saybl "---------" for 1..4;
+Rw waito $J $d;
+
+return if $dont;
+
+# Tarps for us
+n Singe=>W=>{pin=>'Tarp',for=>142}

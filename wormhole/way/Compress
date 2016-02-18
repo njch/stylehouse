@@ -1,0 +1,65 @@
+u allacgts
+
+n squishcsstoatstyles =>'',<<''
+       my (@css, @class);
+       my $fat = sum map { length $_ } @$css;
+       for my $cs (@$css) {
+           G.jumb.occie->{$cs}++; #<in
+           if (my $out = G.yomp.occie->{$cs}) {
+                  push @class, $out;
+           }
+           else {
+               push @css, $cs;
+           }
+       }
+       my $csin = sum map { length $_ } @css;
+       my $clin = sum map { length $_ } @class;
+       #sayyl "Komp: $fat -> $csin      $clin"  if 4.97 < rand 5;
+       at.class = join' ',@class if @class;
+       # and redo:
+       at.style = join '', map{"$_;"}
+       grep{defined} map { split ';' } @css;
+
+n sampleandrate =>'',<<''
+   my $sty_y = sub {
+       my $sty = shift;
+       my ($heex) = dig($sty) =~ /^(........)/;
+       $heex =~ tr/0123456789/ghijklmnop/; # no numbers
+       my @s;
+       push @s, $1 while $heex =~ s/^(..)//;
+       @s = map {
+           my ($o,$t) = /^(.)(.)$/;
+           $t = chr ord($t) + 10 if $o =~ /[g-p]/;
+           $t;
+       } @s;
+       join'',@s
+   };
+   my $t = 'occie';
+   my $pool = G.jumb->{$t} || return;
+   my @pool = map { { of => $_, sc => $pool->{$_} } } sort keys %$pool;
+   my @order = reverse sort { a.sc <=> b.sc } @pool;
+   .
+   my $Y = {};
+   my $limit = 100;
+   my $aimit = @order / 1.2;
+   for my $o (@order) {
+       last if o.sc < 5;
+       next if o.of eq '';
+       last if $limit-- < 1;
+       last if $aimit-- < 1;
+       my $sty = join('', map{"$_;"} grep{defined} split ';', o.of)
+       || die "of tiny: ".wdump($o);
+       my $y = $sty_y->($sty);
+       $Y->{$y} = $sty;
+   }
+   my $oY = {reverse %{G.yomp->{$t}}};
+   if (keys %$oY < 500) { # roll time, may appends...
+       $Y->{$_} = $oY->{$_} for keys %$oY;
+   }
+   if (!keys %$Y) {
+       return sayre "NOTHING TO COMPRESS";
+   }
+   G.yomp->{$t} = {reverse %$Y};
+   # Rw J5 sts $t $Y;
+   sayyl "occie - ".F_delta;
+   sayyl wdump 3, ["Make stylesheet for: ", $Y];

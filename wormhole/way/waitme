@@ -1,0 +1,61 @@
+use POSIX ':sys_wait_h';
+for (@{ar.m||[]}) {
+    G.fasting = 1 if /fr/;
+    G.reing = 1 if /re/;
+}
+G.reing = 1 if ar.m && ar.m->[0] eq 're';
+if (G.forked && !G.reing) {
+    sayre "waitme already forked" for 1..3;
+    return;
+    exit;
+}
+
+my $parent = $$;
+if (my $pid = fork()) {
+    sayyl "
+        oooo
+           oo
+           o o
+          o   o
+         o";
+    my $and;
+    my $kill = $SIG{INT} = sub {
+        sayre "Killing $pid...";
+        kill 'KILL', $pid;
+        delete $SIG{INT}
+    };
+    $SIG{HUP} = sub {
+        $and = 1;
+    };
+
+    waitpid($pid,0);
+
+    if ($and) {
+        saybl "child wants restart!";
+        return
+        Rw waitme
+    }
+    return 1 if G.fasting;
+    my $gen = G.reing ? "Remiddle" : "Restart";
+    saybl $gen.(G.fasting ? "d" : "? <");
+    unless (delete G.fasting) {
+    my $IN = \*STDIN;
+    while (my $k = <$IN>) {
+        chomp $k;
+        !G.reing && !$k && return 2;
+        J.me = $k;
+        say "__ $k";
+        Rw goche $n=$1
+        while $k =~ s/(\d+)//g;
+        Rw goche $n:_
+            for qw'81 64 8 84 1';
+        Rw waitme;
+        return 2;
+    }
+    }
+}
+else {
+    G.forked = $parent;
+}
+delete G.reing;
+return !G.forked;
